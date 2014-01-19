@@ -9,7 +9,10 @@ CPP_FLAGS += -Wall -Wextra
 CPP_FLAGS += -g
 
 SOURCE_DIR = $(TUP_CWD)/src
+
 INCLUDE_DIRS += $(SOURCE_DIR)
+
+LIBS += -lIrrlicht
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPPFLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LDFLAGS) %f $(LIBS) -o %o |>
