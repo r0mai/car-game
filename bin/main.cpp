@@ -1,7 +1,10 @@
 
 #include <irrlicht/irrlicht.h>
 
-int main() {
+#include "GameManager.hpp"
 
+int main() {
+	car::GameManager manager;
+	manager.run();
 }
 
