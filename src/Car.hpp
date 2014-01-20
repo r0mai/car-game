@@ -17,6 +17,11 @@ public:
 
 	void move(irr::f32 deltaSeconds);
 
+	void setGas(irr::f32 value);
+	irr::f32 getGas() const;
+	void increaseGas(irr::f32 deltaSeconds);
+	void decreaseGas(irr::f32 deltaSeconds);
+
 	const Vector3d& getPosition() const;
 	const Vector3d& getVelocity() const;
 	irr::f32 getSpeed() const;
@@ -24,10 +29,12 @@ public:
 private:
 	void updateMesh();
 
-	Vector3d position;
+	irr::f32 gasLevel = 0.0;
 
-	Vector3d velocity = Vector3d(10, 0, 0);
-	const irr::f32 mass = 1000.0; //1000kg
+	Vector3d position; //unit is m
+
+	Vector3d velocity = Vector3d(10, 0, 0); //in m/s
+	const irr::f32 mass = 1000.0; //in kg
 
 	irr::scene::IMeshSceneNode *mesh;
 };

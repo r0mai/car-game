@@ -2,24 +2,27 @@
 #define GAMEMANAGER_HPP
 
 #include <irrlicht/irrlicht.h>
-
 #include <vector>
+
 #include "Car.hpp"
+#include "Telemetry.hpp"
 
 namespace car {
 
-class GameManager {
+class GameManager : public irr::IEventReceiver {
 public:
 	GameManager();
 	~GameManager();
 
+	virtual bool OnEvent(const irr::SEvent& event) override;
+
 	void run();
 
 private:
-	void drawTelemetry(irr::f32 deltaSeconds);
+	void drawTelemetry();
+	void updateTelemetry();
 
 	irr::IrrlichtDevice *device = nullptr;
-
 
 	irr::video::IVideoDriver *driver = device->getVideoDriver();
 	irr::scene::ISceneManager *smgr = device->getSceneManager();
@@ -27,9 +30,13 @@ private:
 
 	irr::gui::IGUIFont *font = guienv->getBuiltInFont();
 
-	std::vector<irr::core::vector2df> speeds;
+	irr::f32 currentTime = 0.f;
 
 	Car car;
+	Telemetry speedTelemetry;
+	Telemetry gasTelemetry;
+
+	bool pressedKeys[irr::KEY_KEY_CODES_COUNT] = {false};
 };
 
 }
