@@ -15,7 +15,7 @@ void Telemetry::drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::r
 
 	driver->draw2DRectangle(video::SColor(50, 255, 50, 255), position);
 
-	if (dataPoints.empty()) {
+	if (dataPoints.size() < 2) {
 		return;
 	}
 	f32 maxUp = position.UpperLeftCorner.Y; //d
@@ -33,12 +33,12 @@ void Telemetry::drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::r
 		return;
 	}
 
-	for ( const auto& point : dataPoints ) {
-		s32 x = leftSide + point.X*10;
-		s32 y = (-maxData*minUp + minData*maxUp + (minUp - maxUp)*point.Y) / (minData - maxData);
-		if ( x > 0 && y > 0 ) {
-			driver->drawPixel(x, y, video::SColor(0, 255, 0, 255));
-		}
+	core::vector2di lastPoint(leftSide + dataPoints[0].X*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[0].Y) / (minData - maxData));
+
+	for ( u32 i = 1; i < dataPoints.size(); ++i ) {
+		core::vector2di currentPoint(leftSide + dataPoints[i].X*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[i].Y) / (minData - maxData));
+		driver->draw2DLine(lastPoint, currentPoint);
+		lastPoint = currentPoint;
 	}
 }
 
