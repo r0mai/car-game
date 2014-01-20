@@ -31,6 +31,8 @@ public:
 	const Vector3d& getVelocity() const;
 	irr::f32 getSpeed() const;
 
+	const Vector3d& getAcceleration() const;
+
 private:
 	void updateMesh();
 
@@ -41,6 +43,7 @@ private:
 
 	Vector3d velocity = Vector3d(0, 0, 0); //in m/s
 	Vector3d orientation = Vector3d(1, 0, 0); //unit vector
+	Vector3d acceleration; //recalculated with move();
 
 	const irr::f32 mass = 1000.0; //in kg
 

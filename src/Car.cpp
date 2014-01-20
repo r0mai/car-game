@@ -19,12 +19,21 @@ void Car::move(irr::f32 deltaSeconds) {
 	const f32 cRollingResistance = 14.2;
 	const f32 fEngine = 2000.0;
 	const f32 fBrake = 3000.0;
+	const f32 gravity = 9.8; //m/s^2
+
+	//CM == Center of Mass
+	//CG == Center of Gravity
+	const f32 rearCMDistance = 1.0;
+	const f32 frontCMDistance = 1.5;
+	const f32 heightOfCG = 1.5;
+	const f32 wheelBase = rearCMDistance + frontCMDistance;
 
 	Vector3d velocityDirection = Vector3d(velocity).normalize();
 	if (velocityDirection == Vector3d(0, 0, 0)) {
 		velocityDirection = orientation;
 	}
 	f32 speed = getSpeed();
+	f32 weight = mass * gravity;
 
 	f32 engineForce = fEngine * gasLevel;
 	f32 brakeForce = fBrake * brakeLevel;
@@ -36,7 +45,10 @@ void Car::move(irr::f32 deltaSeconds) {
 
 	Vector3d fLongtitudinal = fTraction + fBraking + fDrag + fRollingResistance;
 
-	Vector3d acceleration = fLongtitudinal / mass;
+	acceleration = fLongtitudinal / mass;
+
+	f32 weightFront = (rearCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(acceleration.getLength());
+	f32 weightRear = (frontCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(acceleration.getLength());
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
@@ -106,6 +118,9 @@ irr::f32 Car::getSpeed() const {
 	return velocity.getLength();
 }
 
+const Car::Vector3d& Car::getAcceleration() const {
+	return acceleration;
+}
 
 void Car::updateMesh() {
 	mesh->setPosition(position);

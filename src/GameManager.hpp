@@ -34,6 +34,7 @@ private:
 
 	Car car;
 	Telemetry speedTelemetry;
+	Telemetry accelerationTelemetry;
 	Telemetry gasTelemetry;
 	Telemetry brakeTelemetry;
 
