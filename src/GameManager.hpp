@@ -35,6 +35,7 @@ private:
 	Car car;
 	Telemetry speedTelemetry;
 	Telemetry gasTelemetry;
+	Telemetry brakeTelemetry;
 
 	bool pressedKeys[irr::KEY_KEY_CODES_COUNT] = {false};
 };

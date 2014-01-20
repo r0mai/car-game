@@ -21,10 +21,10 @@ GameManager::~GameManager() {
 void GameManager::run() {
 
 	scene::ICameraSceneNode *camera = smgr->addCameraSceneNode();
-	camera->setPosition(core::vector3df(0, 500, 0));
+	camera->setPosition(core::vector3df(0, 150, 0));
 	camera->setTarget(core::vector3df(0, 0, 0));
 
-	scene::IMeshSceneNode *carMesh = smgr->addCubeSceneNode();
+	scene::IMeshSceneNode *carMesh = smgr->addCubeSceneNode(1.f);
 	car.setMesh(carMesh);
 
 	u32 then = device->getTimer()->getTime();
@@ -38,6 +38,11 @@ void GameManager::run() {
 			car.increaseGas(deltaSeconds);
 		} else {
 			car.decreaseGas(deltaSeconds);
+		}
+		if (pressedKeys[KEY_DOWN]) {
+			car.increaseBrake(deltaSeconds);
+		} else {
+			car.decreaseBrake(deltaSeconds);
 		}
 
 		car.move(deltaSeconds);
@@ -63,15 +68,16 @@ bool GameManager::OnEvent(const irr::SEvent& event) {
 void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(core::vector2df(currentTime, car.getSpeed()));
 	gasTelemetry.addDataPoint(core::vector2df(currentTime, car.getGas()));
-
+	brakeTelemetry.addDataPoint(core::vector2df(currentTime, car.getBrake()));
 }
 
 void GameManager::drawTelemetry() {
-	std::wstringstream ss; ss << L"Speed = " << car.getSpeed() << L", Gas = " << car.getGas();
+	std::wstringstream ss; ss << L"Speed = " << car.getSpeed() << L", Gas = " << car.getGas() << L", Brake = " << car.getBrake();
 	font->draw(ss.str().c_str(), core::rect<s32>(10, 10, 100, 100), video::SColor(0, 0, 0, 255));
 
 	speedTelemetry.drawAsGraph(driver, core::recti(10, 20, 1014, 220));
 	gasTelemetry.drawAsGraph(driver, core::recti(10, 230, 1014, 430));
+	brakeTelemetry.drawAsGraph(driver, core::recti(10, 230, 1014, 430));
 }
 
 }

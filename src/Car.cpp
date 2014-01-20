@@ -17,17 +17,24 @@ void Car::move(irr::f32 deltaSeconds) {
 
 	const f32 cDrag = 0.5;
 	const f32 cRollingResistance = 14.2;
-	const f32 fEngine = 200.0;
+	const f32 fEngine = 2000.0;
+	const f32 fBrake = 3000.0;
 
 	Vector3d velocityDirection = Vector3d(velocity).normalize();
+	if (velocityDirection == Vector3d(0, 0, 0)) {
+		velocityDirection = orientation;
+	}
 	f32 speed = getSpeed();
 
 	f32 engineForce = fEngine * gasLevel;
+	f32 brakeForce = fBrake * brakeLevel;
+
 	Vector3d fTraction = velocityDirection * engineForce;
+	Vector3d fBraking = -velocityDirection * brakeForce;
 	Vector3d fDrag = -cDrag * velocity * speed;
 	Vector3d fRollingResistance = -cRollingResistance * velocity;
 
-	Vector3d fLongtitudinal = fTraction + fDrag + fRollingResistance;
+	Vector3d fLongtitudinal = fTraction + fBraking + fDrag + fRollingResistance;
 
 	Vector3d acceleration = fLongtitudinal / mass;
 
@@ -59,6 +66,31 @@ void Car::decreaseGas(irr::f32 deltaSeconds) {
 	gasLevel -= decreaseSpeed*deltaSeconds;
 	if (gasLevel < 0.) {
 		gasLevel = 0.;
+	}
+}
+
+void Car::setBrake(irr::f32 value) {
+	assert(value >= 0.0 && value <= 1.0);
+	brakeLevel = value;
+}
+
+irr::f32 Car::getBrake() const {
+	return brakeLevel;
+}
+
+void Car::increaseBrake(irr::f32 deltaSeconds) {
+	const irr::f32 increaseSpeed = 0.9;
+	brakeLevel += increaseSpeed*deltaSeconds;
+	if (brakeLevel > 1.) {
+		brakeLevel = 1.;
+	}
+}
+
+void Car::decreaseBrake(irr::f32 deltaSeconds) {
+	const irr::f32 decreaseSpeed = 1.5;
+	brakeLevel -= decreaseSpeed*deltaSeconds;
+	if (brakeLevel < 0.) {
+		brakeLevel = 0.;
 	}
 }
 
