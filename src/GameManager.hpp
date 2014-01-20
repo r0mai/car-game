@@ -3,6 +3,8 @@
 
 #include <irrlicht/irrlicht.h>
 
+#include "Car.hpp"
+
 namespace car {
 
 class GameManager {
@@ -14,6 +16,8 @@ public:
 
 private:
 	irr::IrrlichtDevice *device = nullptr;
+
+	Car car;
 };
 
 }
