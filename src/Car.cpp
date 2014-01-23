@@ -35,7 +35,7 @@ void Car::move(irr::f32 deltaSeconds) {
 	f32 speed = getSpeed();
 	f32 weight = mass * gravity;
 
-	f32 engineForce = fEngine * gasLevel;
+	f32 engineForce = fEngine * throttleLevel;
 	f32 brakeForce = fBrake * brakeLevel;
 
 	Vector3d fTraction = velocityDirection * engineForce;
@@ -56,28 +56,28 @@ void Car::move(irr::f32 deltaSeconds) {
 	updateMesh();
 }
 
-void Car::setGas(irr::f32 value) {
+void Car::setThrottle(irr::f32 value) {
 	assert(value >= 0.0 && value <= 1.0);
-	gasLevel = value;
+	throttleLevel = value;
 }
 
-irr::f32 Car::getGas() const {
-	return gasLevel;
+irr::f32 Car::getThrottle() const {
+	return throttleLevel;
 }
 
-void Car::increaseGas(irr::f32 deltaSeconds) {
+void Car::increaseThrottle(irr::f32 deltaSeconds) {
 	const irr::f32 increaseSpeed = 0.9;
-	gasLevel += increaseSpeed*deltaSeconds;
-	if (gasLevel > 1.) {
-		gasLevel = 1.;
+	throttleLevel += increaseSpeed*deltaSeconds;
+	if (throttleLevel > 1.) {
+		throttleLevel = 1.;
 	}
 }
 
-void Car::decreaseGas(irr::f32 deltaSeconds) {
+void Car::decreaseThrottle(irr::f32 deltaSeconds) {
 	const irr::f32 decreaseSpeed = 1.5;
-	gasLevel -= decreaseSpeed*deltaSeconds;
-	if (gasLevel < 0.) {
-		gasLevel = 0.;
+	throttleLevel -= decreaseSpeed*deltaSeconds;
+	if (throttleLevel < 0.) {
+		throttleLevel = 0.;
 	}
 }
 

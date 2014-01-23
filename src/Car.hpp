@@ -17,10 +17,10 @@ public:
 
 	void move(irr::f32 deltaSeconds);
 
-	void setGas(irr::f32 value);
-	irr::f32 getGas() const;
-	void increaseGas(irr::f32 deltaSeconds);
-	void decreaseGas(irr::f32 deltaSeconds);
+	void setThrottle(irr::f32 value);
+	irr::f32 getThrottle() const;
+	void increaseThrottle(irr::f32 deltaSeconds);
+	void decreaseThrottle(irr::f32 deltaSeconds);
 
 	void setBrake(irr::f32 value);
 	irr::f32 getBrake() const;
@@ -36,7 +36,7 @@ public:
 private:
 	void updateMesh();
 
-	irr::f32 gasLevel = 0.0;
+	irr::f32 throttleLevel = 0.0;
 	irr::f32 brakeLevel = 0.0;
 
 	Vector3d position; //unit is m

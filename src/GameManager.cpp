@@ -62,9 +62,9 @@ void GameManager::handleInput(irr::f32 deltaSeconds) {
 		device->closeDevice();
 	}
 	if (pressedKeys[KEY_UP]) {
-		car.increaseGas(deltaSeconds);
+		car.increaseThrottle(deltaSeconds);
 	} else {
-		car.decreaseGas(deltaSeconds);
+		car.decreaseThrottle(deltaSeconds);
 	}
 	if (pressedKeys[KEY_DOWN]) {
 		car.increaseBrake(deltaSeconds);
@@ -83,12 +83,12 @@ bool GameManager::OnEvent(const irr::SEvent& event) {
 void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(core::vector2df(currentTime, car.getSpeed()));
 	accelerationTelemetry.addDataPoint(core::vector2df(currentTime, car.getAcceleration().X));
-	gasTelemetry.addDataPoint(core::vector2df(currentTime, car.getGas()));
+	gasTelemetry.addDataPoint(core::vector2df(currentTime, car.getThrottle()));
 	brakeTelemetry.addDataPoint(core::vector2df(currentTime, car.getBrake()));
 }
 
 void GameManager::drawTelemetry() {
-	std::wstringstream ss; ss << L"Speed = " << car.getSpeed() << L", Acceleration = " << car.getAcceleration().X << L", Gas = " << car.getGas() << L", Brake = " << car.getBrake();
+	std::wstringstream ss; ss << L"Speed = " << car.getSpeed() << L", Acceleration = " << car.getAcceleration().X << L", Throttle = " << car.getThrottle() << L", Brake = " << car.getBrake();
 	font->draw(ss.str().c_str(), core::rect<s32>(10, 10, 100, 100), video::SColor(0, 0, 0, 255));
 
 	speedTelemetry.drawAsGraph(driver, core::recti(10, 20, 1014, 220));
