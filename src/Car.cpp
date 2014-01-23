@@ -2,6 +2,7 @@
 #include "Car.hpp"
 
 #include <cassert>
+#include <cmath>
 
 namespace car {
 
@@ -25,6 +26,7 @@ void Car::move(irr::f32 deltaSeconds) {
 	const f32 differentialRatio = 3.42;
 	const f32 wheelRadius = 0.34; //m
 	const f32 mass = 1500; //kg
+	const f32 maxTurnAngle = 0.52; //radians ~= 30 degrees
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
@@ -57,6 +59,12 @@ void Car::move(irr::f32 deltaSeconds) {
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
+
+	if (turnLevel != 0.0) {
+		f32 steeringAngle = maxTurnAngle * turnLevel;
+		f32 turnRadius = wheelBase / std::sin(turnLevel);
+
+	}
 
 	updateMesh();
 }
@@ -108,6 +116,37 @@ void Car::decreaseBrake(irr::f32 deltaSeconds) {
 	brakeLevel -= decreaseSpeed*deltaSeconds;
 	if (brakeLevel < 0.) {
 		brakeLevel = 0.;
+	}
+}
+
+void Car::increaseTurnToRight(irr::f32 deltaSeconds) {
+	const irr::f32 turnSpeed = 1.5;
+	turnLevel += deltaSeconds*turnSpeed;
+	if (turnLevel > 1.) {
+		turnLevel = 1.;
+	}
+}
+
+void Car::increaseTurnToLeft(irr::f32 deltaSeconds) {
+	const irr::f32 turnSpeed = 1.5;
+	turnLevel -= deltaSeconds*turnSpeed;
+	if (turnLevel < -1.) {
+		turnLevel = -1.;
+	}
+}
+
+void Car::dontTurn(irr::f32 deltaSeconds) {
+	const irr::f32 turnSpeed = 1.5;
+	if (turnLevel > 0.) {
+		turnLevel -= deltaSeconds*turnSpeed;
+		if (turnLevel < 0.) {
+			turnLevel = 0.;
+		}
+	} else if (turnLevel < 0.) {
+		turnLevel += deltaSeconds*turnSpeed;
+		if (turnLevel > 0.) {
+			turnLevel = 0.;
+		}
 	}
 }
 

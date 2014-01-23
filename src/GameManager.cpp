@@ -71,6 +71,15 @@ void GameManager::handleInput(irr::f32 deltaSeconds) {
 	} else {
 		car.decreaseBrake(deltaSeconds);
 	}
+	if (!pressedKeys[KEY_LEFT] && !pressedKeys[KEY_RIGHT]) {
+		car.dontTurn(deltaSeconds);
+	} else {
+		if (pressedKeys[KEY_LEFT]) {
+			car.increaseTurnToLeft(deltaSeconds);
+		} else if (pressedKeys[KEY_RIGHT]) {
+			car.increaseTurnToRight(deltaSeconds);
+		}
+	}
 }
 
 bool GameManager::OnEvent(const irr::SEvent& event) {

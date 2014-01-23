@@ -27,6 +27,10 @@ public:
 	void increaseBrake(irr::f32 deltaSeconds);
 	void decreaseBrake(irr::f32 deltaSeconds);
 
+	void increaseTurnToRight(irr::f32 deltaSeconds);
+	void increaseTurnToLeft(irr::f32 deltaSeconds);
+	void dontTurn(irr::f32 deltaSeconds);
+
 	const Vector3d& getPosition() const;
 	const Vector3d& getVelocity() const;
 	irr::f32 getSpeed() const;
@@ -36,8 +40,9 @@ public:
 private:
 	void updateMesh();
 
-	irr::f32 throttleLevel = 0.0;
-	irr::f32 brakeLevel = 0.0;
+	irr::f32 throttleLevel = 0.0; // [0, 1]
+	irr::f32 brakeLevel = 0.0; // [0, 1]
+	irr::f32 turnLevel = 0.0; // [-1, 1] => [left, right]
 
 	Vector3d position; //unit is m
 
