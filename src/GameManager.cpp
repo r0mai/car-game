@@ -43,6 +43,7 @@ void GameManager::run() {
 		then = now;
 
 		handleInput(deltaSeconds);
+
 		car.move(deltaSeconds);
 		updateTelemetry();
 
@@ -57,6 +58,9 @@ void GameManager::run() {
 }
 
 void GameManager::handleInput(irr::f32 deltaSeconds) {
+	if (pressedKeys[KEY_KEY_Q] || pressedKeys[KEY_ESCAPE]) {
+		device->closeDevice();
+	}
 	if (pressedKeys[KEY_UP]) {
 		car.increaseGas(deltaSeconds);
 	} else {
