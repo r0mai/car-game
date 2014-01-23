@@ -19,6 +19,7 @@ public:
 	void run();
 
 private:
+	void handleInput(irr::f32 deltaSeconds);
 	void drawTelemetry();
 	void updateTelemetry();
 

@@ -34,7 +34,6 @@ void GameManager::run() {
 
 	car.setMesh(carMeshNode);
 
-
 	u32 then = device->getTimer()->getTime();
 
 	while(device->run()) {
@@ -42,17 +41,8 @@ void GameManager::run() {
 		const f32 deltaSeconds = (now - then)/1000.f;
 		currentTime += deltaSeconds;
 		then = now;
-		if (pressedKeys[KEY_UP]) {
-			car.increaseGas(deltaSeconds);
-		} else {
-			car.decreaseGas(deltaSeconds);
-		}
-		if (pressedKeys[KEY_DOWN]) {
-			car.increaseBrake(deltaSeconds);
-		} else {
-			car.decreaseBrake(deltaSeconds);
-		}
 
+		handleInput(deltaSeconds);
 		car.move(deltaSeconds);
 		updateTelemetry();
 
@@ -63,6 +53,19 @@ void GameManager::run() {
 		drawTelemetry();
 
 		driver->endScene();
+	}
+}
+
+void GameManager::handleInput(irr::f32 deltaSeconds) {
+	if (pressedKeys[KEY_UP]) {
+		car.increaseGas(deltaSeconds);
+	} else {
+		car.decreaseGas(deltaSeconds);
+	}
+	if (pressedKeys[KEY_DOWN]) {
+		car.increaseBrake(deltaSeconds);
+	} else {
+		car.decreaseBrake(deltaSeconds);
 	}
 }
 
