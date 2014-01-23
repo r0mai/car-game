@@ -20,6 +20,11 @@ void Car::move(irr::f32 deltaSeconds) {
 	const f32 fEngine = 2000.0;
 	const f32 fBrake = 3000.0;
 	const f32 gravity = 9.8; //m/s^2
+	const f32 transMissionEfficiency = 0.7;
+	const f32 gearRatio = 2.1;
+	const f32 differentialRatio = 3.42;
+	const f32 wheelRadius = 0.34; //m
+	const f32 mass = 1500; //kg
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
