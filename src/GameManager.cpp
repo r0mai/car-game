@@ -29,7 +29,7 @@ void GameManager::run() {
 
 	scene::ICameraSceneNode *camera = smgr->addCameraSceneNode();
 	camera->bindTargetAndRotation(true);
-	camera->setPosition(core::vector3df(0, 150, 0));
+	camera->setPosition(core::vector3df(0, 5, 15));
 	camera->setTarget(carMeshNode->getPosition());
 
 	car.setMesh(carMeshNode);
