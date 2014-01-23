@@ -7,7 +7,7 @@ namespace car {
 
 Car::Car(const Vector3d& position) : position(position) {}
 
-void Car::setMesh(irr::scene::IMeshSceneNode *newMesh) {
+void Car::setMesh(irr::scene::ISceneNode *newMesh) {
 	mesh = newMesh;
 }
 

@@ -13,7 +13,7 @@ public:
 	Car() = default;
 	Car(const Vector3d& position);
 
-	void setMesh(irr::scene::IMeshSceneNode *newMesh);
+	void setMesh(irr::scene::ISceneNode *newMesh);
 
 	void move(irr::f32 deltaSeconds);
 
@@ -42,12 +42,12 @@ private:
 	Vector3d position; //unit is m
 
 	Vector3d velocity = Vector3d(0, 0, 0); //in m/s
-	Vector3d orientation = Vector3d(1, 0, 0); //unit vector
+	Vector3d orientation = Vector3d(0, 0, -1); //unit vector
 	Vector3d acceleration; //recalculated with move();
 
 	const irr::f32 mass = 1000.0; //in kg
 
-	irr::scene::IMeshSceneNode *mesh;
+	irr::scene::ISceneNode *mesh;
 };
 
 }

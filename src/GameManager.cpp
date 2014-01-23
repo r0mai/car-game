@@ -24,15 +24,16 @@ GameManager::~GameManager() {
 
 void GameManager::run() {
 
-	scene::IMeshSceneNode *carMesh = smgr->addCubeSceneNode(1.f);
-	carMesh->setScale(core::vector3df(3.5, 3.0, 2.0));
+	scene::IAnimatedMesh *carMesh = smgr->getMesh("models/car.lwo");
+	scene::IAnimatedMeshSceneNode *carMeshNode = smgr->addAnimatedMeshSceneNode(carMesh);
 
 	scene::ICameraSceneNode *camera = smgr->addCameraSceneNode();
 	camera->bindTargetAndRotation(true);
 	camera->setPosition(core::vector3df(0, 150, 0));
-	camera->setTarget(core::vector3df(0, 0, 0));
+	camera->setTarget(carMeshNode->getPosition());
 
-	car.setMesh(carMesh);
+	car.setMesh(carMeshNode);
+
 
 	u32 then = device->getTimer()->getTime();
 
