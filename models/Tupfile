@@ -1,0 +1,5 @@
+
+include_rules
+
+: |> ^ DOWNLOAD %o^ wget --quiet https://dl.dropboxusercontent.com/u/12272246/car-game/car.lwo |> car.lwo
+
