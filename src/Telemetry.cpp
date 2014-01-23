@@ -22,12 +22,15 @@ void Telemetry::drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::r
 	f32 minUp = position.LowerRightCorner.Y; //c
 	f32 leftSide = position.UpperLeftCorner.X;
 
-	//b
-	f32 maxData = std::max_element(dataPoints.begin(), dataPoints.end(),
+	f32 maxData = maxBound; //b
+	f32 minData = minBound; //a
+
+   	if (automaticBoundsDetection) {
+		minData = std::min_element(dataPoints.begin(), dataPoints.end(),
 			[](const irr::core::vector2df& lhs, const irr::core::vector2df& rhs) { return lhs.Y < rhs.Y; })->Y;
-	//a
-	f32 minData = std::min_element(dataPoints.begin(), dataPoints.end(),
+		maxData = std::max_element(dataPoints.begin(), dataPoints.end(),
 			[](const irr::core::vector2df& lhs, const irr::core::vector2df& rhs) { return lhs.Y < rhs.Y; })->Y;
+	}
 
 	if ( minData - maxData == 0.0 ) {
 		return;
@@ -40,6 +43,15 @@ void Telemetry::drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::r
 		driver->draw2DLine(lastPoint, currentPoint);
 		lastPoint = currentPoint;
 	}
+}
+
+void Telemetry::setAutomaticBoundsDetection(bool value) {
+	automaticBoundsDetection = value;
+}
+
+void Telemetry::setBounds(irr::f32 min, irr::f32 max) {
+	minBound = min;
+	maxBound = max;
 }
 
 }

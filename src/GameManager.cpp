@@ -12,6 +12,10 @@ GameManager::GameManager() :
 	device(createDevice(video::EDT_SOFTWARE, core::dimension2d<u32>(1024, 768), 16, false, false, false, this)),
 	car()
 {
+	gasTelemetry.setAutomaticBoundsDetection(false);
+	gasTelemetry.setBounds(0.f, 1.f);
+	brakeTelemetry.setAutomaticBoundsDetection(false);
+	brakeTelemetry.setBounds(0.f, 1.f);
 }
 
 GameManager::~GameManager() {
@@ -20,11 +24,14 @@ GameManager::~GameManager() {
 
 void GameManager::run() {
 
+	scene::IMeshSceneNode *carMesh = smgr->addCubeSceneNode(1.f);
+	carMesh->setScale(core::vector3df(3.5, 3.0, 2.0));
+
 	scene::ICameraSceneNode *camera = smgr->addCameraSceneNode();
+	camera->bindTargetAndRotation(true);
 	camera->setPosition(core::vector3df(0, 150, 0));
 	camera->setTarget(core::vector3df(0, 0, 0));
 
-	scene::IMeshSceneNode *carMesh = smgr->addCubeSceneNode(1.f);
 	car.setMesh(carMesh);
 
 	u32 then = device->getTimer()->getTime();
