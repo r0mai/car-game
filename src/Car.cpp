@@ -62,7 +62,7 @@ void Car::move(irr::f32 deltaSeconds) {
 
 	if (turnLevel != 0.0) {
 		f32 steeringAngle = maxTurnAngle * turnLevel;
-		f32 turnRadius = wheelBase / std::sin(turnLevel);
+		f32 turnRadius = wheelBase / std::sin(steeringAngle);
 
 	}
 
