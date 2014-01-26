@@ -1,24 +1,25 @@
 #ifndef TELEMETRY_HPP
 #define TELEMETRY_HPP
 
-#include <irrlicht/irrlicht.h>
 #include <vector>
+
+#include <SFML/Graphics.hpp>
 
 namespace car {
 
 class Telemetry {
 public:
 
-	void addDataPoint(const irr::core::vector2df& point);
-	void drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::recti& position);
+	void addDataPoint(const sf::Vector2f& point);
+	void drawAsGraph(sf::RenderWindow& driver, const sf::FloatRect& position);
 
 	void setAutomaticBoundsDetection(bool value);
-	void setBounds(irr::f32 min, irr::f32 max);
+	void setBounds(float min, float max);
 private:
 	bool automaticBoundsDetection = true;
-	irr::f32 minBound = 0.0;
-	irr::f32 maxBound = 1.0;
-	std::vector<irr::core::vector2df> dataPoints;
+	float minBound = 0.0;
+	float maxBound = 1.0;
+	std::vector<sf::Vector2f> dataPoints;
 };
 
 }

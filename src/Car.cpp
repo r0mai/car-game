@@ -3,140 +3,139 @@
 
 #include <cassert>
 #include <cmath>
+#include <iostream>
+
+#include "util.hpp"
 
 namespace car {
 
-Car::Car(const Vector3d& position) : position(position) {}
+Car::Car(const sf::Vector2f& position) : position(position) {}
 
-void Car::setMesh(irr::scene::ISceneNode *newMesh) {
-	mesh = newMesh;
-}
+void Car::move(float deltaSeconds) {
 
-void Car::move(irr::f32 deltaSeconds) {
 
-	using namespace irr;
-
-	const f32 cDrag = 0.5;
-	const f32 cRollingResistance = 14.2;
-	const f32 fEngine = 2000.0;
-	const f32 fBrake = 3000.0;
-	const f32 gravity = 9.8; //m/s^2
-	const f32 transMissionEfficiency = 0.7;
-	const f32 gearRatio = 2.1;
-	const f32 differentialRatio = 3.42;
-	const f32 wheelRadius = 0.34; //m
-	const f32 mass = 1500; //kg
-	const f32 maxTurnAngle = 0.52; //radians ~= 30 degrees
+	const float cDrag = 0.5;
+	const float cRollingResistance = 14.2;
+	const float fEngine = 2000.0;
+	const float fBrake = 3000.0;
+	const float gravity = 9.8; //m/s^2
+	const float transMissionEfficiency = 0.7;
+	const float gearRatio = 2.1;
+	const float differentialRatio = 3.42;
+	const float wheelRadius = 0.34; //m
+	const float mass = 1500; //kg
+	const float maxTurnAngle = 0.52; //radians ~= 30 degrees
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
-	const f32 rearCMDistance = 1.0;
-	const f32 frontCMDistance = 1.5;
-	const f32 heightOfCG = 1.5;
-	const f32 wheelBase = rearCMDistance + frontCMDistance;
+	const float rearCMDistance = 1.0;
+	const float frontCMDistance = 1.5;
+	const float heightOfCG = 1.5;
+	const float wheelBase = rearCMDistance + frontCMDistance;
 
-	Vector3d velocityDirection = Vector3d(velocity).normalize();
-	if (velocityDirection == Vector3d(0, 0, 0)) {
-		velocityDirection = orientation;
-	}
-	f32 speed = getSpeed();
-	f32 weight = mass * gravity;
+	sf::Vector2f velocityDirection = [&] {
+		if (getLengthSQ(velocity) > 0.0001f*0.0001f) {
+			return normalize(velocity);
+		}
+		return orientation;
+	}();
 
-	f32 engineForce = fEngine * throttleLevel;
-	f32 brakeForce = fBrake * brakeLevel;
+	float speed = getSpeed();
+	float weight = mass * gravity;
 
-	Vector3d fTraction = velocityDirection * engineForce;
-	Vector3d fBraking = -velocityDirection * brakeForce;
-	Vector3d fDrag = -cDrag * velocity * speed;
-	Vector3d fRollingResistance = -cRollingResistance * velocity;
+	float engineForce = fEngine * throttleLevel;
+	float brakeForce = fBrake * brakeLevel;
 
-	Vector3d fLongtitudinal = fTraction + fBraking + fDrag + fRollingResistance;
+	sf::Vector2f fTraction = velocityDirection * engineForce;
+	sf::Vector2f fBraking = -velocityDirection * brakeForce;
+	sf::Vector2f fDrag = -cDrag * velocity * speed;
+	sf::Vector2f fRollingResistance = -cRollingResistance * velocity;
+
+	sf::Vector2f fLongtitudinal = fTraction + fBraking + fDrag + fRollingResistance;
 
 	acceleration = fLongtitudinal / mass;
 
-	f32 weightFront = (rearCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(acceleration.getLength());
-	f32 weightRear = (frontCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(acceleration.getLength());
+	float weightFront = (rearCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
+	float weightRear = (frontCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
 
 	if (turnLevel != 0.0) {
-		f32 steeringAngle = maxTurnAngle * turnLevel;
-		f32 turnRadius = wheelBase / std::sin(steeringAngle);
+		float steeringAngle = maxTurnAngle * turnLevel;
+		float turnRadius = wheelBase / std::sin(steeringAngle);
 
 	}
-
-	updateMesh();
 }
 
-void Car::setThrottle(irr::f32 value) {
+void Car::setThrottle(float value) {
 	assert(value >= 0.0 && value <= 1.0);
 	throttleLevel = value;
 }
 
-irr::f32 Car::getThrottle() const {
+float Car::getThrottle() const {
 	return throttleLevel;
 }
 
-void Car::increaseThrottle(irr::f32 deltaSeconds) {
-	const irr::f32 increaseSpeed = 0.9;
+void Car::increaseThrottle(float deltaSeconds) {
+	const float increaseSpeed = 0.9;
 	throttleLevel += increaseSpeed*deltaSeconds;
 	if (throttleLevel > 1.) {
 		throttleLevel = 1.;
 	}
 }
 
-void Car::decreaseThrottle(irr::f32 deltaSeconds) {
-	const irr::f32 decreaseSpeed = 1.5;
+void Car::decreaseThrottle(float deltaSeconds) {
+	const float decreaseSpeed = 1.5;
 	throttleLevel -= decreaseSpeed*deltaSeconds;
 	if (throttleLevel < 0.) {
 		throttleLevel = 0.;
 	}
 }
 
-void Car::setBrake(irr::f32 value) {
+void Car::setBrake(float value) {
 	assert(value >= 0.0 && value <= 1.0);
 	brakeLevel = value;
 }
 
-irr::f32 Car::getBrake() const {
+float Car::getBrake() const {
 	return brakeLevel;
 }
 
-void Car::increaseBrake(irr::f32 deltaSeconds) {
-	const irr::f32 increaseSpeed = 0.9;
+void Car::increaseBrake(float deltaSeconds) {
+	const float increaseSpeed = 0.9;
 	brakeLevel += increaseSpeed*deltaSeconds;
 	if (brakeLevel > 1.) {
 		brakeLevel = 1.;
 	}
 }
 
-void Car::decreaseBrake(irr::f32 deltaSeconds) {
-	const irr::f32 decreaseSpeed = 1.5;
+void Car::decreaseBrake(float deltaSeconds) {
+	const float decreaseSpeed = 1.5;
 	brakeLevel -= decreaseSpeed*deltaSeconds;
 	if (brakeLevel < 0.) {
 		brakeLevel = 0.;
 	}
 }
 
-void Car::increaseTurnToRight(irr::f32 deltaSeconds) {
-	const irr::f32 turnSpeed = 1.5;
+void Car::increaseTurnToRight(float deltaSeconds) {
+	const float turnSpeed = 1.5;
 	turnLevel += deltaSeconds*turnSpeed;
 	if (turnLevel > 1.) {
 		turnLevel = 1.;
 	}
 }
 
-void Car::increaseTurnToLeft(irr::f32 deltaSeconds) {
-	const irr::f32 turnSpeed = 1.5;
+void Car::increaseTurnToLeft(float deltaSeconds) {
+	const float turnSpeed = 1.5;
 	turnLevel -= deltaSeconds*turnSpeed;
 	if (turnLevel < -1.) {
 		turnLevel = -1.;
 	}
 }
 
-void Car::dontTurn(irr::f32 deltaSeconds) {
-	const irr::f32 turnSpeed = 1.5;
+void Car::dontTurn(float deltaSeconds) {
+	const float turnSpeed = 1.5;
 	if (turnLevel > 0.) {
 		turnLevel -= deltaSeconds*turnSpeed;
 		if (turnLevel < 0.) {
@@ -150,24 +149,20 @@ void Car::dontTurn(irr::f32 deltaSeconds) {
 	}
 }
 
-const Car::Vector3d& Car::getPosition() const {
+const sf::Vector2f& Car::getPosition() const {
 	return position;
 }
 
-const Car::Vector3d& Car::getVelocity() const {
+const sf::Vector2f& Car::getVelocity() const {
 	return velocity;
 }
 
-irr::f32 Car::getSpeed() const {
-	return velocity.getLength();
+float Car::getSpeed() const {
+	return getLength(velocity);
 }
 
-const Car::Vector3d& Car::getAcceleration() const {
+const sf::Vector2f& Car::getAcceleration() const {
 	return acceleration;
-}
-
-void Car::updateMesh() {
-	mesh->setPosition(position);
 }
 
 }

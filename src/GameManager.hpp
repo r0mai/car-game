@@ -1,7 +1,7 @@
 #ifndef GAMEMANAGER_HPP
 #define GAMEMANAGER_HPP
 
-#include <irrlicht/irrlicht.h>
+#include <SFML/Graphics.hpp>
 #include <vector>
 
 #include "Car.hpp"
@@ -9,29 +9,22 @@
 
 namespace car {
 
-class GameManager : public irr::IEventReceiver {
+class GameManager {
 public:
 	GameManager();
-	~GameManager();
-
-	virtual bool OnEvent(const irr::SEvent& event) override;
 
 	void run();
 
 private:
-	void handleInput(irr::f32 deltaSeconds);
+	void handleInput(float deltaSeconds);
+	void drawCar();
 	void drawTelemetry();
 	void updateTelemetry();
 
-	irr::IrrlichtDevice *device = nullptr;
+	sf::RenderWindow window;
+	sf::Font font;
 
-	irr::video::IVideoDriver *driver = device->getVideoDriver();
-	irr::scene::ISceneManager *smgr = device->getSceneManager();
-	irr::gui::IGUIEnvironment *guienv = device->getGUIEnvironment();
-
-	irr::gui::IGUIFont *font = guienv->getBuiltInFont();
-
-	irr::f32 currentTime = 0.f;
+	float currentTime = 0.f;
 
 	Car car;
 	Telemetry speedTelemetry;
@@ -39,7 +32,8 @@ private:
 	Telemetry gasTelemetry;
 	Telemetry brakeTelemetry;
 
-	bool pressedKeys[irr::KEY_KEY_CODES_COUNT] = {false};
+	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
+
 };
 
 }

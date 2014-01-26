@@ -3,44 +3,44 @@
 
 #include <algorithm>
 
+#include "util.hpp"
+
 namespace car {
 
-void Telemetry::addDataPoint(const irr::core::vector2df& point) {
+void Telemetry::addDataPoint(const sf::Vector2f& point) {
 	dataPoints.push_back(point);
 }
 
-void Telemetry::drawAsGraph(irr::video::IVideoDriver *driver, const irr::core::recti& position) {
-
-	using namespace irr;
-
-	driver->draw2DRectangle(video::SColor(50, 255, 50, 255), position);
+void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& position) {
 
 	if (dataPoints.size() < 2) {
 		return;
 	}
-	f32 maxUp = position.UpperLeftCorner.Y; //d
-	f32 minUp = position.LowerRightCorner.Y; //c
-	f32 leftSide = position.UpperLeftCorner.X;
 
-	f32 maxData = maxBound; //b
-	f32 minData = minBound; //a
+	float maxUp = position.top; //d
+	float minUp = position.top + position.height; //c
+	float leftSide = position.left;
+
+	float maxData = maxBound; //b
+	float minData = minBound; //a
 
    	if (automaticBoundsDetection) {
 		minData = std::min_element(dataPoints.begin(), dataPoints.end(),
-			[](const irr::core::vector2df& lhs, const irr::core::vector2df& rhs) { return lhs.Y < rhs.Y; })->Y;
+			[](const sf::Vector2f& lhs, const sf::Vector2f& rhs) { return lhs.y < rhs.y; })->y;
 		maxData = std::max_element(dataPoints.begin(), dataPoints.end(),
-			[](const irr::core::vector2df& lhs, const irr::core::vector2df& rhs) { return lhs.Y < rhs.Y; })->Y;
+			[](const sf::Vector2f& lhs, const sf::Vector2f& rhs) { return lhs.y < rhs.y; })->y;
 	}
 
 	if ( minData - maxData == 0.0 ) {
 		return;
 	}
 
-	core::vector2di lastPoint(leftSide + dataPoints[0].X*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[0].Y) / (minData - maxData));
 
-	for ( u32 i = 1; i < dataPoints.size(); ++i ) {
-		core::vector2di currentPoint(leftSide + dataPoints[i].X*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[i].Y) / (minData - maxData));
-		driver->draw2DLine(lastPoint, currentPoint);
+	sf::Vector2f lastPoint(leftSide + dataPoints[0].x*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[0].y) / (minData - maxData));
+
+	for ( unsigned i = 1; i < dataPoints.size(); ++i ) {
+		sf::Vector2f currentPoint(leftSide + dataPoints[i].x*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[i].y) / (minData - maxData));
+		drawLine(window, window.mapPixelToCoords(vectorCast<int>(lastPoint)), window.mapPixelToCoords(vectorCast<int>(currentPoint)));
 		lastPoint = currentPoint;
 	}
 }
@@ -49,7 +49,7 @@ void Telemetry::setAutomaticBoundsDetection(bool value) {
 	automaticBoundsDetection = value;
 }
 
-void Telemetry::setBounds(irr::f32 min, irr::f32 max) {
+void Telemetry::setBounds(float min, float max) {
 	minBound = min;
 	maxBound = max;
 }

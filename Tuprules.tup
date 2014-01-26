@@ -6,15 +6,17 @@ LD = $(CXX)
 
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra
+CPP_FLAGS += -O0
 CPP_FLAGS += -g
 
 SOURCE_DIR = $(TUP_CWD)/src
 
 INCLUDE_DIRS += -I$(SOURCE_DIR)
 
-LIBS += -lIrrlicht
-LIBS += -lglut
-LIBS += -lGL
+LIBS += -lsfml-graphics
+LIBS += -lsfml-window
+LIBS += -lsfml-system
+
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>

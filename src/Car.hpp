@@ -1,56 +1,49 @@
 #ifndef CAR_HPP
 #define CAR_HPP
 
-#include <irrlicht/irrlicht.h>
+#include <SFML/Graphics.hpp>
 
 namespace car {
 
 class Car {
 public:
 
-	typedef irr::core::vector3df Vector3d;
 
 	Car() = default;
-	Car(const Vector3d& position);
+	Car(const sf::Vector2f& position);
 
-	void setMesh(irr::scene::ISceneNode *newMesh);
+	void move(float deltaSeconds);
 
-	void move(irr::f32 deltaSeconds);
+	void setThrottle(float value);
+	float getThrottle() const;
+	void increaseThrottle(float deltaSeconds);
+	void decreaseThrottle(float deltaSeconds);
 
-	void setThrottle(irr::f32 value);
-	irr::f32 getThrottle() const;
-	void increaseThrottle(irr::f32 deltaSeconds);
-	void decreaseThrottle(irr::f32 deltaSeconds);
+	void setBrake(float value);
+	float getBrake() const;
+	void increaseBrake(float deltaSeconds);
+	void decreaseBrake(float deltaSeconds);
 
-	void setBrake(irr::f32 value);
-	irr::f32 getBrake() const;
-	void increaseBrake(irr::f32 deltaSeconds);
-	void decreaseBrake(irr::f32 deltaSeconds);
+	void increaseTurnToRight(float deltaSeconds);
+	void increaseTurnToLeft(float deltaSeconds);
+	void dontTurn(float deltaSeconds);
 
-	void increaseTurnToRight(irr::f32 deltaSeconds);
-	void increaseTurnToLeft(irr::f32 deltaSeconds);
-	void dontTurn(irr::f32 deltaSeconds);
+	const sf::Vector2f& getPosition() const;
+	const sf::Vector2f& getVelocity() const;
+	float getSpeed() const;
 
-	const Vector3d& getPosition() const;
-	const Vector3d& getVelocity() const;
-	irr::f32 getSpeed() const;
-
-	const Vector3d& getAcceleration() const;
+	const sf::Vector2f& getAcceleration() const;
 
 private:
-	void updateMesh();
+	float throttleLevel = 0.0; // [0, 1]
+	float brakeLevel = 0.0; // [0, 1]
+	float turnLevel = 0.0; // [-1, 1] => [left, right]
 
-	irr::f32 throttleLevel = 0.0; // [0, 1]
-	irr::f32 brakeLevel = 0.0; // [0, 1]
-	irr::f32 turnLevel = 0.0; // [-1, 1] => [left, right]
+	sf::Vector2f position = sf::Vector2f(0, 0); //unit is m
 
-	Vector3d position; //unit is m
-
-	Vector3d velocity = Vector3d(0, 0, 0); //in m/s
-	Vector3d orientation = Vector3d(0, 0, -1); //unit vector
-	Vector3d acceleration; //recalculated with move();
-
-	irr::scene::ISceneNode *mesh;
+	sf::Vector2f velocity = sf::Vector2f(0, 0); //in m/s
+	sf::Vector2f orientation = sf::Vector2f(0, -1); //unit vector
+	sf::Vector2f acceleration; //recalculated with move();
 };
 
 }
