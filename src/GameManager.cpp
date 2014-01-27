@@ -12,7 +12,7 @@ GameManager::GameManager() :
 	window(sf::VideoMode(1024, 1024), "car-game"),
 	car()
 {
-	font.loadFromFile("models/arial.ttf");
+	font.loadFromFile("resources/arial.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
 	brakeTelemetry.setAutomaticBoundsDetection(false);
