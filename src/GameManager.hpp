@@ -21,6 +21,8 @@ private:
 	void updateTelemetry();
 
 	sf::RenderWindow window;
+	sf::View gameView;
+	sf::View hudView;
 	sf::Font font;
 
 	float currentTime = 0.f;

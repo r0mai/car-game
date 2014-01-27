@@ -19,10 +19,9 @@ GameManager::GameManager() :
 	brakeTelemetry.setAutomaticBoundsDetection(false);
 	brakeTelemetry.setBounds(0.f, 1.f);
 
-	sf::View view;
-	view.setCenter(0.f, 0.f);
-	view.setSize(150.f, 150.f);
-	window.setView(view);
+	gameView.setCenter(0.f, 0.f);
+	gameView.setSize(150.f, 150.f);
+	hudView = window.getDefaultView();
 }
 
 void GameManager::run() {
@@ -43,8 +42,10 @@ void GameManager::run() {
 
 		window.clear(sf::Color::Black);
 
+		window.setView(gameView);
 		car.draw(window);
 
+		window.setView(hudView);
 		drawTelemetry();
 
 		window.display();
@@ -115,8 +116,8 @@ void GameManager::drawTelemetry() {
 	text.setColor(sf::Color::White);
 	text.setCharacterSize(32);
 	text.setString(sf::String(ss.str()));
-	text.setScale(0.08, 0.08);
-	text.setPosition(window.mapPixelToCoords(sf::Vector2i(5, 5)));
+	text.setScale(.5, .5);
+	text.setPosition(3., 3.);
 
 	window.draw(text);
 
