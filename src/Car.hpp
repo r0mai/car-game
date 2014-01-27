@@ -52,8 +52,10 @@ private:
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
-	const float rearCMDistance = 1.0;
-	const float frontCMDistance = 1.5;
+	const float rearWheelCMDistance = 1.0;
+	const float frontWheelCMDistance = 1.5;
+	const float rearCMDistance = 1.2;
+	const float frontCMDistance = 1.8;
 	const float heightOfCG = 1.5;
 	const float wheelBase = rearCMDistance + frontCMDistance;
 

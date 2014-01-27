@@ -33,8 +33,8 @@ void Car::move(float deltaSeconds) {
 
 	acceleration = fLongtitudinal / mass;
 
-	float weightFront = (rearCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
-	float weightRear = (frontCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
+	float weightFront = (rearWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
+	float weightRear = (frontWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
@@ -136,10 +136,13 @@ void Car::draw(sf::RenderWindow& window) const {
 	transform.translate(getPosition());
 	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
 
-	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(2.5, -1.5));
-	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(2.5, 1.5));
-	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-2.5, -1.5));
-	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-2.5, 1.5));
+	const float carHalfWidth = 0.7;
+
+	//CM is the origin when drawing
+	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
+	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
+	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
+	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
 
 	drawLine(window, frontLeft, frontRight);
 	drawLine(window, frontLeft, rearLeft);
