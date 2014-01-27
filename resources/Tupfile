@@ -3,5 +3,5 @@ include_rules
 
 export https_proxy
 
-: |> ^ DOWNLOAD %o^ wget --quiet https://dl.dropboxusercontent.com/u/12272246/car-game/%o |> arial.ttf
+: |> !download |> arial.ttf
 
