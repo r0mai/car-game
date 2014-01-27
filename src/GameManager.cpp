@@ -33,6 +33,7 @@ void GameManager::run() {
 	while(window.isOpen()) {
 		const sf::Time time = clock.restart();
 		const float deltaSeconds = time.asSeconds();
+		fps = 1/deltaSeconds;
 
 		currentTime += deltaSeconds;
 
@@ -97,14 +98,19 @@ void GameManager::handleInput(float deltaSeconds) {
 
 void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
-	accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getAcceleration().y));
+	accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, getLength(car.getAcceleration())));
 	gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
 	brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
 }
 
 void GameManager::drawTelemetry() {
 	std::stringstream ss;
-   	ss << std::fixed << "Speed = " << car.getSpeed() << ", Acceleration = " << car.getAcceleration().y << ", Throttle = " << car.getThrottle() << ", Brake = " << car.getBrake();
+   	ss << std::fixed <<
+	   	"FPS = " << fps <<
+		", Speed = " << car.getSpeed() <<
+		", Acceleration = " << getLength(car.getAcceleration()) <<
+		", Throttle = " << car.getThrottle() <<
+		", Brake = " << car.getBrake();
 	sf::Text text;
 	text.setFont(font);
 	text.setColor(sf::Color::White);

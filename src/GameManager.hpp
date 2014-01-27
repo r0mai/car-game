@@ -24,6 +24,7 @@ private:
 	sf::Font font;
 
 	float currentTime = 0.f;
+	float fps = -1.f;
 
 	Car car;
 	Telemetry speedTelemetry;
