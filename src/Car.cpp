@@ -60,16 +60,14 @@ float Car::getThrottle() const {
 }
 
 void Car::increaseThrottle(float deltaSeconds) {
-	const float increaseSpeed = 0.9;
-	throttleLevel += increaseSpeed*deltaSeconds;
+	throttleLevel += throttleIncreaseSpeed*deltaSeconds;
 	if (throttleLevel > 1.) {
 		throttleLevel = 1.;
 	}
 }
 
 void Car::decreaseThrottle(float deltaSeconds) {
-	const float decreaseSpeed = 1.5;
-	throttleLevel -= decreaseSpeed*deltaSeconds;
+	throttleLevel -= throttleDecreaseSpeed*deltaSeconds;
 	if (throttleLevel < 0.) {
 		throttleLevel = 0.;
 	}
@@ -85,46 +83,41 @@ float Car::getBrake() const {
 }
 
 void Car::increaseBrake(float deltaSeconds) {
-	const float increaseSpeed = 0.9;
-	brakeLevel += increaseSpeed*deltaSeconds;
+	brakeLevel += brakeIncreaseSpeed*deltaSeconds;
 	if (brakeLevel > 1.) {
 		brakeLevel = 1.;
 	}
 }
 
 void Car::decreaseBrake(float deltaSeconds) {
-	const float decreaseSpeed = 1.5;
-	brakeLevel -= decreaseSpeed*deltaSeconds;
+	brakeLevel -= brakeDecreaseSpeed*deltaSeconds;
 	if (brakeLevel < 0.) {
 		brakeLevel = 0.;
 	}
 }
 
 void Car::increaseTurnToRight(float deltaSeconds) {
-	const float turnSpeed = 1.5;
-	turnLevel += deltaSeconds*turnSpeed;
+	turnLevel += turnSpeed*deltaSeconds;
 	if (turnLevel > 1.) {
 		turnLevel = 1.;
 	}
 }
 
 void Car::increaseTurnToLeft(float deltaSeconds) {
-	const float turnSpeed = 1.5;
-	turnLevel -= deltaSeconds*turnSpeed;
+	turnLevel -= turnSpeed*deltaSeconds;
 	if (turnLevel < -1.) {
 		turnLevel = -1.;
 	}
 }
 
 void Car::dontTurn(float deltaSeconds) {
-	const float turnSpeed = 1.5;
 	if (turnLevel > 0.) {
-		turnLevel -= deltaSeconds*turnSpeed;
+		turnLevel -= turnSpeed*deltaSeconds;
 		if (turnLevel < 0.) {
 			turnLevel = 0.;
 		}
 	} else if (turnLevel < 0.) {
-		turnLevel += deltaSeconds*turnSpeed;
+		turnLevel += turnSpeed*deltaSeconds;
 		if (turnLevel > 0.) {
 			turnLevel = 0.;
 		}
@@ -136,7 +129,7 @@ void Car::draw(sf::RenderWindow& window) const {
 	transform.translate(getPosition());
 	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
 
-	const float carHalfWidth = 0.7;
+	const float carHalfWidth = carWidth/2.f;
 
 	//CM is the origin when drawing
 	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));

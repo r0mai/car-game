@@ -58,6 +58,14 @@ private:
 	const float frontCMDistance = 1.8;
 	const float heightOfCG = 1.5;
 	const float wheelBase = rearCMDistance + frontCMDistance;
+	const float carWidth = 1.4;
+
+	const float throttleIncreaseSpeed = 1.5;
+	const float throttleDecreaseSpeed = 1.3;
+	const float brakeIncreaseSpeed = 1.9;
+	const float brakeDecreaseSpeed = 1.7;
+
+	const float turnSpeed = 6.5;
 
 	float throttleLevel = 0.0; // [0, 1]
 	float brakeLevel = 0.0; // [0, 1]
