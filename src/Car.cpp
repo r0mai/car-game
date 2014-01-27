@@ -13,26 +13,6 @@ Car::Car(const sf::Vector2f& position) : position(position) {}
 
 void Car::move(float deltaSeconds) {
 
-
-	const float cDrag = 0.5;
-	const float cRollingResistance = 14.2;
-	const float fEngine = 2000.0;
-	const float fBrake = 3000.0;
-	const float gravity = 9.8; //m/s^2
-	const float transMissionEfficiency = 0.7;
-	const float gearRatio = 2.1;
-	const float differentialRatio = 3.42;
-	const float wheelRadius = 0.34; //m
-	const float mass = 1500; //kg
-	const float maxTurnAngle = 0.52; //radians ~= 30 degrees
-
-	//CM == Center of Mass
-	//CG == Center of Gravity
-	const float rearCMDistance = 1.0;
-	const float frontCMDistance = 1.5;
-	const float heightOfCG = 1.5;
-	const float wheelBase = rearCMDistance + frontCMDistance;
-
 	sf::Vector2f velocityDirection = [&] {
 		return orientation;
 	}();
