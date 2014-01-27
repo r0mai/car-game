@@ -36,6 +36,7 @@ void Car::move(float deltaSeconds) {
 	sf::Vector2f velocityDirection = [&] {
 		return orientation;
 	}();
+	velocity = orientation*getLength(velocity); //hack, TODO something
 
 	float speed = getSpeed();
 	float weight = mass * gravity;
@@ -58,10 +59,14 @@ void Car::move(float deltaSeconds) {
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
 
-	if (turnLevel != 0.0) {
+	if (std::abs(turnLevel) > 0.0001) {
 		float steeringAngle = maxTurnAngle * turnLevel;
 		float turnRadius = wheelBase / std::sin(steeringAngle);
 
+		float angularVelocity = getLength(velocity) / turnRadius;
+		sf::Transform rotateTransform;
+		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/M_PI);
+		orientation = rotateTransform.transformPoint(orientation);
 	}
 }
 
