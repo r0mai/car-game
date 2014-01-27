@@ -3,5 +3,5 @@ include_rules
 
 export https_proxy
 
-: |> !download |> arial.ttf
+: |> !download |> DejaVuSansMono.ttf
 

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 #include "util.hpp"
 
@@ -12,21 +13,19 @@ GameManager::GameManager() :
 	window(sf::VideoMode(1024, 1024), "car-game"),
 	car()
 {
-	font.loadFromFile("resources/arial.ttf");
+	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
 	brakeTelemetry.setAutomaticBoundsDetection(false);
 	brakeTelemetry.setBounds(0.f, 1.f);
-}
-
-void GameManager::run() {
-
 
 	sf::View view;
 	view.setCenter(0.f, 0.f);
-	view.setSize(200.f, 200.f);
-
+	view.setSize(150.f, 150.f);
 	window.setView(view);
+}
+
+void GameManager::run() {
 
 	sf::Clock clock;
 
@@ -106,7 +105,7 @@ void GameManager::updateTelemetry() {
 void GameManager::drawTelemetry() {
 	std::stringstream ss;
    	ss << std::fixed <<
-	   	"FPS = " << fps <<
+	   	"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
 		", Speed = " << car.getSpeed() <<
 		", Acceleration = " << getLength(car.getAcceleration()) <<
 		", Throttle = " << car.getThrottle() <<
@@ -116,7 +115,7 @@ void GameManager::drawTelemetry() {
 	text.setColor(sf::Color::White);
 	text.setCharacterSize(32);
 	text.setString(sf::String(ss.str()));
-	text.setScale(0.1, 0.1);
+	text.setScale(0.08, 0.08);
 	text.setPosition(window.mapPixelToCoords(sf::Vector2i(5, 5)));
 
 	window.draw(text);
