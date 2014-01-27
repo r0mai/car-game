@@ -122,8 +122,9 @@ void GameManager::drawTelemetry() {
 	sf::Text text;
 	text.setFont(font);
 	text.setColor(sf::Color::White);
-	text.setCharacterSize(4);
+	text.setCharacterSize(32);
 	text.setString(sf::String(ss.str()));
+	text.setScale(0.1, 0.1);
 	text.setPosition(window.mapPixelToCoords(sf::Vector2i(5, 5)));
 
 	window.draw(text);
