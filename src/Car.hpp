@@ -35,6 +35,8 @@ public:
 
 	const sf::Vector2f& getAcceleration() const;
 
+	void draw(sf::RenderWindow& window) const;
+
 private:
 	float throttleLevel = 0.0; // [0, 1]
 	float brakeLevel = 0.0; // [0, 1]

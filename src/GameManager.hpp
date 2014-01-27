@@ -17,7 +17,6 @@ public:
 
 private:
 	void handleInput(float deltaSeconds);
-	void drawCar();
 	void drawTelemetry();
 	void updateTelemetry();
 

@@ -43,7 +43,8 @@ void GameManager::run() {
 
 		window.clear(sf::Color::Black);
 
-		drawCar();
+		car.draw(window);
+
 		drawTelemetry();
 
 		window.display();
@@ -93,21 +94,6 @@ void GameManager::handleInput(float deltaSeconds) {
 	}
 }
 
-void GameManager::drawCar() {
-	sf::Transform transform;
-	transform.translate(car.getPosition());
-	transform.rotate(std::atan2(car.getOrientation().y, car.getOrientation().x) * 180.f/M_PI);
-
-	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(2.5, -1.5));
-	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(2.5, 1.5));
-	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-2.5, -1.5));
-	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-2.5, 1.5));
-
-	drawLine(window, frontLeft, frontRight);
-	drawLine(window, frontLeft, rearLeft);
-	drawLine(window, frontRight, rearRight);
-	drawLine(window, rearLeft, rearRight);
-}
 
 void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));

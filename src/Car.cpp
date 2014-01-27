@@ -151,6 +151,22 @@ void Car::dontTurn(float deltaSeconds) {
 	}
 }
 
+void Car::draw(sf::RenderWindow& window) const {
+	sf::Transform transform;
+	transform.translate(getPosition());
+	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
+
+	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(2.5, -1.5));
+	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(2.5, 1.5));
+	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-2.5, -1.5));
+	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-2.5, 1.5));
+
+	drawLine(window, frontLeft, frontRight);
+	drawLine(window, frontLeft, rearLeft);
+	drawLine(window, frontRight, rearRight);
+	drawLine(window, rearLeft, rearRight);
+}
+
 const sf::Vector2f& Car::getPosition() const {
 	return position;
 }
