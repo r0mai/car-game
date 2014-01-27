@@ -34,9 +34,6 @@ void Car::move(float deltaSeconds) {
 	const float wheelBase = rearCMDistance + frontCMDistance;
 
 	sf::Vector2f velocityDirection = [&] {
-		if (getLengthSQ(velocity) > 0.0001f*0.0001f) {
-			return normalize(velocity);
-		}
 		return orientation;
 	}();
 
@@ -155,6 +152,10 @@ const sf::Vector2f& Car::getPosition() const {
 
 const sf::Vector2f& Car::getVelocity() const {
 	return velocity;
+}
+
+const sf::Vector2f& Car::getOrientation() const {
+	return orientation;
 }
 
 float Car::getSpeed() const {

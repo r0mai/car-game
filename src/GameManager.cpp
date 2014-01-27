@@ -24,7 +24,7 @@ void GameManager::run() {
 
 	sf::View view;
 	view.setCenter(0.f, 0.f);
-	view.setSize(400.f, 400.f);
+	view.setSize(200.f, 200.f);
 
 	window.setView(view);
 
@@ -94,20 +94,19 @@ void GameManager::handleInput(float deltaSeconds) {
 }
 
 void GameManager::drawCar() {
-	sf::Vector2f topLeft(-2.5, -2.5);
-	sf::Vector2f topRight(2.5, -2.5);
-	sf::Vector2f bottomLeft(-2.5, 2.5);
-	sf::Vector2f bottomRight(2.5, 2.5);
+	sf::Transform transform;
+	transform.translate(car.getPosition());
+	transform.rotate(std::atan2(car.getOrientation().y, car.getOrientation().x) * 180.f/M_PI);
 
-	topLeft += car.getPosition();
-	topRight += car.getPosition();
-	bottomLeft += car.getPosition();
-	bottomRight += car.getPosition();
+	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(2.5, -1.5));
+	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(2.5, 1.5));
+	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-2.5, -1.5));
+	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-2.5, 1.5));
 
-	drawLine(window, topLeft, topRight);
-	drawLine(window, topLeft, bottomLeft);
-	drawLine(window, topRight, bottomRight);
-	drawLine(window, bottomLeft, bottomRight);
+	drawLine(window, frontLeft, frontRight);
+	drawLine(window, frontLeft, rearLeft);
+	drawLine(window, frontRight, rearRight);
+	drawLine(window, rearLeft, rearRight);
 }
 
 void GameManager::updateTelemetry() {
@@ -123,7 +122,7 @@ void GameManager::drawTelemetry() {
 	sf::Text text;
 	text.setFont(font);
 	text.setColor(sf::Color::White);
-	text.setCharacterSize(8);
+	text.setCharacterSize(4);
 	text.setString(sf::String(ss.str()));
 	text.setPosition(window.mapPixelToCoords(sf::Vector2i(5, 5)));
 
