@@ -87,8 +87,10 @@ private:
 	sf::Vector2f orientation = sf::Vector2f(0.866025, 0.5); //unit vector
 	sf::Vector2f acceleration; //recalculated with move();
 
-	//frontLeft, frontRight, rearLeft, rearRight
-	sf::Vector2f corners[4]; //recalculated with move();
+	sf::Vector2f frontLeftCorner; //recalculated with move()
+	sf::Vector2f frontRightCorner; //recalculated with move()
+	sf::Vector2f rearLeftCorner; //recalculated with move()
+	sf::Vector2f rearRightCorner; //recalculated with move()
 
 	sf::Color color = sf::Color::White;
 };

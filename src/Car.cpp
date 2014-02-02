@@ -138,26 +138,26 @@ void Car::dontTurn(float deltaSeconds) {
 }
 
 const sf::Vector2f& Car::getFrontLeftCorner() const {
-	return corners[0];
+	return frontLeftCorner;
 }
 
 const sf::Vector2f& Car::getFrontRightCorner() const {
-	return corners[1];
+	return frontRightCorner;
 }
 
 const sf::Vector2f& Car::getRearLeftCorner() const {
-	return corners[2];
+	return rearLeftCorner;
 }
 
 const sf::Vector2f& Car::getRearRightCorner() const {
-	return corners[3];
+	return rearRightCorner;
 }
 
 void Car::draw(sf::RenderWindow& window) const {
-	drawLine(window, corners[0], corners[1], color);
-	drawLine(window, corners[0], corners[2], color);
-	drawLine(window, corners[1], corners[3], color);
-	drawLine(window, corners[2], corners[3], color);
+	drawLine(window, frontLeftCorner, frontRightCorner, color);
+	drawLine(window, frontLeftCorner, rearLeftCorner, color);
+	drawLine(window, frontRightCorner, rearRightCorner, color);
+	drawLine(window, rearLeftCorner, rearRightCorner, color);
 }
 
 const sf::Vector2f& Car::getPosition() const {
@@ -188,10 +188,10 @@ void Car::updateCorners() {
 	const float carHalfWidth = carWidth/2.f;
 
 	//CM is the origin when drawing
-	corners[0] = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
-	corners[1] = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
-	corners[2] = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
-	corners[3] = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
+	frontLeftCorner = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
+	frontRightCorner = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
+	rearLeftCorner = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
+	rearRightCorner = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
 }
 
 }
