@@ -51,7 +51,7 @@ private:
 	const float cDrag = 0.5;
 	const float cRollingResistance = 14.2;
 	const float fEngine = 2000.0;
-	const float fBrake = 3000.0;
+	const float fBrake = 30000.0;
 	const float gravity = 9.8; //m/s^2
 	const float transMissionEfficiency = 0.7;
 	const float gearRatio = 2.1;
