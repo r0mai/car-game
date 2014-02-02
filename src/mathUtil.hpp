@@ -1,21 +1,16 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
-
-#include <cmath>
+#ifndef MATHUTIL_HPP
+#define MATHUTIL_HPP
 
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 namespace car {
+
+constexpr float ROUNDING_ERROR_float = 0.00001f;
 
 template<class T, class U>
 sf::Vector2<T> vectorCast(const sf::Vector2<U>& v) {
 	return sf::Vector2<T>(static_cast<T>(v.x), static_cast<T>(v.y));
-}
-
-inline
-void drawLine(sf::RenderWindow& window, const sf::Vector2f& a, const sf::Vector2f& b) {
-	sf::Vertex v[] = { sf::Vertex(a), sf::Vertex(b) };
-	window.draw(v, 2, sf::Lines);
 }
 
 template<class T>
@@ -37,6 +32,10 @@ sf::Vector2<T> normalize(const sf::Vector2<T>& v) {
 	return v / magnitude;
 }
 
+inline bool equals(const float a, const float b, const float tolerance = ROUNDING_ERROR_float) {
+	return (a + tolerance >= b) && (a - tolerance <= b);
 }
 
-#endif /* !UTIL_HPP */
+}
+
+#endif /* !MATHUTIL_HPP */

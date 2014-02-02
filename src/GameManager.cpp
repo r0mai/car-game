@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "util.hpp"
+#include "mathUtil.hpp"
 
 namespace car {
 
@@ -22,6 +22,8 @@ GameManager::GameManager() :
 	gameView.setCenter(0.f, 0.f);
 	gameView.setSize(150.f, 150.f);
 	hudView = window.getDefaultView();
+
+	track.addLine(Line2f(30.f, 0.f, 60.f, 0.f));
 }
 
 void GameManager::run() {
@@ -39,10 +41,12 @@ void GameManager::run() {
 
 		car.move(deltaSeconds);
 		updateTelemetry();
+		collideCar();
 
 		window.clear(sf::Color::Black);
 
 		window.setView(gameView);
+		track.draw(window);
 		car.draw(window);
 
 		window.setView(hudView);
@@ -62,6 +66,13 @@ void GameManager::handleInput(float deltaSeconds) {
 			break;
 		case sf::Event::KeyPressed:
 			pressedKeys[event.key.code] = true;
+			switch(event.key.code) {
+			case sf::Keyboard::T:
+				showTelemetry = !showTelemetry;
+				break;
+			default:
+				break;
+			}
 			break;
 		case sf::Event::KeyReleased:
 			pressedKeys[event.key.code] = false;
@@ -95,6 +106,17 @@ void GameManager::handleInput(float deltaSeconds) {
 	}
 }
 
+void GameManager::collideCar() {
+	if (    track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
+			track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
+			track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
+			track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()))
+	) {
+		car.setColor(sf::Color::Red);
+	} else {
+		car.setColor(sf::Color::White);
+	}
+}
 
 void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
@@ -121,10 +143,12 @@ void GameManager::drawTelemetry() {
 
 	window.draw(text);
 
-	speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
-	accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
-	gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
-	brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
+	if (showTelemetry) {
+		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
+		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
+		gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
+		brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
+	}
 }
 
 }

@@ -6,6 +6,7 @@
 
 #include "Car.hpp"
 #include "Telemetry.hpp"
+#include "Track.hpp"
 
 namespace car {
 
@@ -19,6 +20,7 @@ private:
 	void handleInput(float deltaSeconds);
 	void drawTelemetry();
 	void updateTelemetry();
+	void collideCar();
 
 	sf::RenderWindow window;
 	sf::View gameView;
@@ -29,10 +31,14 @@ private:
 	float fps = -1.f;
 
 	Car car;
+
+	bool showTelemetry = false;
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;
 	Telemetry gasTelemetry;
 	Telemetry brakeTelemetry;
+
+	Track track;
 
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 

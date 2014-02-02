@@ -9,8 +9,10 @@ class Car {
 public:
 
 
-	Car() = default;
+	Car();
 	Car(const sf::Vector2f& position);
+
+	void setColor(const sf::Color& color);
 
 	void move(float deltaSeconds);
 
@@ -35,9 +37,17 @@ public:
 
 	const sf::Vector2f& getAcceleration() const;
 
+	const sf::Vector2f& getFrontLeftCorner() const;
+	const sf::Vector2f& getFrontRightCorner() const;
+	const sf::Vector2f& getRearLeftCorner() const;
+	const sf::Vector2f& getRearRightCorner() const;
+
 	void draw(sf::RenderWindow& window) const;
 
 private:
+
+	void updateCorners();
+
 	const float cDrag = 0.5;
 	const float cRollingResistance = 14.2;
 	const float fEngine = 2000.0;
@@ -76,6 +86,11 @@ private:
 	sf::Vector2f velocity = sf::Vector2f(0, 0); //in m/s
 	sf::Vector2f orientation = sf::Vector2f(0.866025, 0.5); //unit vector
 	sf::Vector2f acceleration; //recalculated with move();
+
+	//frontLeft, frontRight, rearLeft, rearRight
+	sf::Vector2f corners[4]; //recalculated with move();
+
+	sf::Color color = sf::Color::White;
 };
 
 }

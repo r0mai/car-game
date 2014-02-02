@@ -5,11 +5,20 @@
 #include <cmath>
 #include <iostream>
 
-#include "util.hpp"
+#include "drawUtil.hpp"
+#include "mathUtil.hpp"
 
 namespace car {
 
-Car::Car(const sf::Vector2f& position) : position(position) {}
+Car::Car() : Car(sf::Vector2f()) {}
+
+Car::Car(const sf::Vector2f& position) : position(position) {
+	updateCorners();
+}
+
+void Car::setColor(const sf::Color& newColor) {
+	color = newColor;
+}
 
 void Car::move(float deltaSeconds) {
 
@@ -35,6 +44,8 @@ void Car::move(float deltaSeconds) {
 
 	float weightFront = (rearWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
 	float weightRear = (frontWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
+	(void)weightFront;
+	(void)weightRear;
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
@@ -48,6 +59,8 @@ void Car::move(float deltaSeconds) {
 		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/M_PI);
 		orientation = rotateTransform.transformPoint(orientation);
 	}
+
+	updateCorners();
 }
 
 void Car::setThrottle(float value) {
@@ -124,23 +137,27 @@ void Car::dontTurn(float deltaSeconds) {
 	}
 }
 
+const sf::Vector2f& Car::getFrontLeftCorner() const {
+	return corners[0];
+}
+
+const sf::Vector2f& Car::getFrontRightCorner() const {
+	return corners[1];
+}
+
+const sf::Vector2f& Car::getRearLeftCorner() const {
+	return corners[2];
+}
+
+const sf::Vector2f& Car::getRearRightCorner() const {
+	return corners[3];
+}
+
 void Car::draw(sf::RenderWindow& window) const {
-	sf::Transform transform;
-	transform.translate(getPosition());
-	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
-
-	const float carHalfWidth = carWidth/2.f;
-
-	//CM is the origin when drawing
-	sf::Vector2f frontLeft = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
-	sf::Vector2f frontRight = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
-	sf::Vector2f rearLeft = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
-	sf::Vector2f rearRight = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
-
-	drawLine(window, frontLeft, frontRight);
-	drawLine(window, frontLeft, rearLeft);
-	drawLine(window, frontRight, rearRight);
-	drawLine(window, rearLeft, rearRight);
+	drawLine(window, corners[0], corners[1], color);
+	drawLine(window, corners[0], corners[2], color);
+	drawLine(window, corners[1], corners[3], color);
+	drawLine(window, corners[2], corners[3], color);
 }
 
 const sf::Vector2f& Car::getPosition() const {
@@ -161,6 +178,20 @@ float Car::getSpeed() const {
 
 const sf::Vector2f& Car::getAcceleration() const {
 	return acceleration;
+}
+
+void Car::updateCorners() {
+	sf::Transform transform;
+	transform.translate(getPosition());
+	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
+
+	const float carHalfWidth = carWidth/2.f;
+
+	//CM is the origin when drawing
+	corners[0] = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
+	corners[1] = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
+	corners[2] = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
+	corners[3] = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
 }
 
 }
