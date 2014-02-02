@@ -11,7 +11,7 @@ namespace car {
 
 GameManager::GameManager() :
 	window(sf::VideoMode(1024, 1024), "car-game"),
-	car()
+	car(sf::Vector2f(0, 55))
 {
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
@@ -23,7 +23,21 @@ GameManager::GameManager() :
 	gameView.setSize(150.f, 150.f);
 	hudView = window.getDefaultView();
 
-	track.addLine(Line2f(30.f, 0.f, 60.f, 0.f));
+	const int circleResolution = 20;
+	const float innerCircleRadius = 50.;
+	const float outerCircleRadius = 60.;
+	for ( int i = 0; i < circleResolution; ++i ) {
+		track.addLine(Line2f(
+					innerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
+					innerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
+					innerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
+					innerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+		track.addLine(Line2f(
+					outerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
+					outerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
+					outerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
+					outerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+	}
 }
 
 void GameManager::run() {

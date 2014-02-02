@@ -84,7 +84,7 @@ private:
 	sf::Vector2f position = sf::Vector2f(0, 0); //unit is m
 
 	sf::Vector2f velocity = sf::Vector2f(0, 0); //in m/s
-	sf::Vector2f orientation = sf::Vector2f(0.866025, 0.5); //unit vector
+	sf::Vector2f orientation = sf::Vector2f(1., 0.); //unit vector
 	sf::Vector2f acceleration; //recalculated with move();
 
 	sf::Vector2f frontLeftCorner; //recalculated with move()
