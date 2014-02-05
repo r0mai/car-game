@@ -14,25 +14,7 @@ RealTimeGameManager::RealTimeGameManager() :
 {
 
 	model.setCar(Car(sf::Vector2f(0, 55)));
-	{
-		Track track;
-		const int circleResolution = 20;
-		const float innerCircleRadius = 50.;
-		const float outerCircleRadius = 60.;
-		for ( int i = 0; i < circleResolution; ++i ) {
-			track.addLine(Line2f(
-						innerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-						innerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-						innerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-						innerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
-			track.addLine(Line2f(
-						outerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-						outerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-						outerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-						outerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
-		}
-		model.setTrack(track);
-	}
+	model.setTrack(Track::createCircleTrack());
 
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);

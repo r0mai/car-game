@@ -11,6 +11,8 @@ namespace car {
 class Track {
 public:
 
+	static Track createCircleTrack();
+
 	void addLine(const Line2f& line);
 	bool collidesWith(const Line2f& line);
 
