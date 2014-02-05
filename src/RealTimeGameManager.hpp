@@ -1,36 +1,34 @@
-#ifndef GAMEMANAGER_HPP
-#define GAMEMANAGER_HPP
+#ifndef REALTIMEGAMEMANAGER_HPP
+#define REALTIMEGAMEMANAGER_HPP
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "Car.hpp"
+#include <SFML/Graphics.hpp>
+
+#include "Model.hpp"
 #include "Telemetry.hpp"
-#include "Track.hpp"
 
 namespace car {
 
-class GameManager {
+class RealTimeGameManager {
 public:
-	GameManager();
+	RealTimeGameManager();
 
 	void run();
 
 private:
-	void handleInput(float deltaSeconds);
+	void handleInput();
 	void drawTelemetry();
 	void updateTelemetry();
-	void collideCar();
+
+	Model model;
 
 	sf::RenderWindow window;
 	sf::View gameView;
 	sf::View hudView;
 	sf::Font font;
 
-	float currentTime = 0.f;
 	float fps = -1.f;
-
-	Car car;
 
 	bool showTelemetry = false;
 	Telemetry speedTelemetry;
@@ -38,12 +36,10 @@ private:
 	Telemetry gasTelemetry;
 	Telemetry brakeTelemetry;
 
-	Track track;
-
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 
 };
 
 }
 
-#endif /* !GAMEMANAGER_HPP */
+#endif /* !REALTIMEGAMEMANAGER_HPP */

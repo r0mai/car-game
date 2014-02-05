@@ -1,10 +1,8 @@
 
-#include <irrlicht/irrlicht.h>
-
-#include "GameManager.hpp"
+#include "RealTimeGameManager.hpp"
 
 int main() {
-	car::GameManager manager;
+	car::RealTimeGameManager manager;
 	manager.run();
 }
 

@@ -1,5 +1,5 @@
 
-#include "GameManager.hpp"
+#include "RealTimeGameManager.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -9,10 +9,31 @@
 
 namespace car {
 
-GameManager::GameManager() :
-	window(sf::VideoMode(1024, 1024), "car-game"),
-	car(sf::Vector2f(0, 55))
+RealTimeGameManager::RealTimeGameManager() :
+	window(sf::VideoMode(1024, 1024), "car-game")
 {
+
+	model.setCar(Car(sf::Vector2f(0, 55)));
+	{
+		Track track;
+		const int circleResolution = 20;
+		const float innerCircleRadius = 50.;
+		const float outerCircleRadius = 60.;
+		for ( int i = 0; i < circleResolution; ++i ) {
+			track.addLine(Line2f(
+						innerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
+						innerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
+						innerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
+						innerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+			track.addLine(Line2f(
+						outerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
+						outerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
+						outerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
+						outerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+		}
+		model.setTrack(track);
+	}
+
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
@@ -23,24 +44,9 @@ GameManager::GameManager() :
 	gameView.setSize(150.f, 150.f);
 	hudView = window.getDefaultView();
 
-	const int circleResolution = 20;
-	const float innerCircleRadius = 50.;
-	const float outerCircleRadius = 60.;
-	for ( int i = 0; i < circleResolution; ++i ) {
-		track.addLine(Line2f(
-					innerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-					innerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-					innerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-					innerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
-		track.addLine(Line2f(
-					outerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-					outerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-					outerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-					outerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
-	}
 }
 
-void GameManager::run() {
+void RealTimeGameManager::run() {
 
 	sf::Clock clock;
 
@@ -49,19 +55,17 @@ void GameManager::run() {
 		const float deltaSeconds = time.asSeconds();
 		fps = 1/deltaSeconds;
 
-		currentTime += deltaSeconds;
+		handleInput();
 
-		handleInput(deltaSeconds);
+		model.advanceTime(deltaSeconds);
 
-		car.move(deltaSeconds);
 		updateTelemetry();
-		collideCar();
 
 		window.clear(sf::Color::Black);
 
 		window.setView(gameView);
-		track.draw(window);
-		car.draw(window);
+		model.getTrack().draw(window);
+		model.getCar().draw(window);
 
 		window.setView(hudView);
 		drawTelemetry();
@@ -70,7 +74,7 @@ void GameManager::run() {
 	}
 }
 
-void GameManager::handleInput(float deltaSeconds) {
+void RealTimeGameManager::handleInput() {
 
 	sf::Event event;
 	while (window.pollEvent(event)) {
@@ -99,47 +103,26 @@ void GameManager::handleInput(float deltaSeconds) {
 	if (pressedKeys[sf::Keyboard::Q] || pressedKeys[sf::Keyboard::Escape]) {
 		window.close();
 	}
-	if (pressedKeys[sf::Keyboard::Up]) {
-		car.increaseThrottle(deltaSeconds);
-	} else {
-		car.decreaseThrottle(deltaSeconds);
-	}
-	if (pressedKeys[sf::Keyboard::Down]) {
-		car.increaseBrake(deltaSeconds);
-	} else {
-		car.decreaseBrake(deltaSeconds);
-	}
-	if (!pressedKeys[sf::Keyboard::Left] && !pressedKeys[sf::Keyboard::Right]) {
-		car.dontTurn(deltaSeconds);
-	} else {
-		if (pressedKeys[sf::Keyboard::Left]) {
-			car.increaseTurnToLeft(deltaSeconds);
-		} else if (pressedKeys[sf::Keyboard::Right]) {
-			car.increaseTurnToRight(deltaSeconds);
-		}
-	}
+
+	model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
+	model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
+	model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
+	model.setBackwardPressed(pressedKeys[sf::Keyboard::Down]);
 }
 
-void GameManager::collideCar() {
-	if (    track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
-			track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
-			track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
-			track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()))
-	) {
-		car.setColor(sf::Color::Red);
-	} else {
-		car.setColor(sf::Color::White);
-	}
-}
+void RealTimeGameManager::updateTelemetry() {
+	float currentTime = model.getCurrentTime();
+	const Car& car = model.getCar();
 
-void GameManager::updateTelemetry() {
 	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
 	accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, getLength(car.getAcceleration())));
 	gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
 	brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
 }
 
-void GameManager::drawTelemetry() {
+void RealTimeGameManager::drawTelemetry() {
+	const Car& car = model.getCar();
+
 	std::stringstream ss;
    	ss << std::fixed <<
 	   	"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
