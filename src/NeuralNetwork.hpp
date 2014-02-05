@@ -7,9 +7,9 @@
 
 namespace car {
 
-class NeuronNetwork {
+class NeuralNetwork {
 public:
-	NeuronNetwork(
+	NeuralNetwork(
 			unsigned hiddenLayerCount,
 			unsigned hiddenLayerNeuronCount,
 		   	unsigned outputNeuronCount,

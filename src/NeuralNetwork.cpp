@@ -6,7 +6,7 @@
 
 namespace car {
 
-NeuronNetwork::NeuronNetwork(
+NeuralNetwork::NeuralNetwork(
 		unsigned hiddenLayerCount,
 		unsigned hiddenLayerNeuronCount,
 	   	unsigned outputNeuronCount,
@@ -23,7 +23,7 @@ NeuronNetwork::NeuronNetwork(
 	}
 }
 
-Weights NeuronNetwork::getWeights() const {
+Weights NeuralNetwork::getWeights() const {
 	Weights result;
 	for (const NeuronLayer& layer : layers) {
 		for (const Neuron& neuron : layer.neurons) {
@@ -35,7 +35,7 @@ Weights NeuronNetwork::getWeights() const {
 	return result;
 }
 
-void NeuronNetwork::setWeights(const Weights& weights) {
+void NeuralNetwork::setWeights(const Weights& weights) {
 	assert(weights.size() == getWeightCount());
 	unsigned weightIndex = 0;
 	for (NeuronLayer& layer : layers) {
@@ -47,7 +47,7 @@ void NeuronNetwork::setWeights(const Weights& weights) {
 	}
 }
 
-unsigned NeuronNetwork::getWeightCount() const {
+unsigned NeuralNetwork::getWeightCount() const {
 	unsigned count = 0;
 	for (const NeuronLayer& layer : layers) {
 		for (const Neuron& neuron : layer.neurons) {
@@ -57,7 +57,7 @@ unsigned NeuronNetwork::getWeightCount() const {
 	return count;
 }
 
-Weights NeuronNetwork::evaluateInput(const Weights& input) const {
+Weights NeuralNetwork::evaluateInput(const Weights& input) const {
 	assert(input.size() == inputNeuronCount);
 
 	Weights nextInput = input;
