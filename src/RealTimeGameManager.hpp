@@ -7,6 +7,7 @@
 
 #include "Model.hpp"
 #include "Telemetry.hpp"
+#include "NeuralNetwork.hpp"
 
 namespace car {
 
@@ -22,6 +23,9 @@ private:
 	void updateTelemetry();
 
 	Model model;
+	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, 4, 10);
+
+	bool isAIControl = true;
 
 	sf::RenderWindow window;
 	sf::View gameView;

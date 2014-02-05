@@ -4,8 +4,11 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
+#include <cassert>
 
 #include "mathUtil.hpp"
+#include "randomUtil.hpp"
 
 namespace car {
 
@@ -38,14 +41,13 @@ void RealTimeGameManager::run() {
 		float deltaSeconds = time.asSeconds();
 		fps = 1/deltaSeconds;
 
-		handleInput();
-
 		//if we're really really slow
 		if ( deltaSeconds > 0.1f ) {
 			deltaSeconds = 0.1f;
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
+			handleInput();
 			model.advanceTime(physicsTimeStep);
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
@@ -95,10 +97,23 @@ void RealTimeGameManager::handleInput() {
 		window.close();
 	}
 
-	model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
-	model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
-	model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
-	model.setBackwardPressed(pressedKeys[sf::Keyboard::Down]);
+	if ( isAIControl ) {
+		Weights inputs;
+		std::generate_n(std::back_inserter(inputs), 10, [] { return randomReal(0, 1); });
+
+		Weights outputs = neuralNetwork.evaluateInput(inputs);
+		assert(outputs.size() == 4);
+
+		model.setForwardPressed(outputs[0] > 0.5);
+		model.setBackwardPressed(outputs[1] > 0.5);
+		model.setLeftPressed(outputs[2] > 0.5);
+		model.setRightPressed(outputs[3] > 0.5);
+	} else {
+		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
+		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
+		model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
+		model.setBackwardPressed(pressedKeys[sf::Keyboard::Down]);
+	}
 }
 
 void RealTimeGameManager::updateTelemetry() {
