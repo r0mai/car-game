@@ -51,7 +51,7 @@ void RealTimeGameManager::run() {
 	sf::Clock clock;
 
 	float physicsTimeStepAccumulator = 0.f;
-	while(window.isOpen()) {
+	while (window.isOpen()) {
 		const sf::Time time = clock.restart();
 		float deltaSeconds = time.asSeconds();
 		fps = 1/deltaSeconds;
@@ -63,7 +63,7 @@ void RealTimeGameManager::run() {
 			deltaSeconds = 0.1f;
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
-		while ( physicsTimeStepAccumulator >= physicsTimeStep ) {
+		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			model.advanceTime(physicsTimeStep);
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
