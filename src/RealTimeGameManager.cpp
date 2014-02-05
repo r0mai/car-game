@@ -50,14 +50,23 @@ void RealTimeGameManager::run() {
 
 	sf::Clock clock;
 
+	float physicsTimeStepAccumulator = 0.f;
 	while(window.isOpen()) {
 		const sf::Time time = clock.restart();
-		const float deltaSeconds = time.asSeconds();
+		float deltaSeconds = time.asSeconds();
 		fps = 1/deltaSeconds;
 
 		handleInput();
 
-		model.advanceTime(deltaSeconds);
+		//if we're really really slow
+		if ( deltaSeconds > 0.1f ) {
+			deltaSeconds = 0.1f;
+		}
+		physicsTimeStepAccumulator += deltaSeconds;
+		while ( physicsTimeStepAccumulator >= physicsTimeStep ) {
+			model.advanceTime(physicsTimeStep);
+			physicsTimeStepAccumulator -= physicsTimeStep;
+		}
 
 		updateTelemetry();
 

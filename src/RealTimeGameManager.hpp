@@ -28,6 +28,7 @@ private:
 	sf::View hudView;
 	sf::Font font;
 
+	float physicsTimeStep = 1.f/64.f;
 	float fps = -1.f;
 
 	bool showTelemetry = false;
