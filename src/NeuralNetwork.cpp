@@ -63,7 +63,6 @@ Weights NeuralNetwork::evaluateInput(const Weights& input) const {
 	Weights nextInput = input;
 	Weights output;
 	for (const NeuronLayer& layer : layers) {
-		nextInput = output; //we could move here probably
 		output.clear();
 		for (const Neuron& neuron : layer.neurons) {
 			Weight netInput = 0;
@@ -75,6 +74,7 @@ Weights NeuralNetwork::evaluateInput(const Weights& input) const {
 			//sigmoid like function : x/(1+abs(x))
 			output.push_back(netInput / (1 + std::abs(netInput)));
 		}
+		nextInput = output; //we could move here probably
 	}
 	return output;
 }
