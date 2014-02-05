@@ -1,8 +1,10 @@
 #ifndef LINE_HPP
 #define LINE_HPP
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
+
+#include <SFML/System/Vector2.hpp>
+
 #include "mathUtil.hpp"
 
 namespace car {
@@ -54,19 +56,25 @@ struct Line2 {
 					// common part
 					sf::Vector2<T> maxp;
 					sf::Vector2<T> minp;
-					if ((start.x>line.start.x && start.x>line.end.x && start.x>end.x) || (start.y>line.start.y && start.y>line.end.y && start.y>end.y))
+					if ((start.x>line.start.x && start.x>line.end.x && start.x>end.x) ||
+							(start.y>line.start.y && start.y>line.end.y && start.y>end.y))
 						maxp=start;
-					else if ((end.x>line.start.x && end.x>line.end.x && end.x>start.x) || (end.y>line.start.y && end.y>line.end.y && end.y>start.y))
+					else if ((end.x>line.start.x && end.x>line.end.x && end.x>start.x) ||
+							(end.y>line.start.y && end.y>line.end.y && end.y>start.y))
 						maxp=end;
-					else if ((line.start.x>start.x && line.start.x>line.end.x && line.start.x>end.x) || (line.start.y>start.y && line.start.y>line.end.y && line.start.y>end.y))
+					else if ((line.start.x>start.x && line.start.x>line.end.x && line.start.x>end.x) ||
+							(line.start.y>start.y && line.start.y>line.end.y && line.start.y>end.y))
 						maxp=line.start;
 					else
 						maxp=line.end;
-					if (maxp != start && ((start.x<line.start.x && start.x<line.end.x && start.x<end.x) || (start.y<line.start.y && start.y<line.end.y && start.y<end.y)))
+					if (maxp != start && ((start.x<line.start.x && start.x<line.end.x && start.x<end.x) ||
+							(start.y<line.start.y && start.y<line.end.y && start.y<end.y)))
 						minp=start;
-					else if (maxp != end && ((end.x<line.start.x && end.x<line.end.x && end.x<start.x) || (end.y<line.start.y && end.y<line.end.y && end.y<start.y)))
+					else if (maxp != end && ((end.x<line.start.x && end.x<line.end.x && end.x<start.x) ||
+							(end.y<line.start.y && end.y<line.end.y && end.y<start.y)))
 						minp=end;
-					else if (maxp != line.start && ((line.start.x<start.x && line.start.x<line.end.x && line.start.x<end.x) || (line.start.y<start.y && line.start.y<line.end.y && line.start.y<end.y)))
+					else if (maxp != line.start && ((line.start.x<start.x && line.start.x<line.end.x && line.start.x<end.x)
+							|| (line.start.y<start.y && line.start.y<line.end.y && line.start.y<end.y)))
 						minp=line.start;
 					else
 						minp=line.end;
