@@ -31,6 +31,10 @@ RealTimeGameManager::RealTimeGameManager() :
 
 }
 
+void RealTimeGameManager::setFPSLimit(float newFpsLimit) {
+	fpsLimit = newFpsLimit;
+}
+
 void RealTimeGameManager::run() {
 
 	sf::Clock clock;

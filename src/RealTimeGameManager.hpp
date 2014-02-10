@@ -15,6 +15,8 @@ class RealTimeGameManager {
 public:
 	RealTimeGameManager();
 
+	void setFPSLimit(float newFpsLimit);
+
 	void run();
 
 private:

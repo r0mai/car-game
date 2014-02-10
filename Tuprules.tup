@@ -16,7 +16,7 @@ INCLUDE_DIRS += -I$(SOURCE_DIR)
 LIBS += -lsfml-graphics
 LIBS += -lsfml-window
 LIBS += -lsfml-system
-
+LIBS += -lboost_program_options
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>
