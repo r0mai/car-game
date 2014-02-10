@@ -13,7 +13,7 @@
 namespace car {
 
 RealTimeGameManager::RealTimeGameManager() :
-	window(sf::VideoMode(1024, 1024), "car-game")
+	window(sf::VideoMode(800, 800), "car-game")
 {
 
 	model.setCar(Car(sf::Vector2f(0, 55)));
@@ -64,6 +64,12 @@ void RealTimeGameManager::run() {
 		drawTelemetry();
 
 		window.display();
+		if ( fpsLimit > 0 ) {
+			const sf::Time renderTime = clock.getElapsedTime();
+			if ( renderTime.asSeconds() < 1.f/fpsLimit ) {
+				sf::sleep( sf::seconds(1.f/fpsLimit - renderTime.asSeconds()) );
+			}
+		}
 	}
 }
 

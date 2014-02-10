@@ -25,7 +25,7 @@ private:
 	Model model;
 	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, 4, 10);
 
-	bool isAIControl = true;
+	bool isAIControl = false;
 
 	sf::RenderWindow window;
 	sf::View gameView;
@@ -33,6 +33,7 @@ private:
 	sf::Font font;
 
 	float physicsTimeStep = 1.f/64.f;
+	float fpsLimit = 64;
 	float fps = -1.f;
 
 	bool showTelemetry = false;
