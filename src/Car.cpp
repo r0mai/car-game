@@ -54,7 +54,7 @@ void Car::move(float deltaSeconds) {
 		float steeringAngle = maxTurnAngle * turnLevel;
 		float turnRadius = wheelBase / std::sin(steeringAngle);
 
-		float angularVelocity = getLength(velocity) / turnRadius;
+		float angularVelocity = turnRate / turnRadius;
 		sf::Transform rotateTransform;
 		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/M_PI);
 		orientation = rotateTransform.transformPoint(orientation);

@@ -59,6 +59,7 @@ private:
 	float wheelRadius = 0.34; //m
 	float mass = 1500; //kg
 	float maxTurnAngle = 0.52; //radians ~= 30 degrees
+	float turnRate = 8.0;
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
