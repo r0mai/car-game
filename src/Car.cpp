@@ -10,6 +10,34 @@
 
 namespace car {
 
+const float Car::cDrag = 0.5;
+const float Car::cRollingResistance = 14.2;
+const float Car::fEngine = 2000.0;
+const float Car::fBrake = 30000.0;
+const float Car::gravity = 9.8; //m/s^2
+const float Car::transMissionEfficiency = 0.7;
+const float Car::gearRatio = 2.1;
+const float Car::differentialRatio = 3.42;
+const float Car::wheelRadius = 0.34; //m
+const float Car::mass = 1500; //kg
+const float Car::maxTurnAngle = 0.52; //radians ~= 30 degrees
+const float Car::turnRate = 8.0;
+
+	//CM == Center of Mass
+	//CG == Center of Gravity
+const float Car::rearWheelCMDistance = 1.0;
+const float Car::frontWheelCMDistance = 1.5;
+const float Car::rearCMDistance = 1.2;
+const float Car::frontCMDistance = 1.8;
+const float Car::heightOfCG = 1.5;
+const float Car::wheelBase = rearCMDistance + frontCMDistance;
+const float Car::carWidth = 1.4;
+const float Car::throttleIncreaseSpeed = 1.5;
+const float Car::throttleDecreaseSpeed = 1.3;
+const float Car::brakeIncreaseSpeed = 1.9;
+const float Car::brakeDecreaseSpeed = 1.7;
+const float Car::turnSpeed = 6.5;
+
 Car::Car() : Car(sf::Vector2f()) {}
 
 Car::Car(const sf::Vector2f& position) : position(position) {
