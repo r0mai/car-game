@@ -11,6 +11,7 @@ void Telemetry::addDataPoint(const sf::Vector2f& point) {
 	dataPoints.push_back(point);
 }
 
+
 void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& position, const sf::Color& color) {
 
 	if (dataPoints.size() < 2) {
@@ -35,11 +36,29 @@ void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& posit
 		return;
 	}
 
+	auto it = dataPoints.begin();
+	float horizontalScaling = 10;
 
-	sf::Vector2f lastPoint(leftSide + dataPoints[0].x*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[0].y) / (minData - maxData));
+	if (scrolling) {
+		auto firstPositionToDraw = dataPoints.back().x - position.width / horizontalScaling;
+		it = std::find_if(dataPoints.begin(), dataPoints.end(),
+				[firstPositionToDraw](const sf::Vector2f& value)
+				{ return value.x >= firstPositionToDraw; });
+		if (it == dataPoints.end()) {
+			// this should never happen
+			return;
+		}
+	}
 
-	for ( unsigned i = 1; i < dataPoints.size(); ++i ) {
-		sf::Vector2f currentPoint(leftSide + dataPoints[i].x*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[i].y) / (minData - maxData));
+	auto startingPoint = it->x;
+
+	sf::Vector2f lastPoint(leftSide,
+			(-maxData*minUp + minData*maxUp + (minUp - maxUp)*it->y) / (minData - maxData));
+
+	for ( ++it; it != dataPoints.end(); ++it ) {
+		sf::Vector2f currentPoint(
+				leftSide + (it->x - startingPoint) * horizontalScaling,
+				(-maxData*minUp + minData*maxUp + (minUp - maxUp)*it->y) / (minData - maxData));
 		drawLine(window, lastPoint, currentPoint, color);
 		lastPoint = currentPoint;
 	}
@@ -47,6 +66,10 @@ void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& posit
 
 void Telemetry::setAutomaticBoundsDetection(bool value) {
 	automaticBoundsDetection = value;
+}
+
+void Telemetry::setScrolling(bool value) {
+	scrolling = value;
 }
 
 void Telemetry::setBounds(float min, float max) {
