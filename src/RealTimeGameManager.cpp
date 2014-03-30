@@ -157,10 +157,10 @@ void RealTimeGameManager::drawTelemetry() {
 	window.draw(text);
 
 	if (showTelemetry) {
-		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
-		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200));
-		gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
-		brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200));
+		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200), sf::Color::Green);
+		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 1004, 200), sf::Color::Yellow);
+		gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200), sf::Color::Red);
+		brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 1004, 200), sf::Color::Magenta);
 	}
 }
 

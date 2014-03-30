@@ -11,7 +11,7 @@ void Telemetry::addDataPoint(const sf::Vector2f& point) {
 	dataPoints.push_back(point);
 }
 
-void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& position) {
+void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& position, const sf::Color& color) {
 
 	if (dataPoints.size() < 2) {
 		return;
@@ -40,7 +40,7 @@ void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& posit
 
 	for ( unsigned i = 1; i < dataPoints.size(); ++i ) {
 		sf::Vector2f currentPoint(leftSide + dataPoints[i].x*10, (-maxData*minUp + minData*maxUp + (minUp - maxUp)*dataPoints[i].y) / (minData - maxData));
-		drawLine(window, lastPoint, currentPoint);
+		drawLine(window, lastPoint, currentPoint, color);
 		lastPoint = currentPoint;
 	}
 }
