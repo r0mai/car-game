@@ -200,6 +200,10 @@ const sf::Vector2f& Car::getOrientation() const {
 	return orientation;
 }
 
+float Car::getTurnLevel() const {
+	return turnLevel;
+}
+
 float Car::getSpeed() const {
 	return getLength(velocity);
 }

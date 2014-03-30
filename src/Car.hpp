@@ -33,6 +33,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	const sf::Vector2f& getVelocity() const;
 	const sf::Vector2f& getOrientation() const;
+	float getTurnLevel() const;
 	float getSpeed() const;
 
 	const sf::Vector2f& getAcceleration() const;

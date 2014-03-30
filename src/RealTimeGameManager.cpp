@@ -24,6 +24,10 @@ RealTimeGameManager::RealTimeGameManager() :
 	gasTelemetry.setBounds(0.f, 1.f);
 	brakeTelemetry.setAutomaticBoundsDetection(false);
 	brakeTelemetry.setBounds(0.f, 1.f);
+	angleTelemetry.setAutomaticBoundsDetection(false);
+	angleTelemetry.setBounds(-M_PI, M_PI);
+	turnTelemetry.setAutomaticBoundsDetection(false);
+	turnTelemetry.setBounds(-1.f, 1.f);
 
 	gameView.setCenter(0.f, 0.f);
 	gameView.setSize(150.f, 150.f);
@@ -132,8 +136,10 @@ void RealTimeGameManager::updateTelemetry() {
 
 	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
 	accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, getLength(car.getAcceleration())));
+	angleTelemetry.addDataPoint(sf::Vector2f(currentTime, std::atan2(car.getOrientation().x, car.getOrientation().y)));
 	gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
 	brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
+	turnTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getTurnLevel()));
 }
 
 void RealTimeGameManager::drawTelemetry() {
@@ -159,8 +165,10 @@ void RealTimeGameManager::drawTelemetry() {
 	if (showTelemetry) {
 		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Green);
 		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Yellow);
+		angleTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::White);
 		gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Red);
 		brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Magenta);
+		turnTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Cyan);
 	}
 }
 
