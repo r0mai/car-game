@@ -6,3 +6,5 @@
 .fuse_hidden*
 /=template.hpp
 /=template.cpp
+.project
+.cproject
