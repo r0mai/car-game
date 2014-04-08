@@ -6,7 +6,7 @@ namespace car {
 
 Track Track::createCircleTrack() {
 	Track track;
-	const int circleResolution = 20;
+	const int circleResolution = 60;
 	const float innerCircleRadius = 50.;
 	const float outerCircleRadius = 60.;
 	for ( int i = 0; i < circleResolution; ++i ) {

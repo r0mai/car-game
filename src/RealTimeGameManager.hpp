@@ -41,8 +41,10 @@ private:
 	bool showTelemetry = false;
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;
+	Telemetry angleTelemetry;
 	Telemetry gasTelemetry;
 	Telemetry brakeTelemetry;
+	Telemetry turnTelemetry;
 
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 

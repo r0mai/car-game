@@ -33,6 +33,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	const sf::Vector2f& getVelocity() const;
 	const sf::Vector2f& getOrientation() const;
+	float getTurnLevel() const;
 	float getSpeed() const;
 
 	const sf::Vector2f& getAcceleration() const;
@@ -48,34 +49,35 @@ private:
 
 	void updateCorners();
 
-	float cDrag = 0.5;
-	float cRollingResistance = 14.2;
-	float fEngine = 2000.0;
-	float fBrake = 30000.0;
-	float gravity = 9.8; //m/s^2
-	float transMissionEfficiency = 0.7;
-	float gearRatio = 2.1;
-	float differentialRatio = 3.42;
-	float wheelRadius = 0.34; //m
-	float mass = 1500; //kg
-	float maxTurnAngle = 0.52; //radians ~= 30 degrees
+	static const float cDrag;
+	static const float cRollingResistance;
+	static const float fEngine;
+	static const float fBrake;
+	static const float gravity;
+	static const float transMissionEfficiency;
+	static const float gearRatio;
+	static const float differentialRatio;
+	static const float wheelRadius;
+	static const float mass;
+	static const float maxTurnAngle;
+	static const float turnRate;
 
 	//CM == Center of Mass
 	//CG == Center of Gravity
-	float rearWheelCMDistance = 1.0;
-	float frontWheelCMDistance = 1.5;
-	float rearCMDistance = 1.2;
-	float frontCMDistance = 1.8;
-	float heightOfCG = 1.5;
-	float wheelBase = rearCMDistance + frontCMDistance;
-	float carWidth = 1.4;
+	static const float rearWheelCMDistance;
+	static const float frontWheelCMDistance;
+	static const float rearCMDistance;
+	static const float frontCMDistance;
+	static const float heightOfCG;
+	static const float wheelBase;
+	static const float carWidth;
 
-	float throttleIncreaseSpeed = 1.5;
-	float throttleDecreaseSpeed = 1.3;
-	float brakeIncreaseSpeed = 1.9;
-	float brakeDecreaseSpeed = 1.7;
+	static const float throttleIncreaseSpeed;
+	static const float throttleDecreaseSpeed;
+	static const float brakeIncreaseSpeed;
+	static const float brakeDecreaseSpeed;
 
-	float turnSpeed = 6.5;
+	static const float turnSpeed;
 
 	float throttleLevel = 0.0; // [0, 1]
 	float brakeLevel = 0.0; // [0, 1]
