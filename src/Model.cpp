@@ -1,4 +1,4 @@
-
+#include <assert.h>
 #include "Model.hpp"
 
 namespace car {
@@ -48,6 +48,7 @@ void Model::advanceTime(float deltaSeconds) {
 
 	car.move(deltaSeconds);
 	collideCar();
+	handleCheckpoints();
 }
 
 void Model::collideCar() {
@@ -59,6 +60,25 @@ void Model::collideCar() {
 		car.setColor(sf::Color::Red);
 	} else {
 		car.setColor(sf::Color::White);
+	}
+}
+
+void Model::handleCheckpoints() {
+	int checkpoint = -1;
+	if (    (checkpoint = track.checkpointCollidesWith(
+					Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner()))) >= 0 ||
+			(checkpoint = track.checkpointCollidesWith(
+					Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner()))) >= 0 ||
+			(checkpoint = track.checkpointCollidesWith(
+					Line2f(car.getFrontRightCorner(), car.getRearRightCorner()))) >= 0 ||
+			(checkpoint = track.checkpointCollidesWith(
+					Line2f(car.getRearLeftCorner(), car.getRearRightCorner()))) >= 0
+	) {
+		assert(checkpoint >= 0);
+
+		if (currentCheckpoint < 0 || currentCheckpoint == checkpoint) {
+			currentCheckpoint = (checkpoint + 1) % track.getNumberOfCheckpoints();
+		}
 	}
 }
 
@@ -83,6 +103,11 @@ void Model::handleInput(float deltaSeconds) {
 		}
 	}
 
+}
+
+void Model::draw(sf::RenderWindow& window) const {
+	track.draw(window, currentCheckpoint);
+	car.draw(window);
 }
 
 }

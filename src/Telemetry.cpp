@@ -7,8 +7,18 @@
 
 namespace car {
 
+float Telemetry::horizontalScaling = 10.f;
+float Telemetry::horizontalResolution = 0.02f;
+std::size_t Telemetry::maxNumberOfPoints = 10000;
+
 void Telemetry::addDataPoint(const sf::Vector2f& point) {
+	if (!dataPoints.empty() && std::abs(point.x - dataPoints.back().x) < horizontalResolution) {
+		return;
+	}
 	dataPoints.push_back(point);
+	while (dataPoints.size() > maxNumberOfPoints) {
+		dataPoints.pop_front();
+	}
 }
 
 
@@ -37,7 +47,6 @@ void Telemetry::drawAsGraph(sf::RenderWindow& window, const sf::FloatRect& posit
 	}
 
 	auto it = dataPoints.begin();
-	float horizontalScaling = 10;
 
 	if (scrolling) {
 		auto firstPositionToDraw = dataPoints.back().x - position.width / horizontalScaling;
