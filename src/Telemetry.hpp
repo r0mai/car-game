@@ -1,7 +1,7 @@
 #ifndef TELEMETRY_HPP
 #define TELEMETRY_HPP
 
-#include <vector>
+#include <deque>
 
 #include <SFML/Graphics.hpp>
 
@@ -21,7 +21,11 @@ private:
 	bool scrolling = true;
 	float minBound = 0.0;
 	float maxBound = 1.0;
-	std::vector<sf::Vector2f> dataPoints;
+	std::deque<sf::Vector2f> dataPoints;
+
+	static float horizontalScaling;
+	static float horizontalResolution;
+	static std::size_t maxNumberOfPoints;
 };
 
 }
