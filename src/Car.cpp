@@ -5,6 +5,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <boost/math/constants/constants.hpp>
+
 #include "drawUtil.hpp"
 #include "mathUtil.hpp"
 
@@ -50,6 +52,8 @@ void Car::setColor(const sf::Color& newColor) {
 
 void Car::move(float deltaSeconds) {
 
+	using namespace boost::math::float_constants;
+
 	sf::Vector2f velocityDirection = [&] {
 		return orientation;
 	}();
@@ -84,7 +88,7 @@ void Car::move(float deltaSeconds) {
 
 		float angularVelocity = turnRate / turnRadius;
 		sf::Transform rotateTransform;
-		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/M_PI);
+		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/pi);
 		orientation = rotateTransform.transformPoint(orientation);
 	}
 
@@ -213,9 +217,12 @@ const sf::Vector2f& Car::getAcceleration() const {
 }
 
 void Car::updateCorners() {
+
+	using namespace boost::math::float_constants;
+
 	sf::Transform transform;
 	transform.translate(getPosition());
-	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/M_PI);
+	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/pi);
 
 	const float carHalfWidth = carWidth/2.f;
 

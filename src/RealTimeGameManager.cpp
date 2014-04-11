@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include <boost/math/constants/constants.hpp>
+
 #include "mathUtil.hpp"
 #include "randomUtil.hpp"
 
@@ -15,6 +17,8 @@ namespace car {
 RealTimeGameManager::RealTimeGameManager() :
 	window(sf::VideoMode(800, 800), "car-game")
 {
+
+	using namespace boost::math::float_constants;
 
 	model.setCar(Car(sf::Vector2f(0, 55)));
 	model.setTrack(Track::createCircleTrack());
@@ -25,7 +29,7 @@ RealTimeGameManager::RealTimeGameManager() :
 	brakeTelemetry.setAutomaticBoundsDetection(false);
 	brakeTelemetry.setBounds(0.f, 1.f);
 	angleTelemetry.setAutomaticBoundsDetection(false);
-	angleTelemetry.setBounds(-M_PI, M_PI);
+	angleTelemetry.setBounds(-pi, pi);
 	turnTelemetry.setAutomaticBoundsDetection(false);
 	turnTelemetry.setBounds(-1.f, 1.f);
 

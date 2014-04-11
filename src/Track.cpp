@@ -1,10 +1,15 @@
 
+#include <boost/math/constants/constants.hpp>
+
 #include "Track.hpp"
 #include "drawUtil.hpp"
 
 namespace car {
 
 Track Track::createCircleTrack() {
+
+	using namespace boost::math::float_constants;
+
 	Track track;
 	const int circleResolution = 60;
 	const int numberOfCheckpoints = 8;
@@ -12,22 +17,22 @@ Track Track::createCircleTrack() {
 	const float outerCircleRadius = 60.;
 	for ( int i = 0; i < circleResolution; ++i ) {
 		track.addLine(Line2f(
-					innerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-					innerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-					innerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-					innerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+					innerCircleRadius*std::cos((i-1)*2*pi/circleResolution),
+					innerCircleRadius*std::sin((i-1)*2*pi/circleResolution),
+					innerCircleRadius*std::cos((i)*2*pi/circleResolution),
+					innerCircleRadius*std::sin((i)*2*pi/circleResolution)));
 		track.addLine(Line2f(
-					outerCircleRadius*std::cos((i-1)*2*M_PI/circleResolution),
-					outerCircleRadius*std::sin((i-1)*2*M_PI/circleResolution),
-					outerCircleRadius*std::cos((i)*2*M_PI/circleResolution),
-					outerCircleRadius*std::sin((i)*2*M_PI/circleResolution)));
+					outerCircleRadius*std::cos((i-1)*2*pi/circleResolution),
+					outerCircleRadius*std::sin((i-1)*2*pi/circleResolution),
+					outerCircleRadius*std::cos((i)*2*pi/circleResolution),
+					outerCircleRadius*std::sin((i)*2*pi/circleResolution)));
 	}
 	for ( int i = 0; i < numberOfCheckpoints; ++i ) {
 		track.addCheckpoint(Line2f(
-				innerCircleRadius*std::cos((i)*2*M_PI/numberOfCheckpoints),
-				-innerCircleRadius*std::sin((i)*2*M_PI/numberOfCheckpoints),
-				outerCircleRadius*std::cos((i)*2*M_PI/numberOfCheckpoints),
-				-outerCircleRadius*std::sin((i)*2*M_PI/numberOfCheckpoints)
+				innerCircleRadius*std::cos((i)*2*pi/numberOfCheckpoints),
+				-innerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints),
+				outerCircleRadius*std::cos((i)*2*pi/numberOfCheckpoints),
+				-outerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints)
 			));
 	}
 	return track;
