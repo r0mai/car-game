@@ -65,8 +65,7 @@ void RealTimeGameManager::run() {
 		window.clear(sf::Color::Black);
 
 		window.setView(gameView);
-		model.getTrack().draw(window);
-		model.getCar().draw(window);
+		model.draw(window);
 
 		window.setView(hudView);
 		drawTelemetry();

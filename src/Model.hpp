@@ -24,15 +24,19 @@ public:
 	float getCurrentTime() const;
 
 	void advanceTime(float deltaSeconds);
+	void draw(sf::RenderWindow& window) const;
 
 private:
 	void collideCar();
+	void handleCheckpoints();
 	void handleInput(float deltaSeconds);
+
 
 	Car car;
 	Track track;
 
 	float currentTime = 0.f;
+	int currentCheckpoint = -1;
 
 	bool rightPressed = false;
 	bool leftPressed = false;
