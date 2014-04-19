@@ -4,6 +4,8 @@
 #include "Track.hpp"
 #include "drawUtil.hpp"
 
+#include <iostream>
+
 namespace car {
 
 Track Track::createCircleTrack() {
@@ -35,6 +37,7 @@ Track Track::createCircleTrack() {
 				-outerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints)
 			));
 	}
+
 	return track;
 }
 
@@ -82,6 +85,59 @@ void Track::draw(sf::RenderWindow& window, int highlihgtCheckpoint) const {
 		drawLine(window, checkpoints[i],
 				((static_cast<int>(i) == highlihgtCheckpoint) ?
 						checkpointColor : highlightedCheckpointColor));
+	}
+}
+
+namespace {
+
+struct CheckedLine {
+	bool start = false;
+	bool end = false;
+};
+
+bool checkLineEndpoint(const sf::Vector2f& endpoint,
+		const sf::Vector2f& intersection, float toleranceSquare,
+		bool& alreadyChecked) {
+	if (alreadyChecked ||
+			getLengthSQ(sf::Vector2f{endpoint.x - intersection.x,
+					endpoint.y - intersection.y}) > toleranceSquare) {
+		return false;
+	}
+
+	alreadyChecked = true;
+	return true;
+}
+
+}
+
+void Track::check() const
+{
+	const float toleranceSquare = 0.0001;
+	std::vector<CheckedLine> checkedLines(lines.size());
+
+	for ( std::size_t i = 0; i < lines.size(); ++i ) {
+
+		if (getLengthSQ(lines[i].start - lines[i].end) < toleranceSquare * 4) {
+			throw TrackError{"Line segment too short"};
+		}
+
+		for ( std::size_t j = i + 1; j < lines.size(); ++j ) {
+			sf::Vector2f p;
+			if (lines[i].intersectWith(lines[j], &p)) {
+				if (!(
+						(checkLineEndpoint(lines[i].start, p, toleranceSquare,
+								checkedLines[i].start) ||
+						checkLineEndpoint(lines[i].end, p, toleranceSquare,
+								checkedLines[i].end)) &&
+						(checkLineEndpoint(lines[j].start, p, toleranceSquare,
+								checkedLines[j].start) ||
+						checkLineEndpoint(lines[j].end, p, toleranceSquare,
+								checkedLines[j].end))
+					)) {
+					throw TrackError{"The track intersects with itself"};
+				}
+			}
+		}
 	}
 }
 
