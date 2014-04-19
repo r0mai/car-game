@@ -14,7 +14,7 @@ Track Track::createCircleTrack() {
 
 	Track track;
 	const int circleResolution = 60;
-	const int numberOfCheckpoints = 8;
+	const int numberOfCheckpoints = 16;
 	const float innerCircleRadius = 50.;
 	const float outerCircleRadius = 60.;
 	for ( int i = 0; i < circleResolution; ++i ) {
