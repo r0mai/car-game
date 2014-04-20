@@ -49,7 +49,7 @@ void Track::addCheckpoint(const Line2f& line) {
 
 bool Track::collidesWith(const Line2f& line) {
 	for ( const Line2f& trackLine : lines ) {
-		if ( line.intersectWith(trackLine) ) {
+		if ( line.intersectWithLine(trackLine) ) {
 			return true;
 		}
 	}
@@ -58,7 +58,7 @@ bool Track::collidesWith(const Line2f& line) {
 
 int Track::checkpointCollidesWith(const Line2f& line) {
 	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
-		if ( line.intersectWith(checkpoints[i]) ) {
+		if ( line.intersectWithLine(checkpoints[i]) ) {
 			return i;
 		}
 	}

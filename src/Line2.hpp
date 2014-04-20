@@ -18,7 +18,114 @@ struct Line2 {
 	Line2(T xa, T ya, T xb, T yb) : start(xa, ya), end(xb, yb) {}
 
 	//code based on irrlicht line2d::intersectWith
-	bool intersectWith(const Line2<T>& line, sf::Vector2<T> *outPtr = 0) const {
+	bool intersectWithRay(const sf::Vector2<T>& origin, const sf::Vector2<T>& direction, sf::Vector2<T> *outPtr = 0) const {
+
+		assert(getLength(direction) > 0.f);
+
+		sf::Vector2<T> out;
+		const float commonDenominator = (float)direction.y*(end.x - start.x) -
+										direction.x*(end.y - start.y);
+
+		const float numeratorA = (float)direction.x*(start.y - origin.y) -
+										direction.y*(start.x - origin.x);
+
+		const float numeratorB = (float)(end.x - start.x)*(start.y - origin.y) -
+										(end.y - start.y)*(start.x - origin.x);
+
+		if(equals(commonDenominator, 0.f))
+		{
+			// The lines are either coincident or parallel
+			// if both numerators are 0, the lines are coincident
+			if(equals(numeratorA, 0.f) && equals(numeratorB, 0.f))
+			{
+				// Try and find a common endpoint
+				if(origin == start || (origin+direction) == start)
+					out = start;
+				else if((origin+direction) == end || origin == end)
+					out = end;
+				// now check if the two segments are disjunct
+				else if (origin.x>start.x && (origin+direction).x>start.x && origin.x>end.x && (origin+direction).x>end.x)
+					return false;
+				else if (origin.y>start.y && (origin+direction).y>start.y && origin.y>end.y && (origin+direction).y>end.y)
+					return false;
+				else if (origin.x<start.x && (origin+direction).x<start.x && origin.x<end.x && (origin+direction).x<end.x)
+					return false;
+				else if (origin.y<start.y && (origin+direction).y<start.y && origin.y<end.y && (origin+direction).y<end.y)
+					return false;
+				// else the lines are overlapping to some extent
+				else
+				{
+					// find the points which are not contributing to the
+					// common part
+					sf::Vector2<T> maxp;
+					sf::Vector2<T> minp;
+					if ((start.x>origin.x && start.x>(origin+direction).x && start.x>end.x) ||
+							(start.y>origin.y && start.y>(origin+direction).y && start.y>end.y))
+						maxp=start;
+					else if ((end.x>origin.x && end.x>(origin+direction).x && end.x>start.x) ||
+							(end.y>origin.y && end.y>(origin+direction).y && end.y>start.y))
+						maxp=end;
+					else if ((origin.x>start.x && origin.x>(origin+direction).x && origin.x>end.x) ||
+							(origin.y>start.y && origin.y>(origin+direction).y && origin.y>end.y))
+						maxp=origin;
+					else
+						maxp=(origin+direction);
+					if (maxp != start && ((start.x<origin.x && start.x<(origin+direction).x && start.x<end.x) ||
+							(start.y<origin.y && start.y<(origin+direction).y && start.y<end.y)))
+						minp=start;
+					else if (maxp != end && ((end.x<origin.x && end.x<(origin+direction).x && end.x<start.x) ||
+							(end.y<origin.y && end.y<(origin+direction).y && end.y<start.y)))
+						minp=end;
+					else if (maxp != origin && ((origin.x<start.x && origin.x<(origin+direction).x && origin.x<end.x)
+							|| (origin.y<start.y && origin.y<(origin+direction).y && origin.y<end.y)))
+						minp=origin;
+					else
+						minp=(origin+direction);
+
+					// one line is contained in the other. Pick the center
+					// of the remaining points, which overlap for sure
+					out = sf::Vector2<T>();
+					if (start != maxp && start != minp)
+						out += start;
+					if (end != maxp && end != minp)
+						out += end;
+					if (origin != maxp && origin != minp)
+						out += origin;
+					if ((origin+direction) != maxp && (origin+direction) != minp)
+						out += (origin+direction);
+					out.x = static_cast<T>(out.x/2);
+					out.y = static_cast<T>(out.y/2);
+				}
+
+				if ( outPtr ) {
+					*outPtr = out;
+				}
+				return true; // coincident
+			}
+
+			return false; // parallel
+		}
+
+		bool checkOnlySegments = true;
+
+		// I don't care about this right now
+		// Get the point of intersection on this line, checking that
+		// it is within the line segment.
+		const float uA = numeratorA / commonDenominator;
+		if (checkOnlySegments && (uA < 0.f || uA > 1.f))
+			return false; // Outside the line segment
+
+		// Calculate the intersection point.
+		out.x = static_cast<T>(start.x + uA * (end.x - start.x));
+		out.y = static_cast<T>(start.y + uA * (end.y - start.y));
+		if ( outPtr ) {
+			*outPtr = out;
+		}
+		return true;
+	}
+
+	//code based on irrlicht line2d::intersectWith
+	bool intersectWithLine(const Line2<T>& line, bool checkOnlySegments = true, sf::Vector2<T> *outPtr = 0) const {
 		sf::Vector2<T> out;
 		const float commonDenominator = (float)(line.end.y - line.start.y)*(end.x - start.x) -
 										(line.end.x - line.start.x)*(end.y - start.y);
@@ -104,7 +211,6 @@ struct Line2 {
 		}
 
 		// I don't care about this right now
-		bool checkOnlySegments = true;
 		// Get the point of intersection on this line, checking that
 		// it is within the line segment.
 		const float uA = numeratorA / commonDenominator;
