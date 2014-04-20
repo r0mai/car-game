@@ -6,5 +6,5 @@ LIBS += -lboost_unit_test_framework
 
 : foreach *.cpp |> !cxx |>
 : ./*.o $(objectFiles) |> !linker |> unitTest
-: unitTest |> ./unitTest && touch %o |> unitTestOutput 
+: unitTest |> !unitTest |>
 
