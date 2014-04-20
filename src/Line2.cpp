@@ -166,6 +166,11 @@ bool intersects(const Line2<T>& line1, const Line2<T>& line2, sf::Vector2<T> *ou
 	return true;
 }
 
+template <typename T>
+bool isParallel(const Line2<T>& line1, const Line2<T>& line2) {
+	return equals(getLineData(line1, line2).commonDenominator, 0.f);
+}
+
 } //  unnamed namespace
 
 bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) {
@@ -174,6 +179,10 @@ bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) 
 
 bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) {
 	return intersectsInfinite<float>(line1, line2, outPtr);
+}
+
+bool isParallel(const Line2f& line1, const Line2f& line2) {
+	return isParallel<float>(line1, line2);
 }
 
 } // namespace car

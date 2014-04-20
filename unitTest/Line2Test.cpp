@@ -404,6 +404,47 @@ BOOST_AUTO_TEST_CASE(intersectsInfinite_horizontal_lines_full_overlap2) {
 	BOOST_CHECK_CLOSE(intersectionPoint.y, 1.0f, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(is_parallel_not_parallel_lines) {
+	Line2f line1{{0.f, 0.f}, {1.f, 2.f}};
+	Line2f line2{{1.f, 0.f}, {-1.f, 4.f}};
+
+	BOOST_CHECK(!isParallel(line1, line2));
+}
+
+BOOST_AUTO_TEST_CASE(is_parallel_parallel_lines) {
+	Line2f line1{{0.f, 0.f}, {1.f, 2.f}};
+	Line2f line2{{-1.f, -1.f}, {1.f, 3.f}};
+
+	BOOST_CHECK(isParallel(line1, line2));
+}
+
+BOOST_AUTO_TEST_CASE(is_parallel_coinciding_lines) {
+	Line2f line1{{0.f, 0.f}, {1.f, 2.f}};
+	Line2f line2{{-1.f, -2.f}, {-4.f, -8.f}};
+
+	BOOST_CHECK(isParallel(line1, line2));
+}
+
+BOOST_AUTO_TEST_CASE(is_parallel_horizontal_lines) {
+	Line2f line1{{0.f, 0.f}, {1.f, 0.f}};
+	Line2f line2{{-1.f, -2.f}, {-4.f, -2.f}};
+
+	BOOST_CHECK(isParallel(line1, line2));
+}
+
+BOOST_AUTO_TEST_CASE(is_parallel_vertical_lines) {
+	Line2f line1{{0.f, 0.f}, {0.f, -3.f}};
+	Line2f line2{{-1.f, 2.f}, {-1.f, -2.f}};
+
+	BOOST_CHECK(isParallel(line1, line2));
+}
+
+BOOST_AUTO_TEST_CASE(is_parallel_horizontal_and_vertical_lines) {
+	Line2f line1{{0.f, 0.f}, {0.f, -3.f}};
+	Line2f line2{{-1.f, 2.f}, {1.f, 2.f}};
+
+	BOOST_CHECK(!isParallel(line1, line2));
+}
 
 
 

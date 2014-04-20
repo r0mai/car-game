@@ -22,6 +22,7 @@ typedef Line2<float> Line2f;
 //code based on irrlicht line2d::intersectWith
 bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
 bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
+bool isParallel(const Line2f& line1, const Line2f& line2);
 
 }
 
