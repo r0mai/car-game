@@ -3,6 +3,7 @@
 
 #include "Track.hpp"
 #include "drawUtil.hpp"
+#include "mathUtil.hpp"
 
 #include <iostream>
 
@@ -52,7 +53,7 @@ void Track::addCheckpoint(const Line2f& line) {
 
 bool Track::collidesWith(const Line2f& line) {
 	for ( const Line2f& trackLine : lines ) {
-		if ( line.intersectWith(trackLine) ) {
+		if ( intersects(line, trackLine) ) {
 			return true;
 		}
 	}
@@ -61,7 +62,7 @@ bool Track::collidesWith(const Line2f& line) {
 
 int Track::checkpointCollidesWith(const Line2f& line) {
 	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
-		if ( line.intersectWith(checkpoints[i]) ) {
+		if ( intersects(line, checkpoints[i]) ) {
 			return i;
 		}
 	}
@@ -123,7 +124,7 @@ void Track::check() const
 
 		for ( std::size_t j = i + 1; j < lines.size(); ++j ) {
 			sf::Vector2f p;
-			if (lines[i].intersectWith(lines[j], &p)) {
+			if (intersects(lines[i], lines[j], &p)) {
 				if (!(
 						(checkLineEndpoint(lines[i].start, p, toleranceSquare,
 								checkedLines[i].start) ||
