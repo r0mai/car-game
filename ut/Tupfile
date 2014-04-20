@@ -6,5 +6,5 @@ CPP_FLAGS += -DBOOST_TEST_DYN_LINK
 
 : foreach *.cpp |> !cxx |>
 : *.o ../src/*.o |> !linker |> unitTest
-: unitTest |> ./%f | tee %o |> test.out
+: unitTest |> ./%f |>
 
