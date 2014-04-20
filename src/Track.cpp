@@ -69,7 +69,7 @@ std::size_t Track::getNumberOfCheckpoints() const {
 	return checkpoints.size();
 }
 
-void Track::draw(sf::RenderWindow& window, int highlihgtCheckpoint) const {
+void Track::draw(sf::RenderWindow& window, int highlightCheckpoint) const {
 	for ( const Line2f& trackLine : lines ) {
 		drawLine(window, trackLine);
 	}
@@ -80,7 +80,7 @@ void Track::draw(sf::RenderWindow& window, int highlihgtCheckpoint) const {
 	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
 
 		drawLine(window, checkpoints[i],
-				((static_cast<int>(i) == highlihgtCheckpoint) ?
+				((static_cast<int>(i) == highlightCheckpoint) ?
 						checkpointColor : highlightedCheckpointColor));
 	}
 }

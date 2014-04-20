@@ -19,7 +19,7 @@ public:
 	int checkpointCollidesWith(const Line2f& line);
 	std::size_t getNumberOfCheckpoints() const;
 
-	void draw(sf::RenderWindow& window, int highlihgtCheckpoint = -1) const;
+	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
 private:
 	typedef std::vector<Line2f> Lines;
 	Lines lines;
