@@ -22,7 +22,7 @@ RealTimeGameManager::RealTimeGameManager() :
 
 	model.setCar(Car(sf::Vector2f(0, 55)));
 
-	Track track = Track::createCircleTrack();
+	Track track = createZigZagTrack();
 
 	track.check();
 

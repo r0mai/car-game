@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <stdexcept>
+#include <functional>
 #include "Line2.hpp"
 
 namespace car {
@@ -16,9 +17,6 @@ struct TrackError: std::logic_error {
 
 class Track {
 public:
-
-	static Track createCircleTrack();
-
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
 	bool collidesWith(const Line2f& line);
@@ -32,6 +30,9 @@ private:
 	Lines lines;
 	Lines checkpoints;
 };
+
+Track createCircleTrack();
+Track createZigZagTrack();
 
 }
 

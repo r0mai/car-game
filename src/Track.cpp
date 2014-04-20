@@ -4,12 +4,11 @@
 #include "Track.hpp"
 #include "drawUtil.hpp"
 #include "mathUtil.hpp"
-
-#include <iostream>
+#include "PolygonTrackBuilder.hpp"
 
 namespace car {
 
-Track Track::createCircleTrack() {
+Track createCircleTrack() {
 
 	using namespace boost::math::float_constants;
 
@@ -41,6 +40,20 @@ Track Track::createCircleTrack() {
 
 	return track;
 }
+
+Track createZigZagTrack() {
+	std::vector<sf::Vector2f> points;
+
+	points.push_back({-55.f, -55.f});
+	points.push_back({ 55.f, -55.f});
+	points.push_back({-10.f,   0.f});
+	points.push_back({ 55.f,  55.f});
+	points.push_back({-55.f,  55.f});
+
+	PolygonTrackBuilder builder{10.f};
+	return builder(points);
+}
+
 
 void Track::addLine(const Line2f& line) {
 	lines.push_back(line);
