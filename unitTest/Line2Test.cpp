@@ -15,7 +15,23 @@ BOOST_AUTO_TEST_CASE(intersects_intersecting_lines) {
 	BOOST_CHECK_CLOSE(intersectionPoint.y, 1.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(intersects_non_intersecting_lines) {
+BOOST_AUTO_TEST_CASE(intersects_lines_intersecting_outside_first) {
+	Line2f line1{{0.f, 0.f}, {1.f, 2.f}};
+	Line2f line2{{3.f, 1.f}, {1.f, 3.f}};
+
+	sf::Vector2f intersectionPoint;
+	BOOST_REQUIRE(!intersects(line1, line2, &intersectionPoint));
+}
+
+BOOST_AUTO_TEST_CASE(intersects_lines_intersecting_outside_second) {
+	Line2f line1{{3.f, 1.f}, {1.f, 3.f}};
+	Line2f line2{{0.f, 0.f}, {1.f, 2.f}};
+
+	sf::Vector2f intersectionPoint;
+	BOOST_REQUIRE(!intersects(line1, line2, &intersectionPoint));
+}
+
+BOOST_AUTO_TEST_CASE(intersects_lines_intersecting_outside_both) {
 	Line2f line1{{0.f, 0.f}, {1.f, 2.f}};
 	Line2f line2{{3.f, 0.f}, {2.f, 2.f}};
 
@@ -193,6 +209,9 @@ BOOST_AUTO_TEST_CASE(intersects_horizontal_lines_full_overlap2) {
 	BOOST_CHECK_LE(intersectionPoint.x, 1.0f);
 	BOOST_CHECK_CLOSE(intersectionPoint.y, 1.0f, 0.001);
 }
+
+
+
 
 
 
