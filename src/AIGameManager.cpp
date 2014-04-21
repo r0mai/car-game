@@ -11,8 +11,8 @@
 
 namespace car {
 
-AIGameManager::AIGameManager() {
-	model.setTrack(createCircleTrack());
+AIGameManager::AIGameManager(std::function<Track()> trackCreator) {
+	model.setTrack(trackCreator());
 	model.setCar(model.getTrack().createCar());
 }
 

@@ -15,14 +15,14 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager() :
+RealTimeGameManager::RealTimeGameManager(std::function<Track()> trackCreator) :
 	window(sf::VideoMode(800, 800), "car-game")
 {
 
 	using namespace boost::math::float_constants;
 
 
-	Track track = createZigZagTrack();
+	Track track = trackCreator();
 //	Track track = createCircleTrack();
 	track.check();
 
