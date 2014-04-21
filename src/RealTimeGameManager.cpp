@@ -21,12 +21,12 @@ RealTimeGameManager::RealTimeGameManager() :
 
 	using namespace boost::math::float_constants;
 
-	model.setCar(Car(sf::Vector2f(0, 55)));
 
 	Track track = createZigZagTrack();
-
+//	Track track = createCircleTrack();
 	track.check();
 
+	model.setCar(track.createCar());
 	model.setTrack(track);
 
 	font.loadFromFile("resources/DejaVuSansMono.ttf");

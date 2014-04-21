@@ -10,7 +10,7 @@ public:
 
 
 	Car();
-	Car(const sf::Vector2f& position);
+	Car(const sf::Vector2f& position, float direction);
 
 	void setColor(const sf::Color& color);
 

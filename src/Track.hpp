@@ -19,6 +19,8 @@ struct TrackError: std::logic_error {
 	{}
 };
 
+class Car;
+
 class Track {
 public:
 	void addLine(const Line2f& line);
@@ -33,10 +35,15 @@ public:
 	void check() const;
 
 	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
+
+	void setOrigin(const sf::Vector2f& point, float direction);
+	Car createCar() const;
 private:
 	typedef std::vector<Line2f> Lines;
 	Lines lines;
 	Lines checkpoints;
+	sf::Vector2f startingPoint;
+	float startingDirection = 0.f;
 };
 
 Track createCircleTrack();

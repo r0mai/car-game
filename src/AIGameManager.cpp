@@ -12,8 +12,8 @@
 namespace car {
 
 AIGameManager::AIGameManager() {
-	model.setCar(Car(sf::Vector2f(0, 55)));
 	model.setTrack(createCircleTrack());
+	model.setCar(model.getTrack().createCar());
 }
 
 void AIGameManager::run() {

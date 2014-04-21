@@ -40,8 +40,13 @@ Track PolygonTrackBuilder::operator()(const std::vector<sf::Vector2f>& points) {
 		const auto& point2 = points[(i + 1) % points.size()];
 
 		// rotate direction 90 degrees and normalize it
-		auto direction = normalize(rotateClockwise(point2 - point1));
-		auto shift = direction * distance;
+		auto roadVector = point2 - point1;
+		auto shiftDirection = normalize(rotateClockwise(roadVector));
+		auto shift = shiftDirection * distance;
+
+		if (i == 0) {
+			track.setOrigin(point1, std::atan2(roadVector.y, roadVector.x));
+		}
 
 		rightEdge.push_back({point1 + shift, point2 + shift});
 		leftEdge.push_back({point1 - shift, point2 - shift});
