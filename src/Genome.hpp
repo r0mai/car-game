@@ -7,11 +7,14 @@ namespace car {
 
 class Genome {
 public:
-	Genome(const Weights& weights, float fitness);
-private:
+	Genome() = default;
+	Genome(const Weights& weights, float fitness = 0.f);
+
 	Weights weights;
-	float fitness;
+	float fitness = 0.f;
 };
+
+bool operator<(const Genome& left, const Genome& right);
 
 }
 

@@ -12,17 +12,30 @@ namespace car {
 //This class implements Genetic algorithms to mutate its population
 class GeneticPopulation {
 public:
+	typedef std::vector<Genome> Genomes;
 
 	GeneticPopulation(unsigned populationSize, unsigned numberOfWeights);
+
+	const Genomes& getPopulation() const;
+
 private:
-	typedef std::vector<Genome> Genomes;
+	void mutate(Weights& weights) const;
+	Genome pickRoulette() const;
+	void calculateStats();
 
 	Genomes population;
 
-	double mutationRate = 0.1;
-	double crossoverRate = 0.7;
-
 	unsigned generationCount = 0;
+
+	unsigned bestFitnessIndex; //updated by calculateStats()
+	unsigned worstFitnessIndex; //updated by calculateStats()
+	float totalFitness; //updated by calculateStats()
+
+	//constants
+	float mutationRate = 0.1;
+	float crossoverRate = 0.7;
+	float maxPerturbation = 0.3;
+
 };
 
 }
