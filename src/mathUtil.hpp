@@ -32,6 +32,16 @@ sf::Vector2<T> normalize(const sf::Vector2<T>& v) {
 	return v / magnitude;
 }
 
+template<class T>
+sf::Vector2<T> rotateClockwise(const sf::Vector2<T>& v) {
+	return sf::Vector2<T>(-v.y, v.x);
+}
+
+template<class T>
+sf::Vector2<T> rotateCounterclockwise(const sf::Vector2<T>& v) {
+	return sf::Vector2<T>(v.y, -v.x);
+}
+
 inline bool equals(const float a, const float b, const float tolerance = ROUNDING_ERROR_float) {
 	return (a + tolerance >= b) && (a - tolerance <= b);
 }

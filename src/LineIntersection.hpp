@@ -41,11 +41,11 @@ public:
 	}
 
 	T getIntersectionPointRatioLine1() const {
-		return intersectionData ? intersectionData->uA : 0.f;
+		return intersectionData ? intersectionData->uB : 0.f;
 	}
 
 	T getIntersectionPointRatioLine2() const {
-		return intersectionData ? intersectionData->uB : 0.f;
+		return intersectionData ? intersectionData->uA : 0.f;
 	}
 
 	const boost::optional<Line2<T>>& getOverlapLine() const {

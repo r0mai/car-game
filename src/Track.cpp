@@ -44,11 +44,11 @@ Track createCircleTrack() {
 Track createZigZagTrack() {
 	std::vector<sf::Vector2f> points;
 
-	points.push_back({-55.f, -55.f});
-	points.push_back({ 55.f, -55.f});
+	points.push_back({-55.f, 55.f});
+	points.push_back({ 55.f, 55.f});
 	points.push_back({-10.f,   0.f});
-	points.push_back({ 55.f,  55.f});
-	points.push_back({-55.f,  55.f});
+	points.push_back({ 55.f, -55.f});
+	points.push_back({-55.f, -55.f});
 
 	PolygonTrackBuilder builder{10.f, 20.f};
 	return builder(points);
