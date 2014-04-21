@@ -1,0 +1,10 @@
+
+include_rules
+
+objectFiles = $(SOURCE_DIR)/Line2.o
+LIBS += -lboost_unit_test_framework
+
+: foreach *.cpp |> !cxx |>
+: ./*.o $(objectFiles) |> !linker |> unitTest
+: unitTest |> !unitTest |>
+

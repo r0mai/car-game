@@ -1,11 +1,9 @@
 #ifndef LINE_HPP
 #define LINE_HPP
 
-#include <iostream>
+#include "mathUtil.hpp"
 
 #include <SFML/System/Vector2.hpp>
-
-#include "mathUtil.hpp"
 
 namespace car {
 
@@ -114,7 +112,6 @@ bool Line2<T>::intersectWithRay(const sf::Vector2<T>& origin, const sf::Vector2<
 
 		return false; // parallel
 	}
-
 
 	// Get the point of intersection on this line, checking that
 	// it is within the line segment. For the ray, we only check
@@ -235,6 +232,11 @@ bool Line2<T>::intersectWithLine(const Line2<T>& line, bool checkOnlySegments, s
 	}
 	return true;
 }
+
+//code based on irrlicht line2d::intersectWith
+bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
+bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
+bool isParallel(const Line2f& line1, const Line2f& line2);
 
 }
 

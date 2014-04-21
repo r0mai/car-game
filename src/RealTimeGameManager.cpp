@@ -22,7 +22,12 @@ RealTimeGameManager::RealTimeGameManager() :
 	using namespace boost::math::float_constants;
 
 	model.setCar(Car(sf::Vector2f(0, 55)));
-	model.setTrack(Track::createCircleTrack());
+
+	Track track = createZigZagTrack();
+
+	track.check();
+
+	model.setTrack(track);
 
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);

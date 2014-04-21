@@ -3,16 +3,18 @@
 
 #include "Track.hpp"
 #include "drawUtil.hpp"
+#include "mathUtil.hpp"
+#include "PolygonTrackBuilder.hpp"
 
 namespace car {
 
-Track Track::createCircleTrack() {
+Track createCircleTrack() {
 
 	using namespace boost::math::float_constants;
 
 	Track track;
 	const int circleResolution = 60;
-	const int numberOfCheckpoints = 8;
+	const int numberOfCheckpoints = 16;
 	const float innerCircleRadius = 50.;
 	const float outerCircleRadius = 60.;
 	for ( int i = 0; i < circleResolution; ++i ) {
@@ -35,8 +37,23 @@ Track Track::createCircleTrack() {
 				-outerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints)
 			));
 	}
+
 	return track;
 }
+
+Track createZigZagTrack() {
+	std::vector<sf::Vector2f> points;
+
+	points.push_back({-55.f, 55.f});
+	points.push_back({ 55.f, 55.f});
+	points.push_back({-10.f,   0.f});
+	points.push_back({ 55.f, -55.f});
+	points.push_back({-55.f, -55.f});
+
+	PolygonTrackBuilder builder{10.f, 20.f};
+	return builder(points);
+}
+
 
 void Track::addLine(const Line2f& line) {
 	lines.push_back(line);
@@ -49,7 +66,7 @@ void Track::addCheckpoint(const Line2f& line) {
 
 bool Track::collidesWith(const Line2f& line) const {
 	for ( const Line2f& trackLine : lines ) {
-		if ( line.intersectWithLine(trackLine) ) {
+		if ( intersects(line, trackLine) ) {
 			return true;
 		}
 	}
@@ -77,7 +94,7 @@ boost::optional<sf::Vector2f> Track::collideWithRay(const sf::Vector2f& origin, 
 
 int Track::checkpointCollidesWith(const Line2f& line) const {
 	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
-		if ( line.intersectWithLine(checkpoints[i]) ) {
+		if ( intersects(line, checkpoints[i]) ) {
 			return i;
 		}
 	}
@@ -101,6 +118,59 @@ void Track::draw(sf::RenderWindow& window, int highlightCheckpoint) const {
 		drawLine(window, checkpoints[i],
 				((static_cast<int>(i) == highlightCheckpoint) ?
 						checkpointColor : highlightedCheckpointColor));
+	}
+}
+
+namespace {
+
+struct CheckedLine {
+	bool start = false;
+	bool end = false;
+};
+
+bool checkLineEndpoint(const sf::Vector2f& endpoint,
+		const sf::Vector2f& intersection, float toleranceSquare,
+		bool& alreadyChecked) {
+	if (alreadyChecked ||
+			getLengthSQ(sf::Vector2f{endpoint.x - intersection.x,
+					endpoint.y - intersection.y}) > toleranceSquare) {
+		return false;
+	}
+
+	alreadyChecked = true;
+	return true;
+}
+
+}
+
+void Track::check() const
+{
+	const float toleranceSquare = 0.0001;
+	std::vector<CheckedLine> checkedLines(lines.size());
+
+	for ( std::size_t i = 0; i < lines.size(); ++i ) {
+
+		if (getLengthSQ(lines[i].start - lines[i].end) < toleranceSquare * 4) {
+			throw TrackError{"Line segment too short"};
+		}
+
+		for ( std::size_t j = i + 1; j < lines.size(); ++j ) {
+			sf::Vector2f p;
+			if (intersects(lines[i], lines[j], &p)) {
+				if (!(
+						(checkLineEndpoint(lines[i].start, p, toleranceSquare,
+								checkedLines[i].start) ||
+						checkLineEndpoint(lines[i].end, p, toleranceSquare,
+								checkedLines[i].end)) &&
+						(checkLineEndpoint(lines[j].start, p, toleranceSquare,
+								checkedLines[j].start) ||
+						checkLineEndpoint(lines[j].end, p, toleranceSquare,
+								checkedLines[j].end))
+					)) {
+					throw TrackError{"The track intersects with itself"};
+				}
+			}
+		}
 	}
 }
 
