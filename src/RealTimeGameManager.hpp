@@ -2,6 +2,7 @@
 #define REALTIMEGAMEMANAGER_HPP
 
 #include <vector>
+#include <functional>
 
 #include <SFML/Graphics.hpp>
 
@@ -11,9 +12,11 @@
 
 namespace car {
 
+class Track;
+
 class RealTimeGameManager {
 public:
-	RealTimeGameManager();
+	RealTimeGameManager(std::function<Track()> trackCreator);
 
 	void setFPSLimit(float newFpsLimit);
 

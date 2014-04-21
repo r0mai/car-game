@@ -15,18 +15,18 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager() :
+RealTimeGameManager::RealTimeGameManager(std::function<Track()> trackCreator) :
 	window(sf::VideoMode(800, 800), "car-game")
 {
 
 	using namespace boost::math::float_constants;
 
-	model.setCar(Car(sf::Vector2f(0, 55)));
 
-	Track track = createZigZagTrack();
-
+	Track track = trackCreator();
+//	Track track = createCircleTrack();
 	track.check();
 
+	model.setCar(track.createCar());
 	model.setTrack(track);
 
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
@@ -160,7 +160,7 @@ void RealTimeGameManager::drawRayPoints() {
 		if (!ray) {
 			continue;
 		}
-		drawLine(window, car.getPosition(), *ray);
+		drawLine(window, car.getPosition(), *ray, sf::Color{64, 64, 0});
 	}
 }
 
