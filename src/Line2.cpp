@@ -61,6 +61,40 @@ bool intersects(const Line2<T>& line1, const Line2<T>& line2, sf::Vector2<T> *ou
 }
 
 template <typename T>
+bool intersectsRay(const Line2<T>& line, const sf::Vector2<T>& origin, const sf::Vector2<T>& direction, sf::Vector2<T> *outPtr) {
+	LineIntersection<T> data{line, Line2<T>{origin, origin+direction}};
+
+	auto overlapLine = data.getOverlapLine();
+	if (overlapLine) {
+		//TODO this is not good like this, half point is not the best
+		if ( outPtr ) {
+			*outPtr = (overlapLine->start + overlapLine->end) / static_cast<T>(2);
+		}
+
+		return true;
+	}
+
+	auto intersectionPoint = data.getIntersectionPoint();
+	if (!intersectionPoint) {
+		return false;
+	}
+
+	auto uA = data.getIntersectionPointRatioLine1();
+	auto uB = data.getIntersectionPointRatioLine2();
+
+	if(uA < 0.f || uA > 1.f || uB < 0.f) {
+		return false; // Outside the line segment
+	}
+
+	if ( outPtr ) {
+		*outPtr = *intersectionPoint;
+	}
+
+	return true;
+
+}
+
+template <typename T>
 bool isParallel(const Line2<T>& line1, const Line2<T>& line2) {
 	return LineIntersection<T>{line1, line2}.isParallel();
 }
@@ -73,6 +107,10 @@ bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) 
 
 bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) {
 	return intersectsInfinite<float>(line1, line2, outPtr);
+}
+
+bool intersectsRay(const Line2f& line, const sf::Vector2f& origin, const sf::Vector2f& direction, sf::Vector2f *outPtr) {
+	return intersectsRay<float>(line, origin, direction, outPtr);
 }
 
 bool isParallel(const Line2f& line1, const Line2f& line2) {

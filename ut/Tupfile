@@ -2,9 +2,8 @@
 include_rules
 
 LIBS += -lboost_unit_test_framework
-CPP_FLAGS += -DBOOST_TEST_DYN_LINK
 
 : foreach *.cpp |> !cxx |>
 : *.o ../src/*.o |> !linker |> unitTest
-: unitTest |> ./%f |>
+: unitTest |> !unitTest |>
 

@@ -446,6 +446,49 @@ BOOST_AUTO_TEST_CASE(is_parallel_horizontal_and_vertical_lines) {
 	BOOST_CHECK(!isParallel(line1, line2));
 }
 
+BOOST_AUTO_TEST_CASE(intersects_test) {
+	Line2f line1(-5, 0, 10, 0);
+	Line2f line2(2, -5, 2, 11);
+
+	sf::Vector2f out1;
+	BOOST_REQUIRE(intersects(line1, line2, &out1));
+	BOOST_CHECK_CLOSE(out1.x, 2.f, 0.001);
+	BOOST_CHECK_CLOSE(out1.y, 0.f, 0.001);
+
+	sf::Vector2f out2;
+	BOOST_REQUIRE(intersects(line2, line1, &out2));
+	BOOST_CHECK_CLOSE(out2.x, 2.f, 0.001);
+	BOOST_CHECK_CLOSE(out2.y, 0.f, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(intersectsRay_test_positive) {
+	Line2f line(-5, 0, 10, 0);
+	sf::Vector2f origin(2, 2);
+	sf::Vector2f direction(1, -1);
+
+	sf::Vector2f out;
+	BOOST_REQUIRE(intersectsRay(line, origin, direction, &out));
+	BOOST_CHECK_CLOSE(out.x, 4.f, 0.001);
+	BOOST_CHECK_CLOSE(out.y, 0.f, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(intersectWithRay_test_negative_1) {
+	Line2f line(-5, 0, 3, 0);
+	sf::Vector2f origin(2, 2);
+	sf::Vector2f direction(1, -1);
+
+	sf::Vector2f out;
+	BOOST_CHECK(!intersectsRay(line, origin, direction, &out));
+}
+
+BOOST_AUTO_TEST_CASE(intersectWithRay_test_negative_2) {
+	Line2f line(-5, 0, 10, 0);
+	sf::Vector2f origin(2, 2);
+	sf::Vector2f direction(-1, 1);
+
+	sf::Vector2f out;
+	BOOST_CHECK(!intersectsRay(line, origin, direction, &out));
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()

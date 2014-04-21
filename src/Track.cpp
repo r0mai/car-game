@@ -78,7 +78,7 @@ boost::optional<sf::Vector2f> Track::collideWithRay(const sf::Vector2f& origin, 
 	sf::Vector2f closest;
 	for ( const Line2f& trackLine : lines ) {
 		sf::Vector2f out;
-		if ( trackLine.intersectWithRay(origin, direction, &out) ) {
+		if ( intersectsRay(trackLine, origin, direction, &out) ) {
 			float distanceSQ = getDistanceSQ(origin, out);
 			if ( minimumDistanceSQ < 0.f || distanceSQ < minimumDistanceSQ ) {
 				minimumDistanceSQ = distanceSQ;

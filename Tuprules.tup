@@ -21,4 +21,4 @@ LIBS += -lboost_program_options
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>
 !download = |> ^ DOWNLOAD %o^ wget --quiet https://dl.dropboxusercontent.com/u/12272246/car-game/%o |>
-!unitTest = |> ^ %f ^ ./%f && touch %o |> %b.output
+!unitTest = |> ^ UT %f^ ./%f && touch %o |> %b.output
