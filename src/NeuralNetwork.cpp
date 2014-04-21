@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cmath>
 
+#include "mathUtil.hpp"
+
 namespace car {
 
 NeuralNetwork::NeuralNetwork(
@@ -72,7 +74,7 @@ Weights NeuralNetwork::evaluateInput(const Weights& input) const {
 			}
 			netInput += -1.f*neuron.weights.back();
 			//sigmoid like function : x/(1+abs(x))
-			output.push_back(netInput / (1 + std::abs(netInput)));
+			output.push_back(sigmoidApproximation(netInput));
 		}
 		nextInput = output; //we could move here probably
 	}

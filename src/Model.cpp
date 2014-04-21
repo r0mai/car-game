@@ -45,12 +45,15 @@ float Model::getCurrentTime() const {
 	return currentTime;
 }
 
-std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints() const {
+std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) const {
 
 	using namespace boost::math::float_constants;
 
-	//right (1, 0) is to the front
-	std::vector<sf::Vector2f> directions = { {1, 1}, {1, 0.5}, {1, 0}, {1, -0.5}, {1, -1} };
+	//right, (1, 0) is to the front
+	std::vector<sf::Vector2f> directions(count);
+	for (unsigned i = 0; i < count; ++i) {
+		directions[i] = {1, i*2.f/count - 1.f};
+	}
 
 	//rotate them, so they align with the current rotation of the car
 	const sf::Vector2f& carOrientation = car.getOrientation();

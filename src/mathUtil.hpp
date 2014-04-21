@@ -1,8 +1,9 @@
 #ifndef MATHUTIL_HPP
 #define MATHUTIL_HPP
 
-#include <SFML/Graphics.hpp>
 #include <cmath>
+
+#include <SFML/Graphics.hpp>
 
 namespace car {
 
@@ -40,6 +41,11 @@ sf::Vector2<T> normalize(const sf::Vector2<T>& v) {
 		return sf::Vector2<T>(T(0), T(0));
 	}
 	return v / magnitude;
+}
+
+template<class T>
+T sigmoidApproximation(T x) {
+	return x / (1 + std::abs(x));
 }
 
 template<class T>

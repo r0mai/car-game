@@ -29,7 +29,12 @@ private:
 	void updateTelemetry();
 
 	Model model;
-	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, 4, 10);
+
+	const unsigned rayCount = 7;
+	std::vector<boost::optional<sf::Vector2f>> rayPoints;
+
+	//+1 is for the velocity
+	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, 4, rayCount + 1);
 
 	bool isAIControl = false;
 
@@ -37,8 +42,6 @@ private:
 	sf::View gameView;
 	sf::View hudView;
 	sf::Font font;
-
-	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	float physicsTimeStep = 1.f/64.f;
 	float fpsLimit = 64;

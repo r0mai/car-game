@@ -54,6 +54,8 @@ void RealTimeGameManager::run() {
 	sf::Clock clock;
 
 	float physicsTimeStepAccumulator = 0.f;
+	rayPoints = model.getRayPoints(rayCount);
+
 	while (window.isOpen()) {
 		const sf::Time time = clock.restart();
 		float deltaSeconds = time.asSeconds();
@@ -67,7 +69,7 @@ void RealTimeGameManager::run() {
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			handleInput();
 			model.advanceTime(physicsTimeStep);
-			rayPoints = model.getRayPoints();
+			rayPoints = model.getRayPoints(rayCount);
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -123,8 +125,21 @@ void RealTimeGameManager::handleInput() {
 	}
 
 	if ( isAIControl ) {
-		Weights inputs;
-		std::generate_n(std::back_inserter(inputs), 10, [] { return randomReal(0, 1); });
+		Weights inputs(rayCount + 1);
+
+		const float sigmoidDamping = 5.f;
+
+		const sf::Vector2f& carPosition = model.getCar().getPosition();
+		for (unsigned i = 0; i < rayCount; ++i) {
+			auto rayPoint = rayPoints[i];
+			if (rayPoint) {
+				float distance = getDistance(carPosition, *rayPoint);
+				inputs[i] = sigmoidApproximation(distance/sigmoidDamping);
+			} else {
+				inputs[i] = 1.f;
+			}
+		}
+		inputs.back() = sigmoidApproximation(getLength(model.getCar().getVelocity()));
 
 		Weights outputs = neuralNetwork.evaluateInput(inputs);
 		assert(outputs.size() == 4);

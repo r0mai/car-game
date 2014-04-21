@@ -27,7 +27,7 @@ public:
 
 	float getCurrentTime() const;
 
-	std::vector<boost::optional<sf::Vector2f>> getRayPoints() const;
+	std::vector<boost::optional<sf::Vector2f>> getRayPoints(unsigned count) const;
 
 	void advanceTime(float deltaSeconds);
 	void draw(sf::RenderWindow& window) const;

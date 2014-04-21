@@ -27,7 +27,7 @@ void GeneticPopulation::evolve() {
 	std::sort(population.begin(), population.end());
 
 	calculateStats();
-  	Genomes newPopulation;
+	Genomes newPopulation;
 
 	assert((bestTopN * bestCopies) % 2 == 0);
 	assert(population.size() % 2 == 0);
