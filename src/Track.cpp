@@ -2,6 +2,7 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "Track.hpp"
+#include "Car.hpp"
 #include "drawUtil.hpp"
 #include "mathUtil.hpp"
 #include "PolygonTrackBuilder.hpp"
@@ -38,6 +39,8 @@ Track createCircleTrack() {
 			));
 	}
 
+	track.setOrigin({0.f, 55.f}, 0.f);
+
 	return track;
 }
 
@@ -52,6 +55,15 @@ Track createZigZagTrack() {
 
 	PolygonTrackBuilder builder{10.f, 20.f};
 	return builder(points);
+}
+
+Car Track::createCar() const {
+	return Car{startingPoint, startingDirection};
+}
+
+void Track::setOrigin(const sf::Vector2f& point, float direction){
+	startingPoint = point;
+	startingDirection = direction;
 }
 
 

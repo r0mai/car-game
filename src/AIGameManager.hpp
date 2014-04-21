@@ -1,14 +1,17 @@
 #ifndef AIGAMEMANAGER_HPP
 #define AIGAMEMANAGER_HPP
 
+#include <functional>
 #include "Model.hpp"
 #include "NeuralNetwork.hpp"
 
 namespace car {
 
+class Track;
+
 class AIGameManager {
 public:
-	AIGameManager();
+	AIGameManager(std::function<Track()> trackCreator);
 
 	void run();
 private:

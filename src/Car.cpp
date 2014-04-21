@@ -40,9 +40,10 @@ const float Car::brakeIncreaseSpeed = 1.9;
 const float Car::brakeDecreaseSpeed = 1.7;
 const float Car::turnSpeed = 6.5;
 
-Car::Car() : Car(sf::Vector2f()) {}
+Car::Car() {}
 
-Car::Car(const sf::Vector2f& position) : position(position) {
+Car::Car(const sf::Vector2f& position, float direction) :
+		position(position), orientation(std::cos(direction), std::sin(direction)) {
 	updateCorners();
 }
 

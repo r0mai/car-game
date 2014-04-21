@@ -1,7 +1,6 @@
 #include "PolygonTrackBuilder.hpp"
 #include "mathUtil.hpp"
 #include "Line2.hpp"
-#include "LineIntersection.hpp"
 #include <iostream>
 
 namespace car {
@@ -40,8 +39,13 @@ Track PolygonTrackBuilder::operator()(const std::vector<sf::Vector2f>& points) {
 		const auto& point2 = points[(i + 1) % points.size()];
 
 		// rotate direction 90 degrees and normalize it
-		auto direction = normalize(rotateClockwise(point2 - point1));
-		auto shift = direction * distance;
+		auto roadVector = point2 - point1;
+		auto shiftDirection = normalize(rotateClockwise(roadVector));
+		auto shift = shiftDirection * distance;
+
+		if (i == 0) {
+			track.setOrigin(point1, std::atan2(roadVector.y, roadVector.x));
+		}
 
 		rightEdge.push_back({point1 + shift, point2 + shift});
 		leftEdge.push_back({point1 - shift, point2 - shift});
@@ -65,16 +69,10 @@ Track PolygonTrackBuilder::operator()(const std::vector<sf::Vector2f>& points) {
 
 		for (float position = 0.f; position < length; position += checkpointDistance) {
 			auto base = line1.start + roadDirection * position;
-			LineIntersection<float> intersection{line2, {base, base + checkpointDirection}};
+			sf::Vector2f intersectionPoint;
 
-			auto intersectionPoint = intersection.getIntersectionPoint();
-			if (!intersectionPoint) {
-				continue;
-			}
-
-			auto ratio = intersection.getIntersectionPointRatioLine1();
-			if (ratio > 0.f && ratio < 1.f) {
-				track.addCheckpoint({base, *intersectionPoint});
+			if (intersectsRay(line2, base, checkpointDirection, &intersectionPoint)) {
+				track.addCheckpoint({base, intersectionPoint});
 			}
 		}
 
