@@ -14,13 +14,23 @@ sf::Vector2<T> vectorCast(const sf::Vector2<U>& v) {
 }
 
 template<class T>
-T getLength(const sf::Vector2<T>& v) {
-	return std::sqrt(v.x*v.x + v.y*v.y);
+T getLengthSQ(const sf::Vector2<T>& v) {
+	return v.x*v.x + v.y*v.y;
 }
 
 template<class T>
-T getLengthSQ(const sf::Vector2<T>& v) {
-	return v.x*v.x + v.y*v.y;
+T getLength(const sf::Vector2<T>& v) {
+	return std::sqrt(getLengthSQ(v));
+}
+
+template<class T>
+T getDistanceSQ(const sf::Vector2<T>& a, const sf::Vector2<T>& b) {
+	return getLengthSQ(b-a);
+}
+
+template<class T>
+T getDistance(const sf::Vector2<T>& a, const sf::Vector2<T>& b) {
+	return getLength(b-a);
 }
 
 template<class T>

@@ -2,7 +2,10 @@
 #define TRACK_HPP
 
 #include <SFML/Graphics.hpp>
+
 #include <vector>
+
+#include <boost/optional.hpp>
 
 #include "Line2.hpp"
 
@@ -15,8 +18,12 @@ public:
 
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
+
+	boost::optional<sf::Vector2f> collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction);
+
 	bool collidesWith(const Line2f& line);
 	int checkpointCollidesWith(const Line2f& line);
+
 	std::size_t getNumberOfCheckpoints() const;
 
 	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
