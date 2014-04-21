@@ -20,7 +20,15 @@ public:
 
 private:
 	void mutate(Weights& weights) const;
+
 	Genome pickRoulette() const;
+
+	void crossover(
+		const Weights& parent1,
+		const Weights& parent2,
+		Weights& child1,
+		Weights& child2) const;
+
 	void calculateStats();
 
 	Genomes population;

@@ -30,8 +30,7 @@ void GeneticPopulation::mutate(Weights& weights) const {
 	}
 }
 
-Genome GeneticPopulation::pickRoulette() const {
-
+Genome GeneticPopulation::pickRoulette() const { 
 	float slice = randomReal(0, totalFitness);
 
 	float fitnessSoFar = 0;
@@ -44,6 +43,37 @@ Genome GeneticPopulation::pickRoulette() const {
 	}
 	//we shouldn't ever get here (only if rounding error occurs)
 	return population.back();
+}
+
+void GeneticPopulation::crossover(
+	const Weights& parent1,
+	const Weights& parent2,
+	Weights& child1,
+	Weights& child2) const {
+
+	assert(parent1.size() == parent2.size());
+
+	if (randomReal(0, 1) > crossoverRate || parent1 == parent2) {
+		child1 = parent1;
+		child2 = parent2;
+		return;
+	}
+
+	unsigned crossoverPoint = static_cast<unsigned>(randomInt(0, parent1.size()));
+
+	child1.clear();
+	child2.clear();
+
+	//create the offspring
+	for (unsigned i = 0; i < crossoverPoint; ++i) {
+		child1.push_back(parent1[i]);
+		child2.push_back(parent2[i]);
+	}
+
+	for (unsigned i = crossoverPoint; i < parent1.size(); ++i) {
+		child1.push_back(parent2[i]);
+		child2.push_back(parent1[i]);
+	}
 }
 
 
