@@ -22,6 +22,36 @@ const GeneticPopulation::Genomes& GeneticPopulation::getPopulation() const {
    return population;
 }
 
+void GeneticPopulation::evolve() {
+
+	std::sort(population.begin(), population.end());
+
+	calculateStats();
+  	Genomes newPopulation;
+
+	assert((bestTopN * bestCopies) % 2 == 0);
+	assert(population.size() % 2 == 0);
+
+	pickBest(bestTopN, bestCopies, newPopulation);
+
+	while (newPopulation.size() < population.size()) {
+		Genome parent1 = pickRoulette();
+		Genome parent2 = pickRoulette();
+
+		Weights child1, child2;
+
+		crossover(parent1.weights, parent2.weights, child1, child2);
+
+		mutate(child1);
+		mutate(child2);
+
+		newPopulation.push_back(Genome(child1, 0));
+		newPopulation.push_back(Genome(child2, 0));
+	}
+
+	population = newPopulation;
+}
+
 void GeneticPopulation::mutate(Weights& weights) const {
 	for (Weight& weight : weights) {
 		if (randomReal(0, 1) < mutationRate) {
@@ -30,7 +60,7 @@ void GeneticPopulation::mutate(Weights& weights) const {
 	}
 }
 
-Genome GeneticPopulation::pickRoulette() const { 
+Genome GeneticPopulation::pickRoulette() const {
 	float slice = randomReal(0, totalFitness);
 
 	float fitnessSoFar = 0;
@@ -73,6 +103,14 @@ void GeneticPopulation::crossover(
 	for (unsigned i = crossoverPoint; i < parent1.size(); ++i) {
 		child1.push_back(parent2[i]);
 		child2.push_back(parent1[i]);
+	}
+}
+
+void GeneticPopulation::pickBest(unsigned topN, unsigned copies, Genomes& newPopulation) {
+	for (unsigned i = 0; i < topN; ++i) {
+		for (unsigned j = 0; j < copies; ++j) {
+			newPopulation.push_back(population[population.size() - 1 - i]);
+		}
 	}
 }
 

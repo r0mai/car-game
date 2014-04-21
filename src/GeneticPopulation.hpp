@@ -18,10 +18,13 @@ public:
 
 	const Genomes& getPopulation() const;
 
+	void evolve();
+
 private:
 	void mutate(Weights& weights) const;
 
 	Genome pickRoulette() const;
+	void pickBest(unsigned topN, unsigned copies, Genomes& newPopulation);
 
 	void crossover(
 		const Weights& parent1,
@@ -43,6 +46,7 @@ private:
 	float mutationRate = 0.1;
 	float crossoverRate = 0.7;
 	float maxPerturbation = 0.3;
+	unsigned bestTopN = 4, bestCopies = 1;
 
 };
 
