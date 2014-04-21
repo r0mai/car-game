@@ -22,6 +22,7 @@ public:
 private:
 	void handleInput();
 	void drawTelemetry();
+	void drawRayPoints();
 	void updateTelemetry();
 
 	Model model;
@@ -33,6 +34,8 @@ private:
 	sf::View gameView;
 	sf::View hudView;
 	sf::Font font;
+
+	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	float physicsTimeStep = 1.f/64.f;
 	float fpsLimit = 64;

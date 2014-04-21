@@ -47,7 +47,7 @@ void Track::addCheckpoint(const Line2f& line) {
 }
 
 
-bool Track::collidesWith(const Line2f& line) {
+bool Track::collidesWith(const Line2f& line) const {
 	for ( const Line2f& trackLine : lines ) {
 		if ( line.intersectWithLine(trackLine) ) {
 			return true;
@@ -56,7 +56,7 @@ bool Track::collidesWith(const Line2f& line) {
 	return false;
 }
 
-boost::optional<sf::Vector2f> Track::collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction) {
+boost::optional<sf::Vector2f> Track::collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction) const {
 	float minimumDistanceSQ = -1.f; //negative distance means, we haven't found an intersecting line
 	sf::Vector2f closest;
 	for ( const Line2f& trackLine : lines ) {
@@ -75,7 +75,7 @@ boost::optional<sf::Vector2f> Track::collideWithRay(const sf::Vector2f& origin, 
 	return closest;
 }
 
-int Track::checkpointCollidesWith(const Line2f& line) {
+int Track::checkpointCollidesWith(const Line2f& line) const {
 	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
 		if ( line.intersectWithLine(checkpoints[i]) ) {
 			return i;

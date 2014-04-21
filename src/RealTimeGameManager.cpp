@@ -10,6 +10,7 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "mathUtil.hpp"
+#include "drawUtil.hpp"
 #include "randomUtil.hpp"
 
 namespace car {
@@ -61,6 +62,7 @@ void RealTimeGameManager::run() {
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			handleInput();
 			model.advanceTime(physicsTimeStep);
+			rayPoints = model.getRayPoints();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -70,6 +72,7 @@ void RealTimeGameManager::run() {
 
 		window.setView(gameView);
 		model.draw(window);
+		drawRayPoints();
 
 		window.setView(hudView);
 		drawTelemetry();
@@ -143,6 +146,17 @@ void RealTimeGameManager::updateTelemetry() {
 	gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
 	brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
 	turnTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getTurnLevel()));
+}
+
+void RealTimeGameManager::drawRayPoints() {
+	const Car& car = model.getCar();
+
+	for ( const auto& ray : rayPoints ) {
+		if (!ray) {
+			continue;
+		}
+		drawLine(window, car.getPosition(), *ray);
+	}
 }
 
 void RealTimeGameManager::drawTelemetry() {

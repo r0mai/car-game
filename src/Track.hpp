@@ -19,10 +19,10 @@ public:
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
 
-	boost::optional<sf::Vector2f> collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction);
+	boost::optional<sf::Vector2f> collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction) const;
 
-	bool collidesWith(const Line2f& line);
-	int checkpointCollidesWith(const Line2f& line);
+	bool collidesWith(const Line2f& line) const;
+	int checkpointCollidesWith(const Line2f& line) const;
 
 	std::size_t getNumberOfCheckpoints() const;
 

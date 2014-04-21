@@ -1,6 +1,10 @@
 #ifndef MODEL_HPP
 #define MODEL_HPP
 
+#include <vector>
+
+#include <boost/optional.hpp>
+
 #include "Car.hpp"
 #include "Track.hpp"
 
@@ -22,6 +26,8 @@ public:
 	void setBackwardPressed(bool isPressed);
 
 	float getCurrentTime() const;
+
+	std::vector<boost::optional<sf::Vector2f>> getRayPoints() const;
 
 	void advanceTime(float deltaSeconds);
 	void draw(sf::RenderWindow& window) const;

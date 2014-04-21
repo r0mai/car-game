@@ -1,4 +1,8 @@
+
 #include <assert.h>
+
+#include <boost/math/constants/constants.hpp>
+
 #include "Model.hpp"
 
 namespace car {
@@ -39,6 +43,32 @@ void Model::setBackwardPressed(bool isPressed) {
 
 float Model::getCurrentTime() const {
 	return currentTime;
+}
+
+std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints() const {
+
+	using namespace boost::math::float_constants;
+
+	//right (1, 0) is to the front
+	std::vector<sf::Vector2f> directions = { {1, 1}, {1, 0.5}, {1, 0}, {1, -0.5}, {1, -1} };
+
+	//rotate them, so they align with the current rotation of the car
+	const sf::Vector2f& carOrientation = car.getOrientation();
+
+	sf::Transform transform;
+	transform.rotate(std::atan2(carOrientation.y, carOrientation.x) * 180.f/pi);
+
+	for ( sf::Vector2f& v : directions ) {
+		v = transform.transformPoint(v);
+	}
+
+	std::vector<boost::optional<sf::Vector2f>> rayPoints;
+
+	for ( const sf::Vector2f& v : directions ) {
+		rayPoints.push_back(track.collideWithRay(car.getPosition(), v));
+	}
+
+	return rayPoints;
 }
 
 void Model::advanceTime(float deltaSeconds) {
