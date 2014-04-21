@@ -93,8 +93,7 @@ struct Line2 {
 						out += origin;
 					if ((origin+direction) != maxp && (origin+direction) != minp)
 						out += (origin+direction);
-					out.x = static_cast<T>(out.x/2);
-					out.y = static_cast<T>(out.y/2);
+					out /= 2.f;
 				}
 
 				if ( outPtr ) {
@@ -106,18 +105,17 @@ struct Line2 {
 			return false; // parallel
 		}
 
-		bool checkOnlySegments = true;
 
-		// I don't care about this right now
 		// Get the point of intersection on this line, checking that
-		// it is within the line segment.
+		// it is within the line segment. For the ray, we only check
+		// if it's in the right direction
 		const float uA = numeratorA / commonDenominator;
-		if (checkOnlySegments && (uA < 0.f || uA > 1.f))
+		const float uB = numeratorB / commonDenominator;
+		if (uB < 0.f || uA < 0.f || uA > 1.f)
 			return false; // Outside the line segment
 
 		// Calculate the intersection point.
-		out.x = static_cast<T>(start.x + uA * (end.x - start.x));
-		out.y = static_cast<T>(start.y + uA * (end.y - start.y));
+		out = start + uA * (end - start);
 		if ( outPtr ) {
 			*outPtr = out;
 		}
@@ -197,8 +195,7 @@ struct Line2 {
 						out += line.start;
 					if (line.end != maxp && line.end != minp)
 						out += line.end;
-					out.x = static_cast<T>(out.x/2);
-					out.y = static_cast<T>(out.y/2);
+					out /= 2.f;
 				}
 
 				if ( outPtr ) {
@@ -222,8 +219,7 @@ struct Line2 {
 			return false; // Outside the line segment
 
 		// Calculate the intersection point.
-		out.x = static_cast<T>(start.x + uA * (end.x - start.x));
-		out.y = static_cast<T>(start.y + uA * (end.y - start.y));
+		out = start + uA * (end - start);
 		if ( outPtr ) {
 			*outPtr = out;
 		}

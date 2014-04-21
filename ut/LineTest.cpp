@@ -42,5 +42,14 @@ BOOST_AUTO_TEST_CASE(intersectWithRay_test_2) {
 	BOOST_CHECK(!line.intersectWithRay(origin, direction, &out));
 }
 
+BOOST_AUTO_TEST_CASE(intersectWithRay_test_3) {
+	Line2f line(-5, 0, 10, 0);
+	sf::Vector2f origin(2, 2);
+	sf::Vector2f direction(-1, 1);
+
+	sf::Vector2f out;
+	BOOST_CHECK(!line.intersectWithRay(origin, direction, &out));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
