@@ -160,7 +160,7 @@ void RealTimeGameManager::drawRayPoints() {
 		if (!ray) {
 			continue;
 		}
-		drawLine(window, car.getPosition(), *ray);
+		drawLine(window, car.getPosition(), *ray, sf::Color{64, 64, 0});
 	}
 }
 
