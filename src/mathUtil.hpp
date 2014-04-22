@@ -2,6 +2,7 @@
 #define MATHUTIL_HPP
 
 #include <cmath>
+#include <cassert>
 
 #include <SFML/Graphics.hpp>
 
@@ -46,6 +47,18 @@ sf::Vector2<T> normalize(const sf::Vector2<T>& v) {
 template<class T>
 T sigmoidApproximation(T x) {
 	return x / (1 + std::abs(x));
+}
+
+template<class T>
+T clamp(T x, T min, T max) {
+	assert(max >= min);
+	if (x > max) {
+		return max;
+	}
+	if (x < min) {
+		return min;
+	}
+	return x;
 }
 
 template<class T>
