@@ -16,12 +16,18 @@ AIGameManager::AIGameManager(std::function<Track()> trackCreator) :
 
 
 void AIGameManager::run() {
-	while (true) {
+	while (!stopCondition()) {
 		advance();
-		if (model.hasCarCollided()) {
-			break;
-		}
 	}
+}
+
+float AIGameManager::getFitness() const {
+	//TODO this will need some more work probably
+	return model.getNumberOfCrossedCheckpoints() + (model.getCurrentTime() / maxTime);
+}
+
+bool AIGameManager::stopCondition() const {
+	return model.hasCarCollided() || model.getCurrentTime() > maxTime;
 }
 
 }

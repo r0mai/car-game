@@ -86,6 +86,10 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 	return rayPoints;
 }
 
+unsigned Model::getNumberOfCrossedCheckpoints() const {
+	return numberOfCrossedCheckpoints;
+}
+
 void Model::advanceTime(float deltaSeconds) {
 	currentTime += deltaSeconds;
 
@@ -125,6 +129,7 @@ void Model::handleCheckpoints() {
 
 		if (currentCheckpoint < 0 || currentCheckpoint == checkpoint) {
 			currentCheckpoint = (checkpoint + 1) % track.getNumberOfCheckpoints();
+			++numberOfCrossedCheckpoints;
 		}
 	}
 }

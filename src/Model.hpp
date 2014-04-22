@@ -33,6 +33,8 @@ public:
 
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints(unsigned count) const;
 
+	unsigned getNumberOfCrossedCheckpoints() const;
+
 	void advanceTime(float deltaSeconds);
 	void draw(sf::RenderWindow& window) const;
 
@@ -47,6 +49,7 @@ private:
 	bool isCarCollided = false;
 	float currentTime = 0.f;
 	int currentCheckpoint = -1;
+	unsigned numberOfCrossedCheckpoints = 0;
 
 	bool rightPressed = false;
 	bool leftPressed = false;
