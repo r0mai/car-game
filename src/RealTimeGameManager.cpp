@@ -16,18 +16,10 @@
 namespace car {
 
 RealTimeGameManager::RealTimeGameManager(std::function<Track()> trackCreator) :
+	GameManager(trackCreator),
 	window(sf::VideoMode(800, 800), "car-game")
 {
-
 	using namespace boost::math::float_constants;
-
-
-	Track track = trackCreator();
-//	Track track = createCircleTrack();
-	track.check();
-
-	model.setCar(track.createCar());
-	model.setTrack(track);
 
 	font.loadFromFile("resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
@@ -45,16 +37,11 @@ RealTimeGameManager::RealTimeGameManager(std::function<Track()> trackCreator) :
 
 }
 
-void RealTimeGameManager::setFPSLimit(float newFpsLimit) {
-	fpsLimit = newFpsLimit;
-}
-
 void RealTimeGameManager::run() {
 
 	sf::Clock clock;
 
 	float physicsTimeStepAccumulator = 0.f;
-	rayPoints = model.getRayPoints(rayCount);
 
 	while (window.isOpen()) {
 		const sf::Time time = clock.restart();
@@ -67,9 +54,7 @@ void RealTimeGameManager::run() {
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
-			handleInput();
-			model.advanceTime(physicsTimeStep);
-			rayPoints = model.getRayPoints(rayCount);
+			advance();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -94,11 +79,11 @@ void RealTimeGameManager::run() {
 	}
 }
 
-void RealTimeGameManager::setNeuralNetwork(const NeuralNetwork& network) {
-	neuralNetwork = network;
+void RealTimeGameManager::setFPSLimit(float newFPSLimit) {
+	fpsLimit = newFPSLimit;
 }
 
-void RealTimeGameManager::handleInput() {
+void RealTimeGameManager::handleUserInput() {
 
 	sf::Event event;
 	while (window.pollEvent(event)) {
@@ -131,42 +116,12 @@ void RealTimeGameManager::handleInput() {
 		window.close();
 	}
 
-	if ( isAIControl ) {
-
-		Weights outputs = callNeuralNetwork();
-		assert(outputs.size() == 3);
-
-		Car& car = model.getCar();
-
-		car.setThrottle((outputs[0] + 1)/2.f);
-		car.setBrake((outputs[1] + 1)/2.f);
-		car.setTurnLevel(outputs[2]);
-	} else {
+	if ( !isAIControl ) {
 		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
 		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
 		model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
 		model.setBackwardPressed(pressedKeys[sf::Keyboard::Down]);
 	}
-}
-
-Weights RealTimeGameManager::callNeuralNetwork() {
-	Weights inputs(rayCount + 1);
-
-	const float sigmoidDamping = 5.f;
-
-	const sf::Vector2f& carPosition = model.getCar().getPosition();
-	for (unsigned i = 0; i < rayCount; ++i) {
-		auto rayPoint = rayPoints[i];
-		if (rayPoint) {
-			float distance = getDistance(carPosition, *rayPoint);
-			inputs[i] = sigmoidApproximation(distance/sigmoidDamping);
-		} else {
-			inputs[i] = 1.f;
-		}
-	}
-	inputs.back() = sigmoidApproximation(model.getCar().getSpeed());
-
-	return neuralNetwork.evaluateInput(inputs);
 }
 
 void RealTimeGameManager::updateTelemetry() {

@@ -29,6 +29,8 @@ public:
 
 	float getCurrentTime() const;
 
+	bool hasCarCollided() const;
+
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints(unsigned count) const;
 
 	void advanceTime(float deltaSeconds);
@@ -39,10 +41,10 @@ private:
 	void handleCheckpoints();
 	void handleInput(float deltaSeconds);
 
-
 	Car car;
 	Track track;
 
+	bool isCarCollided = false;
 	float currentTime = 0.f;
 	int currentCheckpoint = -1;
 

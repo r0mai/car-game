@@ -53,6 +53,10 @@ float Model::getCurrentTime() const {
 	return currentTime;
 }
 
+bool Model::hasCarCollided() const {
+	return isCarCollided;
+}
+
 std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) const {
 
 	using namespace boost::math::float_constants;
@@ -93,11 +97,13 @@ void Model::advanceTime(float deltaSeconds) {
 }
 
 void Model::collideCar() {
-	if (    track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
-			track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
-			track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
-			track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()))
-	) {
+	isCarCollided =
+		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
+		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
+		track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
+		track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
+	
+	if (isCarCollided) {	
 		car.setColor(sf::Color::Red);
 	} else {
 		car.setColor(sf::Color::White);

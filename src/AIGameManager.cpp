@@ -11,29 +11,17 @@
 
 namespace car {
 
-AIGameManager::AIGameManager(std::function<Track()> trackCreator) {
-	model.setTrack(trackCreator());
-	model.setCar(model.getTrack().createCar());
-}
+AIGameManager::AIGameManager(std::function<Track()> trackCreator) :
+	GameManager(trackCreator) {}
+
 
 void AIGameManager::run() {
-	std::clock_t start = clock();
-	for (int i = 0; i < 10000; ++i) {
-		//TODO meaningful inputs
-		Weights inputs;
-		std::generate_n(std::back_inserter(inputs), 10, [] { return randomReal(0, 1); });
-
-		Weights outputs = neuralNetwork.evaluateInput(inputs);
-		assert(outputs.size() == 4);
-
-		model.setForwardPressed(outputs[0] > 0.5);
-		model.setBackwardPressed(outputs[1] > 0.5);
-		model.setLeftPressed(outputs[2] > 0.5);
-		model.setRightPressed(outputs[3] > 0.5);
-
-		model.advanceTime(physicsTimeStep);
+	while (true) {
+		advance();
+		if (model.hasCarCollided()) {
+			break;
+		}
 	}
-	std::cout << "Time taken for 1 iteration: " << std::clock() - start << std::endl;
 }
 
 }
