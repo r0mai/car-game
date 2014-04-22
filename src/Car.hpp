@@ -26,6 +26,8 @@ public:
 	void increaseBrake(float deltaSeconds);
 	void decreaseBrake(float deltaSeconds);
 
+	void setTurnLevel(float value);
+	float getTurnLevel() const;
 	void increaseTurnToRight(float deltaSeconds);
 	void increaseTurnToLeft(float deltaSeconds);
 	void dontTurn(float deltaSeconds);
@@ -33,7 +35,6 @@ public:
 	const sf::Vector2f& getPosition() const;
 	const sf::Vector2f& getVelocity() const;
 	const sf::Vector2f& getOrientation() const;
-	float getTurnLevel() const;
 	float getSpeed() const;
 
 	const sf::Vector2f& getAcceleration() const;

@@ -142,6 +142,11 @@ void Car::decreaseBrake(float deltaSeconds) {
 	}
 }
 
+void Car::setTurnLevel(float value) {
+	assert(value >= -1.0 && value <= 1.0);
+	turnLevel = value;
+}
+
 void Car::increaseTurnToRight(float deltaSeconds) {
 	turnLevel += turnSpeed*deltaSeconds;
 	if (turnLevel > 1.) {
