@@ -125,23 +125,8 @@ void RealTimeGameManager::handleInput() {
 	}
 
 	if ( isAIControl ) {
-		Weights inputs(rayCount + 1);
 
-		const float sigmoidDamping = 5.f;
-
-		const sf::Vector2f& carPosition = model.getCar().getPosition();
-		for (unsigned i = 0; i < rayCount; ++i) {
-			auto rayPoint = rayPoints[i];
-			if (rayPoint) {
-				float distance = getDistance(carPosition, *rayPoint);
-				inputs[i] = sigmoidApproximation(distance/sigmoidDamping);
-			} else {
-				inputs[i] = 1.f;
-			}
-		}
-		inputs.back() = sigmoidApproximation(getLength(model.getCar().getVelocity()));
-
-		Weights outputs = neuralNetwork.evaluateInput(inputs);
+		Weights outputs = callNeuralNetwork();
 		assert(outputs.size() == 4);
 
 		model.setForwardPressed(outputs[0] > 0.5);
@@ -154,6 +139,26 @@ void RealTimeGameManager::handleInput() {
 		model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
 		model.setBackwardPressed(pressedKeys[sf::Keyboard::Down]);
 	}
+}
+
+Weights RealTimeGameManager::callNeuralNetwork() {
+	Weights inputs(rayCount + 1);
+
+	const float sigmoidDamping = 5.f;
+
+	const sf::Vector2f& carPosition = model.getCar().getPosition();
+	for (unsigned i = 0; i < rayCount; ++i) {
+		auto rayPoint = rayPoints[i];
+		if (rayPoint) {
+			float distance = getDistance(carPosition, *rayPoint);
+			inputs[i] = sigmoidApproximation(distance/sigmoidDamping);
+		} else {
+			inputs[i] = 1.f;
+		}
+	}
+	inputs.back() = sigmoidApproximation(getLength(model.getCar().getVelocity()));
+
+	return neuralNetwork.evaluateInput(inputs);
 }
 
 void RealTimeGameManager::updateTelemetry() {

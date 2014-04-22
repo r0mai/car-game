@@ -27,6 +27,7 @@ private:
 	void drawTelemetry();
 	void drawRayPoints();
 	void updateTelemetry();
+	Weights callNeuralNetwork();
 
 	Model model;
 
