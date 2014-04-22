@@ -7,6 +7,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <string>
+#include <fstream>
+
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/program_options.hpp>
 
 using namespace car;
@@ -21,6 +25,7 @@ int main(int argc, char **argv) {
 	desc.add_options()
 		("help", "produce help message")
 		("ai", "simulate AI")
+		("neural-network", po::value<std::string>(), "load neural-network from file")
 		("track", po::value<TrackType>(&trackType)->default_value(TrackType::circle),
 				"The type of track to use. Allowed values: circle, zigzag")
 		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
@@ -52,7 +57,18 @@ int main(int argc, char **argv) {
 		manager.run();
 	} else {
 		RealTimeGameManager manager{trackCreator};
+
 		manager.setFPSLimit(vm["fps-limit"].as<int>());
+
+		if (vm.count("neural-network")) {
+			NeuralNetwork network;
+		
+			std::ifstream ifs(vm["neural-network"].as<std::string>());
+			boost::archive::text_iarchive ia(ifs);
+			ia >> network;
+			
+			manager.setNeuralNetwork(network);
+		}
 		manager.run();
 	}
 	return 0;

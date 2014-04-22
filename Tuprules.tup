@@ -17,6 +17,7 @@ LIBS += -lsfml-graphics
 LIBS += -lsfml-window
 LIBS += -lsfml-system
 LIBS += -lboost_program_options
+LIBS += -lboost_serialization
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>

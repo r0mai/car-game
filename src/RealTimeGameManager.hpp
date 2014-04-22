@@ -22,6 +22,8 @@ public:
 
 	void run();
 
+	void setNeuralNetwork(const NeuralNetwork& network);
+
 private:
 	void handleInput();
 	void drawTelemetry();

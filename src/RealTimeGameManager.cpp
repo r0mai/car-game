@@ -94,6 +94,10 @@ void RealTimeGameManager::run() {
 	}
 }
 
+void RealTimeGameManager::setNeuralNetwork(const NeuralNetwork& network) {
+	neuralNetwork = network;
+}
+
 void RealTimeGameManager::handleInput() {
 
 	sf::Event event;
