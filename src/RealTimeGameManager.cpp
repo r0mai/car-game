@@ -108,6 +108,9 @@ void RealTimeGameManager::handleInput() {
 			case sf::Keyboard::T:
 				showTelemetry = !showTelemetry;
 				break;
+			case sf::Keyboard::A:
+				isAIControl = !isAIControl;
+				break;
 			default:
 				break;
 			}
