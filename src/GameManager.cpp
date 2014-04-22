@@ -20,7 +20,11 @@ void GameManager::advance() {
 }
 
 void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
+	assert(network.getOutputNeuronCount() == 3);
+	assert(network.getInputNeuronCount() > 0);
+
 	neuralNetwork = network;
+	rayCount = neuralNetwork.getInputNeuronCount() - 1;
 }
 
 void GameManager::handleInput() {

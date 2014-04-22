@@ -14,9 +14,11 @@ class GeneticPopulation {
 public:
 	typedef std::vector<Genome> Genomes;
 
+	GeneticPopulation() = default;
 	GeneticPopulation(unsigned populationSize, unsigned numberOfWeights);
 
 	const Genomes& getPopulation() const;
+	Genomes& getPopulation();
 
 	void evolve();
 

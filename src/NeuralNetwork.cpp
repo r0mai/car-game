@@ -25,6 +25,16 @@ NeuralNetwork::NeuralNetwork(
 	}
 }
 
+unsigned NeuralNetwork::getWeightCountForNetwork(
+		unsigned hiddenLayerCount,
+		unsigned hiddenLayerNeuronCount,
+		unsigned inputNeuronCount,
+		unsigned outputNeuronCount)
+{
+	//we shouldn't create an object here, but this is quicker for now
+	return NeuralNetwork(hiddenLayerCount, hiddenLayerNeuronCount, inputNeuronCount, outputNeuronCount).getWeightCount();
+}
+
 Weights NeuralNetwork::getWeights() const {
 	Weights result;
 	for (const NeuronLayer& layer : layers) {
@@ -57,6 +67,14 @@ unsigned NeuralNetwork::getWeightCount() const {
 		}
 	}
 	return count;
+}
+
+unsigned NeuralNetwork::getInputNeuronCount() const {
+	return inputNeuronCount;
+}
+
+unsigned NeuralNetwork::getOutputNeuronCount() const {
+	return layers.back().neurons.size();
 }
 
 Weights NeuralNetwork::evaluateInput(const Weights& input) const {

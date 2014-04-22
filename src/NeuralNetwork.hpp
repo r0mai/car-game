@@ -20,9 +20,18 @@ public:
 			unsigned inputNeuronCount,
 			unsigned outputNeuronCount);
 
+	static unsigned getWeightCountForNetwork(
+			unsigned hiddenLayerCount,
+			unsigned hiddenLayerNeuronCount,
+			unsigned inputNeuronCount,
+			unsigned outputNeuronCount);
+
 	Weights getWeights() const;
 	void setWeights(const Weights& weights);
 	unsigned getWeightCount() const;
+
+	unsigned getInputNeuronCount() const;
+	unsigned getOutputNeuronCount() const;
 
 	Weights evaluateInput(const Weights& input) const;
 

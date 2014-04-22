@@ -83,6 +83,9 @@ void Car::move(float deltaSeconds) {
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
 
+	//We don't want anything accurate here
+	travelDistance += deltaSeconds * speed;
+
 	if (std::abs(turnLevel) > 0.0001) {
 		float steeringAngle = maxTurnAngle * turnLevel;
 		float turnRadius = wheelBase / std::sin(steeringAngle);
@@ -220,6 +223,10 @@ float Car::getSpeed() const {
 
 const sf::Vector2f& Car::getAcceleration() const {
 	return acceleration;
+}
+
+float Car::getTravelDistance() const {
+	return travelDistance;
 }
 
 void Car::updateCorners() {

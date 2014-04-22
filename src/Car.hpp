@@ -44,6 +44,8 @@ public:
 	const sf::Vector2f& getRearLeftCorner() const;
 	const sf::Vector2f& getRearRightCorner() const;
 
+	float getTravelDistance() const;
+
 	void draw(sf::RenderWindow& window) const;
 
 private:
@@ -94,6 +96,8 @@ private:
 	sf::Vector2f frontRightCorner; //recalculated with move()
 	sf::Vector2f rearLeftCorner; //recalculated with move()
 	sf::Vector2f rearRightCorner; //recalculated with move()
+
+	float travelDistance = 0.f; //recalculated with move()
 
 	sf::Color color = sf::Color::White;
 };

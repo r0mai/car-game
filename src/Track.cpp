@@ -15,7 +15,7 @@ Track createCircleTrack() {
 
 	Track track;
 	const int circleResolution = 60;
-	const int numberOfCheckpoints = 16;
+	const int numberOfCheckpoints = 72;
 	const float innerCircleRadius = 50.;
 	const float outerCircleRadius = 60.;
 	for ( int i = 0; i < circleResolution; ++i ) {
@@ -53,7 +53,7 @@ Track createZigZagTrack() {
 	points.push_back({ 55.f, -55.f});
 	points.push_back({-55.f, -55.f});
 
-	PolygonTrackBuilder builder{10.f, 20.f};
+	PolygonTrackBuilder builder{10.f, 5.f};
 	return builder(points);
 }
 

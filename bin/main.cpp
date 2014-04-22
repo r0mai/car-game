@@ -1,6 +1,6 @@
 
 #include "RealTimeGameManager.hpp"
-#include "AIGameManager.hpp"
+#include "NeuralController.hpp"
 #include "TrackType.hpp"
 #include "Track.hpp"
 
@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
 
 	std::srand(std::time(0));
 	if (vm.count("ai")) {
-		AIGameManager manager{trackCreator};
-		manager.run();
+		NeuralController controller{trackCreator};
+		controller.run();
 	} else {
 		RealTimeGameManager manager{trackCreator};
 
