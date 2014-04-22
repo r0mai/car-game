@@ -127,12 +127,13 @@ void RealTimeGameManager::handleInput() {
 	if ( isAIControl ) {
 
 		Weights outputs = callNeuralNetwork();
-		assert(outputs.size() == 4);
+		assert(outputs.size() == 3);
 
-		model.setForwardPressed(outputs[0] > 0.5);
-		model.setBackwardPressed(outputs[1] > 0.5);
-		model.setLeftPressed(outputs[2] > 0.5);
-		model.setRightPressed(outputs[3] > 0.5);
+		Car& car = model.getCar();
+
+		car.setThrottle(outputs[0]);
+		car.setBrake(outputs[1]);
+		car.setTurnLevel(2*outputs[2] - 1);
 	} else {
 		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
 		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
@@ -188,8 +189,8 @@ void RealTimeGameManager::drawTelemetry() {
 	const Car& car = model.getCar();
 
 	std::stringstream ss;
-   	ss << std::fixed <<
-	   	"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
+	ss << std::fixed <<
+		"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
 		", Speed = " << car.getSpeed() <<
 		", Acceleration = " << getLength(car.getAcceleration()) <<
 		", Throttle = " << car.getThrottle() <<

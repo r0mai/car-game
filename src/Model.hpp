@@ -18,7 +18,9 @@ public:
 	void setTrack(const Track& newTrack);
 
 	const Car& getCar() const;
+	Car& getCar();
 	const Track& getTrack() const;
+	Track& getTrack();
 
 	void setRightPressed(bool isPressed);
 	void setLeftPressed(bool isPressed);

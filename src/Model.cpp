@@ -21,7 +21,15 @@ const Car& Model::getCar() const {
 	return car;
 }
 
+Car& Model::getCar() {
+	return car;
+}
+
 const Track& Model::getTrack() const {
+	return track;
+}
+
+Track& Model::getTrack() {
 	return track;
 }
 
