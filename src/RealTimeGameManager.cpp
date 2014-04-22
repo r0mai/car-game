@@ -131,9 +131,9 @@ void RealTimeGameManager::handleInput() {
 
 		Car& car = model.getCar();
 
-		car.setThrottle(outputs[0]);
-		car.setBrake(outputs[1]);
-		car.setTurnLevel(2*outputs[2] - 1);
+		car.setThrottle((outputs[0] + 1)/2.f);
+		car.setBrake((outputs[1] + 1)/2.f);
+		car.setTurnLevel(outputs[2]);
 	} else {
 		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
 		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
