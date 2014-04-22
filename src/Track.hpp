@@ -48,6 +48,7 @@ private:
 
 Track createCircleTrack();
 Track createZigZagTrack();
+Track createCurvyTrack();
 
 }
 

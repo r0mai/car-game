@@ -49,6 +49,9 @@ int main(int argc, char **argv) {
 	case TrackType::zigzag:
 		trackCreator = createZigZagTrack;
 		break;
+	case TrackType::curvy:
+		trackCreator = createCurvyTrack;
+		break;
 	}
 
 	std::srand(std::time(0));
