@@ -157,7 +157,7 @@ Weights RealTimeGameManager::callNeuralNetwork() {
 			inputs[i] = 1.f;
 		}
 	}
-	inputs.back() = sigmoidApproximation(getLength(model.getCar().getVelocity()));
+	inputs.back() = sigmoidApproximation(model.getCar().getSpeed());
 
 	return neuralNetwork.evaluateInput(inputs);
 }
