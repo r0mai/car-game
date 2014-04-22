@@ -11,8 +11,8 @@ namespace car {
 NeuralNetwork::NeuralNetwork(
 		unsigned hiddenLayerCount,
 		unsigned hiddenLayerNeuronCount,
-	   	unsigned outputNeuronCount,
-	   	unsigned inputNeuronCount) : inputNeuronCount(inputNeuronCount)
+		unsigned inputNeuronCount,
+		unsigned outputNeuronCount) : inputNeuronCount(inputNeuronCount)
 {
 	if (hiddenLayerCount > 0) {
 		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount));

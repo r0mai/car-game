@@ -34,8 +34,8 @@ private:
 	const unsigned rayCount = 7;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
-	//+1 is for the velocity
-	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, 3, rayCount + 1);
+	//+1 is for speed input
+	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, rayCount + 1, 3);
 
 	bool isAIControl = false;
 

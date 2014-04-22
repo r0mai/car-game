@@ -12,8 +12,8 @@ public:
 	NeuralNetwork(
 			unsigned hiddenLayerCount,
 			unsigned hiddenLayerNeuronCount,
-		   	unsigned outputNeuronCount,
-			unsigned inputNeuronCount);
+			unsigned inputNeuronCount,
+			unsigned outputNeuronCount);
 
 	Weights getWeights() const;
 	void setWeights(const Weights& weights);
