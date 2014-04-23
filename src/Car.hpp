@@ -54,7 +54,8 @@ private:
 
 	static const float cDrag;
 	static const float cRollingResistance;
-	static const float fEngine;
+	static const float pEngine;
+	static const float fEngineMax;
 	static const float fBrake;
 	static const float gravity;
 	static const float transMissionEfficiency;
