@@ -65,11 +65,11 @@ int main(int argc, char **argv) {
 
 		if (vm.count("neural-network")) {
 			NeuralNetwork network;
-		
+
 			std::ifstream ifs(vm["neural-network"].as<std::string>());
 			boost::archive::text_iarchive ia(ifs);
 			ia >> network;
-			
+
 			manager.setNeuralNetwork(network);
 		}
 		manager.run();
