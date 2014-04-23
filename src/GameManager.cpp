@@ -36,7 +36,7 @@ void GameManager::handleInput() {
 		Car& car = model.getCar();
 
 		float throttleOutput = clamp((2.f/3.f)*outputs[0] + (2.f/3.f), 0.f, 1.f);
-		float brakeOutput = clamp((2.f/3.f)*outputs[0] + (1.f/3.f), 0.f, 1.f);
+		float brakeOutput = clamp((2.f/3.f)*outputs[1] + (1.f/3.f), 0.f, 1.f);
 		float turnLevelOutput = outputs[2];
 
 		car.setThrottle(throttleOutput);
