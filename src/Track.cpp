@@ -53,8 +53,8 @@ Track createZigZagTrack() {
 	points.push_back({ 55.f, -55.f});
 	points.push_back({-55.f, -55.f});
 
-	PolygonTrackBuilder builder{10.f, 5.f};
-	return builder(points);
+	PolygonTrackBuilder builder{5.f};
+	return builder(10.f, points);
 }
 
 Track createCurvyTrack() {
@@ -71,8 +71,8 @@ Track createCurvyTrack() {
 	points.push_back({45.f, -45.f});
 	points.push_back({-45.f, -45.f});
 
-	PolygonTrackBuilder builder{5.f, 5.f};
-	return builder(points);
+	PolygonTrackBuilder builder{5.f};
+	return builder(5.f, points);
 }
 
 Car Track::createCar() const {

@@ -9,13 +9,12 @@ namespace car {
 
 class PolygonTrackBuilder {
 public:
-	PolygonTrackBuilder(float trackWidth, float checkpointDistance):
-		trackWidth(trackWidth), checkpointDistance(checkpointDistance)
+	PolygonTrackBuilder(float checkpointDistance):
+		checkpointDistance(checkpointDistance)
 	{}
 
-	Track operator()(const std::vector<sf::Vector2f>& points);
+	Track operator()(float trackWidth, const std::vector<sf::Vector2f>& points);
 private:
-	float trackWidth;
 	float checkpointDistance;
 };
 

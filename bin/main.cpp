@@ -4,6 +4,8 @@
 #include "Parameters.hpp"
 #include "TrackType.hpp"
 #include "Track.hpp"
+#include "RandomTrackGenerator.hpp"
+#include "PolygonTrackBuilder.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -25,15 +27,30 @@ int main(int argc, char **argv) {
 	TrackType trackType = TrackType::circle;
 	std::string configFile;
 
+	float minTrackWidth = 5.f;
+	float maxTrackWidth = 12.f;
+	uint trackSeed = 0;
+	int trackPoints = 10;
+
 	po::options_description commandLineDescription("Command line options");
 	commandLineDescription.add_options()
 		("help", "produce help message")
 		("ai", "simulate AI")
 		("config", po::value<std::string>(), "reads configuration parameters from the specified file")
 		("neural-network", po::value<std::string>(), "load neural-network from file")
-		("track", po::value<TrackType>(&trackType)->default_value(TrackType::circle),
-				"The type of track to use. Allowed values: circle, zigzag, curvy")
+		("track", po::value<TrackType>(&trackType)->default_value(trackType),
+				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
+		("min-track-width", po::value<float>(&minTrackWidth)->default_value(minTrackWidth),
+				"Minimum track width for randomly generated tracks")
+		("max-track-width", po::value<float>(&maxTrackWidth)->default_value(maxTrackWidth),
+				"Maximum track width for randomly generated tracks")
+		("track-seed", po::value<uint>(&trackSeed)->default_value(trackSeed),
+				"Seed for randomly generated tracks")
+		("track-points", po::value<int>(&trackPoints)->default_value(trackPoints),
+				"Number of points for randomly generated tracks")
+
 		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
+
 	;
 
 	po::options_description configFileDescription("Config file options");
@@ -68,6 +85,12 @@ int main(int argc, char **argv) {
 		break;
 	case TrackType::curvy:
 		trackCreator = createCurvyTrack;
+		break;
+	case TrackType::random:
+		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
+				trackPoints, minTrackWidth, maxTrackWidth,
+				{-60.f, -60.f}, {60.f, 60.f}};
+		trackCreator = std::bind(generator, trackSeed);
 		break;
 	}
 

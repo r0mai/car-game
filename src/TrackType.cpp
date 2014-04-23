@@ -14,6 +14,8 @@ std::istream& operator>>(std::istream& is, TrackType& trackType) {
 		trackType = TrackType::zigzag;
 	} else if (boost::algorithm::iequals(s, std::string{"curvy"})) {
 		trackType = TrackType::curvy;
+	} else if (boost::algorithm::iequals(s, std::string{"random"})) {
+		trackType = TrackType::random;
 	} else {
 		throw std::logic_error{"Invalid track type"};
 	}
@@ -26,6 +28,7 @@ std::ostream& operator<<(std::ostream& os, TrackType trackType) {
 	case TrackType::circle: return os << "circle";
 	case TrackType::zigzag: return os << "zigzag";
 	case TrackType::curvy: return os << "curvy";
+	case TrackType::random: return os << "random";
 	default: return os;
 	}
 }
