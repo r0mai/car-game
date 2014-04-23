@@ -48,7 +48,7 @@ private:
 	float mutationRate = 0.1;
 	float crossoverRate = 0.7;
 	float maxPerturbation = 0.3;
-	unsigned bestTopN = 4, bestCopies = 1;
+	unsigned bestTopN = 8, bestCopies = 1;
 
 };
 
