@@ -14,7 +14,8 @@ namespace car {
 
 const float Car::cDrag = 0.5;
 const float Car::cRollingResistance = 14.2;
-const float Car::fEngine = 2000.0;
+const float Car::pEngine = 40000.0;
+const float Car::fEngineMax = 10000.0;
 const float Car::fBrake = 30000.0;
 const float Car::gravity = 9.8; //m/s^2
 const float Car::transMissionEfficiency = 0.7;
@@ -63,7 +64,9 @@ void Car::move(float deltaSeconds) {
 	float speed = getSpeed();
 	float weight = mass * gravity;
 
-	float engineForce = fEngine * throttleLevel;
+	float power = pEngine * throttleLevel;
+
+	float engineForce = std::max(0.f, std::min(power / speed, fEngineMax));
 	float brakeForce = fBrake * brakeLevel;
 
 	sf::Vector2f fTraction = velocityDirection * engineForce;

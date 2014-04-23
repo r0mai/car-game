@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 		("ai", "simulate AI")
 		("neural-network", po::value<std::string>(), "load neural-network from file")
 		("track", po::value<TrackType>(&trackType)->default_value(TrackType::circle),
-				"The type of track to use. Allowed values: circle, zigzag")
+				"The type of track to use. Allowed values: circle, zigzag, curvy")
 		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
 	;
 
