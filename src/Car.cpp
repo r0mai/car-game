@@ -56,9 +56,8 @@ void Car::move(float deltaSeconds) {
 
 	using namespace boost::math::float_constants;
 
-	sf::Vector2f velocityDirection = [&] {
-		return orientation;
-	}();
+	sf::Vector2f velocityDirection = orientation;
+
 	velocity = orientation*getLength(velocity); //hack, TODO something
 
 	float speed = getSpeed();
