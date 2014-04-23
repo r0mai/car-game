@@ -16,8 +16,10 @@ void NeuralController::run() {
 
 	float bestFitness = 0.f;
 
-	for (unsigned i = 0; i < 1000; ++i) {
+	for (unsigned i = 0; ; ++i) {
 		std::cout << "Generation: " << i << std::endl;
+
+		float fitnessSum = 0.0;
 		for (Genome& genome : population.getPopulation()) {
 
 			NeuralNetwork network(hiddenLayerCount, neuronPerHidden,
@@ -31,16 +33,18 @@ void NeuralController::run() {
 			manager.run();
 
 			genome.fitness = manager.getFitness();
+			fitnessSum += genome.fitness;
 			if (genome.fitness > bestFitness) {
 
 				bestFitness = genome.fitness;
-				std::cout << bestFitness << std::endl;
+				std::cout << "New best fitness = " << bestFitness << std::endl;
 
 				std::ofstream ofs("best.car");
 				boost::archive::text_oarchive oa(ofs);
 				oa << network;
 			}
 		}
+		std::cout << "Population average = " << fitnessSum / population.getPopulation().size() << std::endl;
 		population.evolve();
 	}
 }
