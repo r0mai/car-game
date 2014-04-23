@@ -18,11 +18,11 @@ GeneticPopulation::GeneticPopulation(unsigned populationSize, unsigned numberOfW
 	}
 }
 
-const GeneticPopulation::Genomes& GeneticPopulation::getPopulation() const {
+const Genomes& GeneticPopulation::getPopulation() const {
 	return population;
 }
 
-GeneticPopulation::Genomes& GeneticPopulation::getPopulation() {
+Genomes& GeneticPopulation::getPopulation() {
 	return population;
 }
 

@@ -12,7 +12,6 @@ namespace car {
 //This class implements Genetic algorithms to mutate its population
 class GeneticPopulation {
 public:
-	typedef std::vector<Genome> Genomes;
 
 	GeneticPopulation() = default;
 	GeneticPopulation(unsigned populationSize, unsigned numberOfWeights);
