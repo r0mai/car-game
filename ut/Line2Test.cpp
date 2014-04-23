@@ -491,7 +491,7 @@ BOOST_AUTO_TEST_CASE(intersectWithRay_test_negative_2) {
 }
 
 
-BOOST_AUTO_TEST_CASE(nearest_point_between_endpoints) {
+BOOST_AUTO_TEST_CASE(nearestPoint_between_endpoints) {
 	Line2f line{{-3.f, -1.f}, {2.f, 4.f}};
 	sf::Vector2f point{-3.f, 3.f};
 
@@ -500,7 +500,7 @@ BOOST_AUTO_TEST_CASE(nearest_point_between_endpoints) {
 	BOOST_CHECK_CLOSE(result.y,  1.f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(nearest_point_before_begin_point) {
+BOOST_AUTO_TEST_CASE(nearestPoint_before_begin_point) {
 	Line2f line{{-3.f, -1.f}, {2.f, 4.f}};
 	sf::Vector2f point{-5.f, -2.f};
 
@@ -509,13 +509,22 @@ BOOST_AUTO_TEST_CASE(nearest_point_before_begin_point) {
 	BOOST_CHECK_CLOSE(result.y, -1.f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(nearest_point_after_begin_point) {
+BOOST_AUTO_TEST_CASE(nearestPoint_after_begin_point) {
 	Line2f line{{-3.f, -1.f}, {2.f, 4.f}};
 	sf::Vector2f point{3.f, 6.f};
 
 	auto result = nearestPoint(point, line);
 	BOOST_CHECK_CLOSE(result.x, 2.f, 0.001);
 	BOOST_CHECK_CLOSE(result.y, 4.f, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(nearestPoint_null_line) {
+	Line2f line{{2.f, 1.f}, {2.f, 1.f}};
+	sf::Vector2f point{3.f, 6.f};
+
+	auto result = nearestPoint(point, line);
+	BOOST_CHECK_CLOSE(result.x, 2.f, 0.001);
+	BOOST_CHECK_CLOSE(result.y, 1.f, 0.001);
 }
 
 

@@ -101,6 +101,10 @@ bool isParallel(const Line2<T>& line1, const Line2<T>& line2) {
 
 template <typename T>
 sf::Vector2<T> nearestPoint(const sf::Vector2<T>& point, const Line2<T>& line) {
+	if (equals(line.start.x, line.end.x) && equals(line.start.y, line.end.y)) {
+		return line.start;
+	}
+
 	auto orthogonalDirection = rotateClockwise(line.end - line.start);
 	LineIntersection<T> intersection{line, {point, point + orthogonalDirection}};
 	auto intersectionPoint = intersection.getIntersectionPoint();
