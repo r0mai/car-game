@@ -14,7 +14,7 @@ namespace car {
 
 const float Car::cDrag = 0.5;
 const float Car::cRollingResistance = 14.2;
-const float Car::pEngine = 60000.0;
+const float Car::pEngine = 40000.0;
 const float Car::fEngineMax = 10000.0;
 const float Car::fBrake = 30000.0;
 const float Car::gravity = 9.8; //m/s^2
