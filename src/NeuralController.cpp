@@ -30,9 +30,11 @@ void NeuralController::run() {
 			genomeFutures.emplace_back(
 				std::async(std::launch::async,
 					[this, &genome]() {
-						NeuralNetwork network(hiddenLayerCount, neuronPerHidden,
-								inputNeuronCount, outputNeuronCount);
-
+						NeuralNetwork network(
+							parameters.hiddenLayerCount,
+							parameters.neuronPerHiddenLayer,
+							inputNeuronCount,
+							outputNeuronCount);
 						network.setWeights(genome.weights);
 
 						AIGameManager manager(trackCreator);
@@ -59,7 +61,7 @@ void NeuralController::run() {
 				std::cout << "New best fitness = " << bestFitness << std::endl;
 
 				//TODO we are reconstucting the same network as above
-				NeuralNetwork network(hiddenLayerCount, neuronPerHidden,
+				NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
 						inputNeuronCount, outputNeuronCount);
 
 				network.setWeights(genome.weights);

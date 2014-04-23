@@ -39,6 +39,8 @@ int main(int argc, char **argv) {
 	po::options_description configFileDescription("Config file options");
 	configFileDescription.add_options()
 		("population-size", po::value<unsigned>(&parameters.populationSize), "size of the population used in the genetic algorithm")
+		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount), "number of hidden layers in the nerual network")
+		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer), "number of neurons/hidden layer in the nerual network")
 	;
 
 	po::variables_map vm;

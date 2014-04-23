@@ -19,15 +19,13 @@ private:
 	Parameters parameters;
 	std::function<Track()> trackCreator;
 
-	unsigned hiddenLayerCount = 2;
-	unsigned neuronPerHidden = 16;
 	unsigned inputNeuronCount = 14;
 	unsigned outputNeuronCount = 3;
 
 	GeneticPopulation population = GeneticPopulation(
 			parameters.populationSize,
 			NeuralNetwork::getWeightCountForNetwork(
-				hiddenLayerCount, neuronPerHidden,
+				parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
 				inputNeuronCount, outputNeuronCount));
 };
 
