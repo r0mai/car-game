@@ -17,11 +17,11 @@ public:
 private:
 	std::function<Track()> trackCreator;
 
-	unsigned populationSize = 30;
+	unsigned populationSize = 60;
 
-	unsigned hiddenLayerCount = 1;
-	unsigned neuronPerHidden = 9;
-	unsigned inputNeuronCount = 8;
+	unsigned hiddenLayerCount = 2;
+	unsigned neuronPerHidden = 16;
+	unsigned inputNeuronCount = 14;
 	unsigned outputNeuronCount = 3;
 
 	GeneticPopulation population = GeneticPopulation(

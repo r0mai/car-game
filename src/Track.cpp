@@ -57,11 +57,29 @@ Track createZigZagTrack() {
 	return builder(points);
 }
 
+Track createCurvyTrack() {
+	std::vector<sf::Vector2f> points;
+
+	points.push_back({-55.f, 45.f});
+	points.push_back({-45.f, 55.f});
+	points.push_back({-30.f, 55.f});
+	points.push_back({-15.f, 35.f});
+	points.push_back({15.f, 35.f});
+	points.push_back({45.f, 55.f});
+	points.push_back({55.f, 45.f});
+	points.push_back({55.f, -10.f});
+	points.push_back({45.f, -45.f});
+	points.push_back({-45.f, -45.f});
+
+	PolygonTrackBuilder builder{5.f, 5.f};
+	return builder(points);
+}
+
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
 }
 
-void Track::setOrigin(const sf::Vector2f& point, float direction){
+void Track::setOrigin(const sf::Vector2f& point, float direction) {
 	startingPoint = point;
 	startingDirection = direction;
 }

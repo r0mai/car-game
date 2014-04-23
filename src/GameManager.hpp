@@ -27,7 +27,7 @@ protected:
 
 	float physicsTimeStep = 1.f/64.f;
 
-	unsigned rayCount = 7;
+	unsigned rayCount = 13;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	//+1 is for speed input

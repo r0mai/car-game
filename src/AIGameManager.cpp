@@ -23,7 +23,7 @@ void AIGameManager::run() {
 
 float AIGameManager::getFitness() const {
 	//TODO this will need some more work probably
-	return model.getNumberOfCrossedCheckpoints() + model.getCar().getTravelDistance();
+	return 100.f * model.getNumberOfCrossedCheckpoints() + model.getCar().getTravelDistance();
 }
 
 bool AIGameManager::stopCondition() const {

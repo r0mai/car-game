@@ -64,7 +64,7 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 	//right, (1, 0) is to the front
 	std::vector<sf::Vector2f> directions(count);
 	for (unsigned i = 0; i < count; ++i) {
-		directions[i] = {1, i*2.f/count - 1.f};
+		directions[i] = {1, i*4.f/count - 2.f};
 	}
 
 	//rotate them, so they align with the current rotation of the car

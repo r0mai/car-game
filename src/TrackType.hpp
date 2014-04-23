@@ -8,7 +8,8 @@ namespace car {
 
 enum class TrackType {
 	circle,
-	zigzag
+	zigzag,
+	curvy
 };
 
 std::istream& operator>>(std::istream& is, TrackType& trackType);

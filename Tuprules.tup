@@ -6,8 +6,7 @@ LD = $(CXX)
 
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra
-CPP_FLAGS += -O0
-CPP_FLAGS += -g
+CPP_FLAGS += @(OPTIMALIZATION_FLAG)
 
 SOURCE_DIR = $(TUP_CWD)/src
 

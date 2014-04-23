@@ -18,7 +18,7 @@ private:
 	bool stopCondition() const;
 
 	unsigned currentIteration = 0;
-	const float maxTime = 50.f; //10 seconds
+	const float maxTime = 600.f;
 };
 
 }
