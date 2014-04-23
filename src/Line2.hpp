@@ -26,6 +26,8 @@ bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr =
 bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
 bool intersectsRay(const Line2f& line, const sf::Vector2f& origin, const sf::Vector2f& direction, sf::Vector2f *outPtr = 0);
 bool isParallel(const Line2f& line1, const Line2f& line2);
+sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line);
+
 
 }
 

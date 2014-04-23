@@ -99,6 +99,25 @@ bool isParallel(const Line2<T>& line1, const Line2<T>& line2) {
 	return LineIntersection<T>{line1, line2}.isParallel();
 }
 
+template <typename T>
+sf::Vector2<T> nearestPoint(const sf::Vector2<T>& point, const Line2<T>& line) {
+	auto orthogonalDirection = rotateClockwise(line.end - line.start);
+	LineIntersection<T> intersection{line, {point, point + orthogonalDirection}};
+	auto intersectionPoint = intersection.getIntersectionPoint();
+	assert(intersectionPoint);
+	auto ratio = intersection.getIntersectionPointRatioLine1();
+
+	if (ratio < 0.f) {
+		return line.start;
+	}
+
+	if (ratio > 1.f) {
+		return line.end;
+	}
+
+	return *intersectionPoint;
+}
+
 } //  unnamed namespace
 
 bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr) {
@@ -115,6 +134,10 @@ bool intersectsRay(const Line2f& line, const sf::Vector2f& origin, const sf::Vec
 
 bool isParallel(const Line2f& line1, const Line2f& line2) {
 	return isParallel<float>(line1, line2);
+}
+
+sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line) {
+	return nearestPoint<float>(point, line);
 }
 
 } // namespace car
