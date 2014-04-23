@@ -1,6 +1,7 @@
 
 #include "RealTimeGameManager.hpp"
 #include "NeuralController.hpp"
+#include "Parameters.hpp"
 #include "TrackType.hpp"
 #include "Track.hpp"
 
@@ -19,25 +20,39 @@ int main(int argc, char **argv) {
 
 	namespace po = boost::program_options;
 
-	TrackType trackType = TrackType::circle;
+	Parameters parameters;
 
-	po::options_description desc("Allowed options");
-	desc.add_options()
+	TrackType trackType = TrackType::circle;
+	std::string configFile;
+
+	po::options_description commandLineDescription("Command line options");
+	commandLineDescription.add_options()
 		("help", "produce help message")
 		("ai", "simulate AI")
+		("config", po::value<std::string>(), "reads configuration parameters from the specified file")
 		("neural-network", po::value<std::string>(), "load neural-network from file")
 		("track", po::value<TrackType>(&trackType)->default_value(TrackType::circle),
 				"The type of track to use. Allowed values: circle, zigzag, curvy")
 		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
 	;
 
+	po::options_description configFileDescription("Config file options");
+	configFileDescription.add_options()
+		("population-size", po::value<unsigned>(&parameters.populationSize), "size of the population used in the genetic algorithm")
+	;
+
 	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
+	po::store(po::parse_command_line(argc, argv, commandLineDescription), vm);
 	po::notify(vm);
 
 	if (vm.count("help")) {
-		std::cout << desc << std::endl;
+		std::cout << commandLineDescription << std::endl;
 		return 1;
+	}
+
+	if (vm.count("config")) {
+		po::store(po::parse_config_file<char>(vm["config"].as<std::string>().c_str(), configFileDescription), vm);
+		po::notify(vm);
 	}
 
 	std::function<Track()> trackCreator;
@@ -56,7 +71,7 @@ int main(int argc, char **argv) {
 
 	std::srand(std::time(0));
 	if (vm.count("ai")) {
-		NeuralController controller{trackCreator};
+		NeuralController controller{parameters, trackCreator};
 		controller.run();
 	} else {
 		RealTimeGameManager manager{trackCreator};

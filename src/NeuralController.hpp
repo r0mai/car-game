@@ -6,18 +6,18 @@
 
 #include "GeneticPopulation.hpp"
 #include "NeuralNetwork.hpp"
+#include "Parameters.hpp"
 #include "Track.hpp"
 
 namespace car {
 
 class NeuralController {
 public:
-	NeuralController(std::function<Track()> trackCreator);
+	NeuralController(const Parameters& parameters, std::function<Track()> trackCreator);
 	void run();
 private:
+	Parameters parameters;
 	std::function<Track()> trackCreator;
-
-	unsigned populationSize = 60;
 
 	unsigned hiddenLayerCount = 2;
 	unsigned neuronPerHidden = 16;
@@ -25,7 +25,7 @@ private:
 	unsigned outputNeuronCount = 3;
 
 	GeneticPopulation population = GeneticPopulation(
-			populationSize,
+			parameters.populationSize,
 			NeuralNetwork::getWeightCountForNetwork(
 				hiddenLayerCount, neuronPerHidden,
 				inputNeuronCount, outputNeuronCount));

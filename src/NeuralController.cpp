@@ -10,8 +10,9 @@
 
 namespace car {
 
-NeuralController::NeuralController(std::function<Track()> trackCreator) :
-   trackCreator(trackCreator) {}
+NeuralController::NeuralController(const Parameters& parameters, std::function<Track()> trackCreator) :
+	parameters(parameters),
+	trackCreator(trackCreator) {}
 
 void NeuralController::run() {
 
