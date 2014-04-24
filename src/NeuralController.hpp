@@ -8,14 +8,17 @@
 #include "NeuralNetwork.hpp"
 #include "Parameters.hpp"
 #include "Track.hpp"
+#include "boost/asio/io_service.hpp"
 
 namespace car {
 
 class NeuralController {
 public:
-	NeuralController(const Parameters& parameters, std::function<Track()> trackCreator);
+	NeuralController(const Parameters& parameters, std::function<Track()> trackCreator,
+			boost::asio::io_service& ioService);
 	void run();
 private:
+	boost::asio::io_service& ioService;
 	Parameters parameters;
 	std::function<Track()> trackCreator;
 

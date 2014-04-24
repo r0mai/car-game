@@ -6,6 +6,7 @@
 #include "Track.hpp"
 #include "RandomTrackGenerator.hpp"
 #include "PolygonTrackBuilder.hpp"
+#include "ThreadPool.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -31,6 +32,7 @@ int main(int argc, char **argv) {
 	float maxTrackWidth = 12.f;
 	uint trackSeed = 0;
 	int trackPoints = 10;
+	std::size_t numThreads = 1;
 
 	po::options_description commandLineDescription("Command line options");
 	commandLineDescription.add_options()
@@ -48,6 +50,8 @@ int main(int argc, char **argv) {
 				"Seed for randomly generated tracks")
 		("track-points", po::value<int>(&trackPoints)->default_value(trackPoints),
 				"Number of points for randomly generated tracks")
+		("threads", po::value<std::size_t>(&numThreads)->default_value(numThreads),
+				"Number of threads used for population simulation")
 
 		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
 
@@ -55,9 +59,12 @@ int main(int argc, char **argv) {
 
 	po::options_description configFileDescription("Config file options");
 	configFileDescription.add_options()
-		("population-size", po::value<unsigned>(&parameters.populationSize), "size of the population used in the genetic algorithm")
-		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount), "number of hidden layers in the nerual network")
-		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer), "number of neurons/hidden layer in the nerual network")
+		("population-size", po::value<unsigned>(&parameters.populationSize),
+				"size of the population used in the genetic algorithm")
+		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount),
+				"number of hidden layers in the nerual network")
+		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer),
+				"number of neurons/hidden layer in the nerual network")
 	;
 
 	po::variables_map vm;
@@ -96,7 +103,10 @@ int main(int argc, char **argv) {
 
 	std::srand(std::time(0));
 	if (vm.count("ai")) {
-		NeuralController controller{parameters, trackCreator};
+		ThreadPool threadPool;
+		threadPool.setNumThreads(numThreads);
+		ThreadPoolRunner runner{threadPool};
+		NeuralController controller{parameters, trackCreator, threadPool.getIoService()};
 		controller.run();
 	} else {
 		RealTimeGameManager manager{trackCreator};
