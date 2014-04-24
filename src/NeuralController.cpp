@@ -2,17 +2,20 @@
 #include <iostream>
 #include <fstream>
 #include <future>
-
 #include <boost/archive/text_oarchive.hpp>
 
 #include "NeuralController.hpp"
 #include "AIGameManager.hpp"
+#include "AsyncHelper.hpp"
 
 namespace car {
 
-NeuralController::NeuralController(const Parameters& parameters, std::function<Track()> trackCreator) :
+NeuralController::NeuralController(const Parameters& parameters, std::function<Track()> trackCreator,
+		boost::asio::io_service& ioService) :
+	ioService(ioService),
 	parameters(parameters),
-	trackCreator(trackCreator) {}
+	trackCreator(trackCreator)
+{}
 
 void NeuralController::run() {
 
@@ -27,25 +30,24 @@ void NeuralController::run() {
 		genomeFutures.reserve(genomes.size());
 
 		for (Genome& genome : genomes) {
-			genomeFutures.emplace_back(
-				std::async(std::launch::async,
-					[this, &genome]() {
-						NeuralNetwork network(
-							parameters.hiddenLayerCount,
-							parameters.neuronPerHiddenLayer,
-							inputNeuronCount,
-							outputNeuronCount);
-						network.setWeights(genome.weights);
+			// this would be much easier with a lambda with move capture (C++14)
+			auto helper = asyncHelper([this, &genome]() {
+					NeuralNetwork network(
+						parameters.hiddenLayerCount,
+						parameters.neuronPerHiddenLayer,
+						inputNeuronCount,
+						outputNeuronCount);
+					network.setWeights(genome.weights);
 
-						AIGameManager manager(trackCreator);
+					AIGameManager manager(trackCreator);
 
-						manager.setNeuralNetwork(network);
-						manager.run();
+					manager.setNeuralNetwork(network);
+					manager.run();
 
-						genome.fitness = manager.getFitness();
-
-					})
-				);
+					genome.fitness = manager.getFitness();
+				});
+			genomeFutures.push_back(helper.getFuture());
+			ioService.post(std::move(helper));
 		}
 
 		for (auto& future : genomeFutures) {
@@ -72,7 +74,6 @@ void NeuralController::run() {
 			}
 		}
 		std::cout << "Population average = " << fitnessSum / population.getPopulation().size() << std::endl;
-
 		population.evolve();
 	}
 }

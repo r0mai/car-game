@@ -6,6 +6,7 @@
 #include "Track.hpp"
 #include "RandomTrackGenerator.hpp"
 #include "PolygonTrackBuilder.hpp"
+#include "ThreadPool.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -44,7 +45,10 @@ int main(int argc, char **argv) {
 	}
 
 	if (parameters.isTrainingAI) {
-		NeuralController controller{parameters, trackCreator};
+		ThreadPool threadPool;
+		threadPool.setNumThreads(parameters.threadCount);
+		ThreadPoolRunner runner{threadPool};
+		NeuralController controller{parameters, trackCreator, threadPool.getIoService()};
 		controller.run();
 	} else {
 		RealTimeGameManager manager{trackCreator};

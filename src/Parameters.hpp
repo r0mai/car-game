@@ -21,6 +21,9 @@ struct Parameters {
 
 	boost::optional<std::string> neuralNetworkFile;
 
+	//number of threads used for training
+	unsigned threadCount = 1;
+
 	//place to save the file for the best AI trained
 	std::string bestAIFile = "best.car";
 
