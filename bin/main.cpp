@@ -32,12 +32,23 @@ int main(int argc, char **argv) {
 	uint trackSeed = 0;
 	int trackPoints = 10;
 
-	po::options_description commandLineDescription("Command line options");
-	commandLineDescription.add_options()
+	po::options_description commandLineOnlyDescription("Command-line only options");
+	commandLineOnlyDescription.add_options()
 		("help", "produce help message")
 		("ai", "simulate AI")
 		("config", po::value<std::string>(), "reads configuration parameters from the specified file")
-		("neural-network", po::value<std::string>(), "load neural-network from file")
+	;
+
+	po::options_description configFileDescription("Command-line and config file options");
+	configFileDescription.add_options()
+		("population-size", po::value<unsigned>(&parameters.populationSize),
+				"size of the population used in the genetic algorithm")
+		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount),
+				"number of hidden layers in the nerual network")
+		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer),
+				"number of neurons/hidden layer in the nerual network")
+		("neural-network", po::value<std::string>(),
+				"load neural-network from file")
 		("track", po::value<TrackType>(&trackType)->default_value(trackType),
 				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
 		("min-track-width", po::value<float>(&minTrackWidth)->default_value(minTrackWidth),
@@ -48,17 +59,13 @@ int main(int argc, char **argv) {
 				"Seed for randomly generated tracks")
 		("track-points", po::value<int>(&trackPoints)->default_value(trackPoints),
 				"Number of points for randomly generated tracks")
-
-		("fps-limit", po::value<int>()->default_value(-1), "set fps limit. negative value means no limit")
-
+		("fps-limit", po::value<int>()->default_value(-1),
+				"set fps limit. negative value means no limit")
 	;
 
-	po::options_description configFileDescription("Config file options");
-	configFileDescription.add_options()
-		("population-size", po::value<unsigned>(&parameters.populationSize), "size of the population used in the genetic algorithm")
-		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount), "number of hidden layers in the nerual network")
-		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer), "number of neurons/hidden layer in the nerual network")
-	;
+	po::options_description commandLineDescription("Options");
+	commandLineDescription.add(commandLineOnlyDescription);
+	commandLineDescription.add(configFileDescription);
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, commandLineDescription), vm);
