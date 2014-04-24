@@ -66,7 +66,7 @@ void NeuralController::run() {
 
 				network.setWeights(genome.weights);
 
-				std::ofstream ofs("best.car");
+				std::ofstream ofs(parameters.bestAIFile);
 				boost::archive::text_oarchive oa(ofs);
 				oa << network;
 			}

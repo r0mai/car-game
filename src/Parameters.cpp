@@ -30,6 +30,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"number of neurons/hidden layer in the nerual network")
 		("neural-network", po::value<std::string>(),
 				"load neural-network from file")
+		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
+		 		"specifies where to save the best trained AI")
 		("track", po::value<TrackType>(&parameters.trackType)->default_value(parameters.trackType),
 				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
 		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),

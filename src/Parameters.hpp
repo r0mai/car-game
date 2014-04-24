@@ -21,6 +21,9 @@ struct Parameters {
 
 	boost::optional<std::string> neuralNetworkFile;
 
+	//place to save the file for the best AI trained
+	std::string bestAIFile = "best.car";
+
 	//track type
 	TrackType trackType = TrackType::circle;
 
