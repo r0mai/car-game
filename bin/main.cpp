@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 		break;
 	}
 
-	if (parameters.isAI) {
+	if (parameters.isTrainingAI) {
 		NeuralController controller{parameters, trackCreator};
 		controller.run();
 	} else {

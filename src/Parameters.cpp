@@ -16,7 +16,7 @@ Parameters parseParameters(int argc, char **argv) {
 	po::options_description commandLineOnlyDescription("Command-line only options");
 	commandLineOnlyDescription.add_options()
 		("help", "produce help message")
-		("ai", "simulate AI")
+		("ai", "train AI")
 		("config", po::value<std::string>(), "reads configuration parameters from the specified file")
 	;
 
@@ -57,7 +57,7 @@ Parameters parseParameters(int argc, char **argv) {
 		exit(0);
 	}
 
-	parameters.isAI = vm.count("ai");
+	parameters.isTrainingAI = vm.count("ai");
 
 	if (vm.count("config")) {
 		po::store(po::parse_config_file<char>(vm["config"].as<std::string>().c_str(), configFileDescription), vm);

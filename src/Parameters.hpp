@@ -12,7 +12,7 @@ namespace car {
 
 struct Parameters {
 	//running mode
-	bool isAI = false;
+	bool isTrainingAI = false;
 
 	//Neural network parameters
 	unsigned populationSize = 60;
