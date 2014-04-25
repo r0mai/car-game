@@ -8,6 +8,7 @@
 /=template.cpp
 .project
 .cproject
+tup.config
 
 #the extension used for storing serialized neural networks
 *.car
