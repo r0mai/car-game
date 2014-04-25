@@ -22,7 +22,7 @@ void NeuralController::run() {
 
 	float bestFitness = 0.f;
 
-	for (unsigned i = 0; ; ++i) {
+	for (unsigned i = 0; !parameters.generationLimit || i < *parameters.generationLimit; ++i) {
 		std::cout << "Generation: " << i << std::endl;
 
 		Genomes& genomes = population.getPopulation();

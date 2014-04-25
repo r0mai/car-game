@@ -30,6 +30,8 @@ Parameters parseParameters(int argc, char **argv) {
 	configFileDescription.add_options()
 		("population-size", po::value<unsigned>(&parameters.populationSize),
 				"size of the population used in the genetic algorithm")
+		("generation-limit", po::value<unsigned>(),
+				"exit after this many generations")
 		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount),
 				"number of hidden layers in the nerual network")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer),
@@ -76,6 +78,9 @@ Parameters parseParameters(int argc, char **argv) {
 
 	if (vm.count("neural-network")) {
 		parameters.neuralNetworkFile = vm["neural-network"].as<std::string>();
+	}
+	if (vm.count("generation-limit")) {
+		parameters.generationLimit = vm["generation-limit"].as<unsigned>();
 	}
 
 	return parameters;

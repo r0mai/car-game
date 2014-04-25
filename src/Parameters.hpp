@@ -17,6 +17,8 @@ struct Parameters {
 	//running mode
 	bool isTrainingAI = false;
 
+	boost::optional<unsigned> generationLimit;
+
 	//Neural network parameters
 	unsigned populationSize = 60;
 	unsigned hiddenLayerCount = 2;
