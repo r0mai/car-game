@@ -15,7 +15,7 @@ Parameters parseParameters(int argc, char **argv) {
 	std::string binaryLocation = argv[0];
 	boost::trim_right_if(binaryLocation, !boost::is_any_of("/"));
 
-	parameters.projectRootPath = binaryLocation + "/../";
+	parameters.projectRootPath = binaryLocation + "../";
 
 	std::string configFile;
 

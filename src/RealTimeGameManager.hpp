@@ -14,7 +14,7 @@ class Track;
 
 class RealTimeGameManager : public GameManager {
 public:
-	RealTimeGameManager(std::function<Track()> trackCreator);
+	RealTimeGameManager(const Parameters& parameter, std::function<Track()> trackCreator);
 
 	void run();
 

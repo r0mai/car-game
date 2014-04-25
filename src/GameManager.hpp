@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "Model.hpp"
+#include "Parameters.hpp"
 #include "NeuralNetwork.hpp"
 
 namespace car {
@@ -13,7 +14,7 @@ namespace car {
 class GameManager {
 public:
 
-	GameManager(std::function<Track()> trackCreator);
+	GameManager(const Parameters& parameters, std::function<Track()> trackCreator);
 
 	void advance();
 
@@ -24,6 +25,8 @@ protected:
 	virtual void handleUserInput();
 
 	Weights callNeuralNetwork();
+
+	Parameters parameters;
 
 	float physicsTimeStep = 1.f/64.f;
 

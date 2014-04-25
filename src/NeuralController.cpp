@@ -39,7 +39,7 @@ void NeuralController::run() {
 						outputNeuronCount);
 					network.setWeights(genome.weights);
 
-					AIGameManager manager(trackCreator);
+					AIGameManager manager(parameters, trackCreator);
 
 					manager.setNeuralNetwork(network);
 					manager.run();

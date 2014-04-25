@@ -5,7 +5,9 @@
 
 namespace car {
 
-GameManager::GameManager(std::function<Track()> trackCreator) {
+GameManager::GameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
+	parameters(parameters)
+{
 	Track track = trackCreator();
 	track.check();
 	model.setCar(track.createCar());

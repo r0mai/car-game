@@ -15,13 +15,13 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager(std::function<Track()> trackCreator) :
-	GameManager(trackCreator),
+RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
+	GameManager(parameters, trackCreator),
 	window(sf::VideoMode(800, 800), "car-game")
 {
 	using namespace boost::math::float_constants;
 
-	font.loadFromFile("resources/DejaVuSansMono.ttf");
+	font.loadFromFile(parameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
 	brakeTelemetry.setAutomaticBoundsDetection(false);
