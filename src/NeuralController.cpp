@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <future>
-#include <atomic>
+#include <thread>
 #include <boost/archive/text_oarchive.hpp>
 
 #include "NeuralController.hpp"
@@ -28,10 +28,11 @@ void NeuralController::run() {
 		Genomes& genomes = population.getPopulation();
 
 		std::promise<void> genomePromise;
-		std::atomic<std::size_t> tasksLeft{genomes.size()};
+		std::mutex mutex;
+		std::size_t tasksLeft{genomes.size()};
 
 		for (Genome& genome : genomes) {
-			ioService.post([this, &genome, &tasksLeft, &genomePromise]() {
+			ioService.post([this, &genome, &tasksLeft, &genomePromise, &mutex]() {
 					NeuralNetwork network(
 						parameters.hiddenLayerCount,
 						parameters.neuronPerHiddenLayer,
@@ -46,10 +47,12 @@ void NeuralController::run() {
 
 					genome.fitness = manager.getFitness();
 
-					int value = --tasksLeft;
-					assert(value >= 0);
+					int value;
+					{
+						std::unique_lock<std::mutex> lock{mutex};
+						value = --tasksLeft;
+					}
 					if (value == 0) {
-						assert(tasksLeft == 0);
 						genomePromise.set_value();
 					}
 				});
@@ -57,7 +60,6 @@ void NeuralController::run() {
 
 		auto genomeFuture = genomePromise.get_future();
 		genomeFuture.wait();
-		assert(tasksLeft == 0);
 
 		float fitnessSum = 0.f;
 		for (Genome& genome : genomes) {
