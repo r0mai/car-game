@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <stdexcept>
+#include <boost/random/mersenne_twister.hpp>
 #include "Line2.hpp"
 
 namespace car {
@@ -34,7 +35,7 @@ public:
 		}
 	}
 
-	Track operator()(uint seed);
+	Track operator()(uint seed) const;
 private:
 	Generator generator;
 	int maxTries;
@@ -45,7 +46,7 @@ private:
 	sf::Vector2f corner1;
 	sf::Vector2f corner2;
 
-	Track generateTrack(uint seed);
+	Track generateTrack(boost::random::mt19937& rng) const;
 };
 
 } /* namespace car */
