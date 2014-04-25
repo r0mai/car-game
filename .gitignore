@@ -8,6 +8,7 @@
 /=template.cpp
 .project
 .cproject
+build-*
 
 #the extension used for storing serialized neural networks
 *.car
