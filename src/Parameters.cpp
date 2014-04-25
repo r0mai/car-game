@@ -1,6 +1,7 @@
 
 #include "Parameters.hpp"
 
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/program_options.hpp>
 
 namespace car {
@@ -10,6 +11,11 @@ Parameters parseParameters(int argc, char **argv) {
 	namespace po = boost::program_options;
 
 	Parameters parameters;
+
+	std::string binaryLocation = argv[0];
+	boost::trim_right_if(binaryLocation, !boost::is_any_of("/"));
+
+	parameters.projectRootPath = binaryLocation + "/../";
 
 	std::string configFile;
 
@@ -31,7 +37,7 @@ Parameters parseParameters(int argc, char **argv) {
 		("neural-network", po::value<std::string>(),
 				"load neural-network from file")
 		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
-		 		"specifies where to save the best trained AI")
+				"specifies where to save the best trained AI")
 		("track", po::value<TrackType>(&parameters.trackType)->default_value(parameters.trackType),
 				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
 		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),

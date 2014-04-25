@@ -11,6 +11,9 @@
 namespace car {
 
 struct Parameters {
+
+	std::string projectRootPath;
+
 	//running mode
 	bool isTrainingAI = false;
 
