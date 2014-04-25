@@ -38,6 +38,8 @@ public:
 	void advanceTime(float deltaSeconds);
 	void draw(sf::RenderWindow& window) const;
 
+	float getCheckpointAngle() const;
+
 private:
 	void collideCar();
 	void handleCheckpoints();

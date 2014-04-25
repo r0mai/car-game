@@ -135,6 +135,10 @@ std::size_t Track::getNumberOfCheckpoints() const {
 	return checkpoints.size();
 }
 
+const Line2f& Track::getCheckpoint(std::size_t n) const {
+	return checkpoints[n];
+}
+
 void Track::draw(sf::RenderWindow& window, int highlightCheckpoint) const {
 	for ( const Line2f& trackLine : lines ) {
 		drawLine(window, trackLine);

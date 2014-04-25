@@ -4,6 +4,7 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "Model.hpp"
+#include "drawUtil.hpp"
 
 namespace car {
 
@@ -161,6 +162,24 @@ void Model::draw(sf::RenderWindow& window) const {
 	track.draw(window, currentCheckpoint);
 	car.draw(window);
 }
+
+float Model::getCheckpointAngle() const {
+	using namespace boost::math::float_constants;
+	if (currentCheckpoint < 0) {
+		return 0.f;
+	}
+	const auto& position = car.getPosition();
+	const auto& orientation = car.getOrientation();
+	auto angle = std::atan2(orientation.y, orientation.x);
+	auto nearestPointToCheckpoint = nearestPoint(position, track.getCheckpoint(currentCheckpoint));
+	auto absoluteDirection = nearestPointToCheckpoint - position;
+	sf::Transform rotateTransform;
+	rotateTransform.rotate(-angle * 180.f/pi);
+	auto relativeDirection = rotateTransform.transformPoint(absoluteDirection);
+
+	return std::atan2(relativeDirection.y, relativeDirection.x);
+}
+
 
 }
 

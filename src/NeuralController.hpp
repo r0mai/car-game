@@ -22,7 +22,7 @@ private:
 	Parameters parameters;
 	std::function<Track()> trackCreator;
 
-	unsigned inputNeuronCount = 14;
+	unsigned inputNeuronCount = 15;
 	unsigned outputNeuronCount = 3;
 
 	GeneticPopulation population = GeneticPopulation(

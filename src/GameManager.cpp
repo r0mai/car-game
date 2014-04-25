@@ -2,8 +2,13 @@
 #include "GameManager.hpp"
 
 #include <cassert>
+#include <boost/math/constants/constants.hpp>
 
 namespace car {
+
+namespace {
+	constexpr const int extraNeuronCount = 2;
+}
 
 GameManager::GameManager(std::function<Track()> trackCreator) {
 	Track track = trackCreator();
@@ -24,7 +29,7 @@ void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
 	assert(network.getInputNeuronCount() > 0);
 
 	neuralNetwork = network;
-	rayCount = neuralNetwork.getInputNeuronCount() - 1;
+	rayCount = neuralNetwork.getInputNeuronCount() - extraNeuronCount;
 }
 
 void GameManager::handleInput() {
@@ -48,21 +53,26 @@ void GameManager::handleInput() {
 void GameManager::handleUserInput() {}
 
 Weights GameManager::callNeuralNetwork() {
-	Weights inputs(rayCount + 1);
+	using namespace boost::math::float_constants;
 
-	const float sigmoidDamping = 5.f;
+	Weights inputs(rayCount + extraNeuronCount);
+
+	const float wallDistanceDamping = 5.f;
+	const float speedDamping = 5.f;
+	const float checkpointAngleDamping = pi * 6.f;
 
 	const sf::Vector2f& carPosition = model.getCar().getPosition();
 	for (unsigned i = 0; i < rayCount; ++i) {
 		auto rayPoint = rayPoints[i];
 		if (rayPoint) {
 			float distance = getDistance(carPosition, *rayPoint);
-			inputs[i] = sigmoidApproximation(distance/sigmoidDamping);
+			inputs[i] = sigmoidApproximation(distance/wallDistanceDamping);
 		} else {
 			inputs[i] = 1.f;
 		}
 	}
-	inputs.back() = sigmoidApproximation(model.getCar().getSpeed());
+	inputs[rayCount] = sigmoidApproximation(model.getCar().getSpeed()/speedDamping);
+	inputs[rayCount+1] = sigmoidApproximation(model.getCheckpointAngle()/checkpointAngleDamping);
 
 	return neuralNetwork.evaluateInput(inputs);
 }

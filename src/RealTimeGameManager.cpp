@@ -148,6 +148,8 @@ void RealTimeGameManager::drawRayPoints() {
 }
 
 void RealTimeGameManager::drawTelemetry() {
+	using namespace boost::math::float_constants;
+
 	const Car& car = model.getCar();
 
 	std::stringstream ss;
@@ -156,7 +158,8 @@ void RealTimeGameManager::drawTelemetry() {
 		", Speed = " << car.getSpeed() <<
 		", Acceleration = " << getLength(car.getAcceleration()) <<
 		", Throttle = " << car.getThrottle() <<
-		", Brake = " << car.getBrake();
+		",\nBrake = " << car.getBrake() <<
+		", Angle = " << model.getCheckpointAngle() * 180.f / pi;
 	sf::Text text;
 	text.setFont(font);
 	text.setColor(sf::Color::White);
