@@ -26,9 +26,10 @@ std::size_t findNearestLine(const std::vector<sf::Vector2f>& points, const sf::V
 
 }
 
-Track RandomTrackGenerator::operator()(uint seed) {
+Track RandomTrackGenerator::operator()(uint seed) const {
+	boost::random::mt19937 rng{seed};
 	for (int i = 0; i < maxTries; ++i) {
-		Track track = generateTrack(seed);
+		Track track = generateTrack(rng);
 		try {
 			track.check();
 		} catch (TrackError&) {
@@ -41,8 +42,8 @@ Track RandomTrackGenerator::operator()(uint seed) {
 	throw RandomTrackException{"Track generation failed after maximum number of tries"};
 }
 
-Track RandomTrackGenerator::generateTrack(uint seed) {
-	boost::random::mt19937 rng{seed};
+Track RandomTrackGenerator::generateTrack(boost::random::mt19937& rng) const {
+
 
 	sf::Vector2f startEdge1 = corner1 * 0.2f + corner2 * 0.8f;
 	sf::Vector2f startEdge2 = corner2 * 0.2f + corner1 * 0.8f;

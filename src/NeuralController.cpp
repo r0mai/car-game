@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <future>
+#include <thread>
 #include <boost/archive/text_oarchive.hpp>
 
 #include "NeuralController.hpp"
@@ -26,12 +27,12 @@ void NeuralController::run() {
 
 		Genomes& genomes = population.getPopulation();
 
-		std::vector<std::future<void>> genomeFutures;
-		genomeFutures.reserve(genomes.size());
+		std::promise<void> genomePromise;
+		std::mutex mutex;
+		std::size_t tasksLeft{genomes.size()};
 
 		for (Genome& genome : genomes) {
-			// this would be much easier with a lambda with move capture (C++14)
-			auto helper = asyncHelper([this, &genome]() {
+			ioService.post([this, &genome, &tasksLeft, &genomePromise, &mutex]() {
 					NeuralNetwork network(
 						parameters.hiddenLayerCount,
 						parameters.neuronPerHiddenLayer,
@@ -45,14 +46,20 @@ void NeuralController::run() {
 					manager.run();
 
 					genome.fitness = manager.getFitness();
+
+					int value;
+					{
+						std::unique_lock<std::mutex> lock{mutex};
+						value = --tasksLeft;
+					}
+					if (value == 0) {
+						genomePromise.set_value();
+					}
 				});
-			genomeFutures.push_back(helper.getFuture());
-			ioService.post(std::move(helper));
 		}
 
-		for (auto& future : genomeFutures) {
-			future.wait();
-		}
+		auto genomeFuture = genomePromise.get_future();
+		genomeFuture.wait();
 
 		float fitnessSum = 0.f;
 		for (Genome& genome : genomes) {

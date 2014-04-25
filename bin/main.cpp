@@ -26,6 +26,10 @@ int main(int argc, char **argv) {
 
 	std::function<Track()> trackCreator;
 
+	RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
+			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
+			{-60.f, -60.f}, {60.f, 60.f}};
+
 	switch (parameters.trackType) {
 	case TrackType::circle:
 		trackCreator = createCircleTrack;
@@ -37,10 +41,23 @@ int main(int argc, char **argv) {
 		trackCreator = createCurvyTrack;
 		break;
 	case TrackType::random:
-		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
-				parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
-				{-60.f, -60.f}, {60.f, 60.f}};
 		trackCreator = std::bind(generator, parameters.randomTrackSeed);
+		break;
+	case TrackType::random_noseed:
+		trackCreator = [generator]() {
+			int tries = 100;
+			while (true) {
+				int seed = std::rand();
+				try {
+					return generator(seed);
+				} catch (RandomTrackException&) {
+					std::cerr << "No luck with seed " << seed << std::endl;
+					if (--tries == 0) {
+						throw;
+					}
+				}
+			}
+		};
 		break;
 	}
 

@@ -32,6 +32,7 @@ public:
 	int checkpointCollidesWith(const Line2f& line) const;
 
 	std::size_t getNumberOfCheckpoints() const;
+	const Line2f& getCheckpoint(std::size_t n) const;
 	void check() const;
 
 	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
