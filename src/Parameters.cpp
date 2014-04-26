@@ -30,13 +30,13 @@ Parameters parseParameters(int argc, char **argv) {
 	configFileDescription.add_options()
 		("seed", po::value<int>(),
 				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
-		("population-size", po::value<unsigned>(&parameters.populationSize),
+		("population-size", po::value<unsigned>(&parameters.populationSize)->default_value(parameters.populationSize),
 				"size of the population used in the genetic algorithm")
 		("generation-limit", po::value<unsigned>(),
 				"exit after this many generations")
-		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount),
+		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount)->default_value(parameters.hiddenLayerCount),
 				"number of hidden layers in the nerual network")
-		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer),
+		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
 				"number of neurons/hidden layer in the nerual network")
 		("neural-network", po::value<std::string>(),
 				"load neural-network from file")
