@@ -20,6 +20,7 @@ public:
 
 	void setNeuralNetwork(const NeuralNetwork& network);
 
+	void init();
 protected:
 	void handleInput();
 	virtual void handleUserInput();
@@ -41,6 +42,7 @@ protected:
 	bool isAIControl = true;
 
 	Model model;
+	Track track;
 };
 
 }
