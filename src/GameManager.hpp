@@ -28,7 +28,7 @@ protected:
 
 	Parameters parameters;
 
-	float physicsTimeStep = 1.f/64.f;
+	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
 
 	unsigned rayCount = 13;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;

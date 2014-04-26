@@ -19,6 +19,8 @@ struct Parameters {
 
 	boost::optional<unsigned> generationLimit;
 
+	unsigned physicsTimeStepsPerSecond = 64;
+
 	//Neural network parameters
 	unsigned populationSize = 60;
 	unsigned hiddenLayerCount = 2;

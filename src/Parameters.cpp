@@ -54,6 +54,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Number of points for randomly generated tracks.")
 		("threads", po::value<std::size_t>(&parameters.threadCount)->default_value(parameters.threadCount),
 				"Number of threads used for population simulation.")
+		("physics-frequency", po::value<unsigned>(&parameters.physicsTimeStepsPerSecond)->default_value(parameters.physicsTimeStepsPerSecond),
+				"Specifies how many times per second the physics should be recalculated.")
 		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
 				"Set fps limit. Negative value means no limit.")
 	;
