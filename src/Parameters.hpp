@@ -34,6 +34,10 @@ struct Parameters {
 	//place to save the file for the best AI trained
 	std::string bestAIFile = "best.car";
 
+	//place to save/load the current population
+	boost::optional<std::string> populationOutputFile;
+	boost::optional<std::string> populationInputFile;
+
 	//track type
 	TrackType trackType = TrackType::circle;
 

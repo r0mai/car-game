@@ -42,6 +42,10 @@ Parameters parseParameters(int argc, char **argv) {
 				"Load neural-network from file.")
 		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
 				"Specifies where to save the best trained AI.")
+		("output-population", po::value<std::string>(),
+				"Specifies where to save the current population.")
+		("input-population", po::value<std::string>(),
+				"Load population from file.")
 		("track", po::value<TrackType>(&parameters.trackType)->default_value(parameters.trackType),
 				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
 		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),
@@ -85,6 +89,12 @@ Parameters parseParameters(int argc, char **argv) {
 	}
 	if (vm.count("generation-limit")) {
 		parameters.generationLimit = vm["generation-limit"].as<unsigned>();
+	}
+	if (vm.count("output-population")) {
+		parameters.populationOutputFile = vm["output-population"].as<std::string>();
+	}
+	if (vm.count("input-population")) {
+		parameters.populationInputFile = vm["input-population"].as<std::string>();
 	}
 
 	if (vm.count("seed")) {

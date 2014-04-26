@@ -3,6 +3,8 @@
 #include <fstream>
 #include <future>
 #include <thread>
+
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 #include "NeuralController.hpp"
@@ -20,10 +22,14 @@ NeuralController::NeuralController(const Parameters& parameters, std::function<T
 
 void NeuralController::run() {
 
+	loadPopulation();
+
 	float bestFitness = 0.f;
 
 	for (unsigned i = 0; !parameters.generationLimit || i < *parameters.generationLimit; ++i) {
 		std::cout << "Generation: " << i << std::endl;
+
+		savePopulation();
 
 		Genomes& genomes = population.getPopulation();
 
@@ -82,6 +88,22 @@ void NeuralController::run() {
 		}
 		std::cout << "Population average = " << fitnessSum / population.getPopulation().size() << std::endl;
 		population.evolve();
+	}
+}
+
+void NeuralController::loadPopulation() {
+	if (parameters.populationInputFile) {
+		std::ifstream ifs(*parameters.populationInputFile);
+		boost::archive::text_iarchive ia(ifs);
+		ia >> population.getPopulation();
+	}
+}
+
+void NeuralController::savePopulation() const {
+	if (parameters.populationOutputFile) {
+		std::ofstream ofs(*parameters.populationOutputFile);
+		boost::archive::text_oarchive oa(ofs);
+		oa << population.getPopulation();
 	}
 }
 

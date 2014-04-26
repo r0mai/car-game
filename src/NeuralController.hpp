@@ -17,7 +17,11 @@ public:
 	NeuralController(const Parameters& parameters, std::function<Track()> trackCreator,
 			boost::asio::io_service& ioService);
 	void run();
+
 private:
+	void loadPopulation();
+	void savePopulation() const;
+
 	boost::asio::io_service& ioService;
 	Parameters parameters;
 	std::function<Track()> trackCreator;

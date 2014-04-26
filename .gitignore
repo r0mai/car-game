@@ -13,3 +13,5 @@ build-*
 
 #the extension used for storing serialized neural networks
 *.car
+#the extension used for storing serialized populations
+*.pop
