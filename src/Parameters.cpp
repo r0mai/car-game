@@ -68,7 +68,7 @@ Parameters parseParameters(int argc, char **argv) {
 
 	if (vm.count("help")) {
 		std::cout << commandLineDescription << std::endl;
-		exit(0);
+		std::exit(0);
 	}
 
 	parameters.isTrainingAI = vm.count("ai");
