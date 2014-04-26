@@ -31,31 +31,31 @@ Parameters parseParameters(int argc, char **argv) {
 		("seed", po::value<int>(),
 				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
 		("population-size", po::value<unsigned>(&parameters.populationSize)->default_value(parameters.populationSize),
-				"size of the population used in the genetic algorithm")
+				"Size of the population used in the genetic algorithm.")
 		("generation-limit", po::value<unsigned>(),
-				"exit after this many generations")
+				"Exit after this many generations. Default is to never exit.")
 		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount)->default_value(parameters.hiddenLayerCount),
-				"number of hidden layers in the nerual network")
+				"Number of hidden layers in the nerual network.")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
-				"number of neurons/hidden layer in the nerual network")
+				"Number of neurons/hidden layer in the nerual network.")
 		("neural-network", po::value<std::string>(),
-				"load neural-network from file")
+				"Load neural-network from file.")
 		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
-				"specifies where to save the best trained AI")
+				"Specifies where to save the best trained AI.")
 		("track", po::value<TrackType>(&parameters.trackType)->default_value(parameters.trackType),
 				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
 		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),
-				"Minimum track width for randomly generated tracks")
+				"Minimum track width for randomly generated tracks.")
 		("max-track-width", po::value<float>(&parameters.maxRandomTrackWidth)->default_value(parameters.maxRandomTrackWidth),
-				"Maximum track width for randomly generated tracks")
+				"Maximum track width for randomly generated tracks.")
 		("track-seed", po::value<uint>(&parameters.randomTrackSeed)->default_value(parameters.randomTrackSeed),
-				"Seed for randomly generated tracks")
+				"Seed for randomly generated tracks.")
 		("track-points", po::value<int>(&parameters.randomTrackPoints)->default_value(parameters.randomTrackPoints),
-				"Number of points for randomly generated tracks")
+				"Number of points for randomly generated tracks.")
 		("threads", po::value<std::size_t>(&parameters.threadCount)->default_value(parameters.threadCount),
-				"Number of threads used for population simulation")
+				"Number of threads used for population simulation.")
 		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
-				"set fps limit. negative value means no limit")
+				"Set fps limit. Negative value means no limit.")
 	;
 
 	po::options_description commandLineDescription("Options");
