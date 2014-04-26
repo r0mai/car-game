@@ -20,8 +20,6 @@ using namespace car;
 
 int main(int argc, char **argv) {
 
-	std::srand(std::time(0));
-
 	Parameters parameters = parseParameters(argc, argv);
 
 	std::function<Track()> trackCreator;

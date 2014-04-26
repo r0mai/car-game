@@ -28,6 +28,8 @@ Parameters parseParameters(int argc, char **argv) {
 
 	po::options_description configFileDescription("Command-line and config file options");
 	configFileDescription.add_options()
+		("seed", po::value<int>(),
+				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
 		("population-size", po::value<unsigned>(&parameters.populationSize),
 				"size of the population used in the genetic algorithm")
 		("generation-limit", po::value<unsigned>(),
@@ -82,6 +84,13 @@ Parameters parseParameters(int argc, char **argv) {
 	if (vm.count("generation-limit")) {
 		parameters.generationLimit = vm["generation-limit"].as<unsigned>();
 	}
+
+	if (vm.count("seed")) {
+		std::srand(vm["seed"].as<int>());
+	} else {
+		std::srand(std::time(0));
+	}
+
 
 	return parameters;
 }
