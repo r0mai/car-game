@@ -107,8 +107,8 @@ void Model::collideCar() {
 		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
 		track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
 		track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
-	
-	if (isCarCollided) {	
+
+	if (isCarCollided) {
 		car.setColor(sf::Color::Red);
 	} else {
 		car.setColor(sf::Color::White);
