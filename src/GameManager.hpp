@@ -31,7 +31,7 @@ protected:
 
 	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
 
-	unsigned rayCount = 13;
+	unsigned rayCount = 14;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	//1 for speed input and 2 for the direction of the next CP
