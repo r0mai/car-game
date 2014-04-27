@@ -10,8 +10,7 @@ enum class TrackType {
 	circle,
 	zigzag,
 	curvy,
-	random,
-	random_noseed
+	random
 };
 
 std::istream& operator>>(std::istream& is, TrackType& trackType);
