@@ -62,7 +62,7 @@ Weights GameManager::callNeuralNetwork() {
 
 	const float wallDistanceDamping = 5.f;
 	const float speedDamping = 5.f;
-	const float checkpointAngleDamping = pi * 6.f;
+	const float checkpointDirectionDamping = 0.2f;
 
 	const sf::Vector2f& carPosition = model.getCar().getPosition();
 	for (unsigned i = 0; i < rayCount; ++i) {
@@ -75,7 +75,10 @@ Weights GameManager::callNeuralNetwork() {
 		}
 	}
 	inputs[rayCount] = sigmoidApproximation(model.getCar().getSpeed()/speedDamping);
-	inputs[rayCount+1] = sigmoidApproximation(model.getCheckpointAngle()/checkpointAngleDamping);
+
+	auto checkpointDirection = model.getCheckpointDirection();
+	inputs[rayCount+1] = sigmoidApproximation(checkpointDirection.x/checkpointDirectionDamping);
+	inputs[rayCount+2] = sigmoidApproximation(checkpointDirection.y/checkpointDirectionDamping);
 
 	return neuralNetwork.evaluateInput(inputs);
 }
