@@ -38,6 +38,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Number of hidden layers in the nerual network.")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
 				"Number of neurons/hidden layer in the nerual network.")
+		("ray-count", po::value<unsigned>(&parameters.rayCount)->default_value(parameters.rayCount),
+				"Number of rays providing information to the car.")
 		("neural-network", po::value<std::string>(),
 				"Load neural-network from file.")
 		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
@@ -64,9 +66,9 @@ Parameters parseParameters(int argc, char **argv) {
 		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
 				"Set fps limit. Negative value means no limit.")
 		("screen-width", po::value<unsigned>(&parameters.screenWidth)->default_value(parameters.screenWidth),
-				"Screen width for rendering")
+				"Screen width for rendering,")
 		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
-				"Screen height for rendering")
+				"Screen height for rendering.")
 	;
 
 	po::options_description commandLineDescription("Options");

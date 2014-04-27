@@ -39,8 +39,8 @@ void NeuralController::run() {
 			{
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
-				inputNeuronCount,
-				outputNeuronCount
+				parameters.getInputNeuronCount(),
+				parameters.outputNeuronCount
 			},
 			{}
 		});
@@ -111,7 +111,7 @@ void NeuralController::updateBestFitness(Genomes& genomes, float& bestFitness) {
 
 			//TODO we are reconstucting the same network as above
 			NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					inputNeuronCount, outputNeuronCount);
+					parameters.getInputNeuronCount(), parameters.outputNeuronCount);
 
 			network.setWeights(genome.weights);
 
