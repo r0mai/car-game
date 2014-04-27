@@ -32,7 +32,7 @@ void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
 	assert(network.getInputNeuronCount() > 0);
 
 	neuralNetwork = network;
-	rayCount = neuralNetwork.getInputNeuronCount() - extraNeuronCount;
+	rayCount = neuralNetwork.getInputNeuronCount() - parameters.extraInputNeuronCount;
 }
 
 void GameManager::handleInput() {
@@ -58,7 +58,7 @@ void GameManager::handleUserInput() {}
 Weights GameManager::callNeuralNetwork() {
 	using namespace boost::math::float_constants;
 
-	Weights inputs(rayCount + extraNeuronCount);
+	Weights inputs(rayCount + parameters.extraInputNeuronCount);
 
 	const float wallDistanceDamping = 5.f;
 	const float speedDamping = 5.f;

@@ -26,6 +26,13 @@ struct Parameters {
 	unsigned hiddenLayerCount = 2;
 	unsigned neuronPerHiddenLayer = 16;
 
+	unsigned rayCount = 14;
+	//1 for speed input and 2 for the direction of the next CP
+	const unsigned extraInputNeuronCount = 3;
+	const unsigned outputNeuronCount = 3;
+
+	unsigned getInputNeuronCount() const { return rayCount + extraInputNeuronCount; }
+
 	boost::optional<std::string> neuralNetworkFile;
 
 	//number of threads used for training

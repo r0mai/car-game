@@ -31,13 +31,15 @@ protected:
 
 	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
 
-	unsigned rayCount = 13;
+	//We have to store rayCount here as well, because with setNeuralNetwork it is possible to
+	//set a neuralNetwork which is not consistent with what is specified in parameters
+	//TODO something has to be done about who stores the variables concerning the number of
+	//inputs/outputs
+	unsigned rayCount = parameters.rayCount;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
-	//1 for speed input and 2 for the direction of the next CP
-	static constexpr int extraNeuronCount = 3;
-
-	NeuralNetwork neuralNetwork = NeuralNetwork(1, 10, rayCount + extraNeuronCount, 3);
+	NeuralNetwork neuralNetwork = NeuralNetwork(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
+		   rayCount + parameters.extraInputNeuronCount, parameters.outputNeuronCount);
 
 	bool isAIControl = true;
 
