@@ -150,6 +150,8 @@ void RealTimeGameManager::drawTelemetry() {
 
 	const Car& car = model.getCar();
 
+	auto checkpointDirection = model.getCheckpointDirection();
+
 	std::stringstream ss;
 	ss << std::fixed <<
 		"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
@@ -157,7 +159,7 @@ void RealTimeGameManager::drawTelemetry() {
 		", Acceleration = " << getLength(car.getAcceleration()) <<
 		", Throttle = " << car.getThrottle() <<
 		",\nBrake = " << car.getBrake() <<
-		", Angle = " << model.getCheckpointAngle() * 180.f / pi;
+		", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")";
 	sf::Text text;
 	text.setFont(font);
 	text.setColor(sf::Color::White);

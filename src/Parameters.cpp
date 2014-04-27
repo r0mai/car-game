@@ -52,8 +52,9 @@ Parameters parseParameters(int argc, char **argv) {
 				"Minimum track width for randomly generated tracks.")
 		("max-track-width", po::value<float>(&parameters.maxRandomTrackWidth)->default_value(parameters.maxRandomTrackWidth),
 				"Maximum track width for randomly generated tracks.")
-		("track-seed", po::value<uint>(&parameters.randomTrackSeed)->default_value(parameters.randomTrackSeed),
-				"Seed for randomly generated tracks.")
+		("track-seed", po::value<std::vector<unsigned>>(&parameters.randomTrackSeed),
+				"Seeds for randomly generated tracks. It can be given multiple times. "
+				"For AI learning, use all tracks for learning. For real time simulation, use only the first.")
 		("track-points", po::value<int>(&parameters.randomTrackPoints)->default_value(parameters.randomTrackPoints),
 				"Number of points for randomly generated tracks.")
 		("threads", po::value<std::size_t>(&parameters.threadCount)->default_value(parameters.threadCount),

@@ -44,7 +44,7 @@ struct Parameters {
 	//Parameters for random track generation
 	float minRandomTrackWidth = 5.f;
 	float maxRandomTrackWidth = 12.f;
-	unsigned randomTrackSeed = 0;
+	std::vector<unsigned> randomTrackSeed;
 	int randomTrackPoints = 10;
 
 	//parameters for rendering

@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 	Parameters parameters = parseParameters(argc, argv);
 
 	std::function<Track()> trackCreator;
+	std::vector<std::function<Track()>> trackCreators;
 
 	RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
 			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
@@ -39,34 +40,28 @@ int main(int argc, char **argv) {
 		trackCreator = createCurvyTrack;
 		break;
 	case TrackType::random:
-		trackCreator = std::bind(generator, parameters.randomTrackSeed);
-		break;
-	case TrackType::random_noseed:
-		trackCreator = [generator]() {
-			int tries = 100;
-			while (true) {
-				int seed = std::rand();
-				try {
-					return generator(seed);
-				} catch (RandomTrackException&) {
-					std::cerr << "No luck with seed " << seed << std::endl;
-					if (--tries == 0) {
-						throw;
-					}
-				}
+		if (parameters.randomTrackSeed.size() == 0) {
+			trackCreator = std::bind(generator, std::rand());
+		} else {
+			for (auto seed: parameters.randomTrackSeed) {
+				trackCreators.push_back(std::bind(generator, seed));
 			}
-		};
+		}
 		break;
+	}
+
+	if (trackCreators.size() == 0) {
+		trackCreators.push_back(trackCreator);
 	}
 
 	if (parameters.isTrainingAI) {
 		ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
-		NeuralController controller{parameters, trackCreator, threadPool.getIoService()};
+		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
 		controller.run();
 	} else {
-		RealTimeGameManager manager{parameters, trackCreator};
+		RealTimeGameManager manager{parameters, trackCreators[0]};
 
 		manager.setFPSLimit(parameters.fpsLimit);
 
