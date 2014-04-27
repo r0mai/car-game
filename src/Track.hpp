@@ -35,6 +35,8 @@ public:
 	const Line2f& getCheckpoint(std::size_t n) const;
 	void check() const;
 
+	sf::FloatRect getDimensions() const;
+
 	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
 
 	void setOrigin(const sf::Vector2f& point, float direction);

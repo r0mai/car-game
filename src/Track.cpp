@@ -155,6 +155,19 @@ void Track::draw(sf::RenderWindow& window, int highlightCheckpoint) const {
 	}
 }
 
+sf::FloatRect Track::getDimensions() const {
+	if (lines.empty()) {
+		return sf::FloatRect{};
+	}
+
+	sf::FloatRect result{lines[0].start, sf::Vector2f{0, 0}};
+	for (const Line2f& line : lines) {
+		addToBoundingBox(result, line.start);
+		addToBoundingBox(result, line.end);
+	}
+	return result;
+}
+
 namespace {
 
 struct CheckedLine {
