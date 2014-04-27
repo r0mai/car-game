@@ -89,16 +89,16 @@ void addToBoundingBox(sf::Rect<T>& rect, const sf::Vector2<T>& v) {
 	}
 }
 
-//returns a minimal square rectangle, which contains the rectangle given as a parameter in the center
-//TODO make this more general: allow the making of a rectangle with any w/h ratio
+//returns a minimal rectangle with w/h ratio, which contains the rectangle given as a parameter in the center
 template<class T>
-sf::Rect<T> makeSquare(sf::Rect<T> rect) {
-	if (rect.width < rect.height) {
-		rect.left -= (rect.height - rect.width)/T(2);
-		rect.width = rect.height;
+sf::Rect<T> resizeToEnclose(sf::Rect<T> rect, float ratio) {
+	if (rect.width/rect.height < ratio) {
+		rect.left -= (rect.height*ratio - rect.width)/T(2);
+		rect.width = rect.height*ratio;
 	} else {
-		rect.top -= (rect.width - rect.height)/T(2);
-		rect.height = rect.width;
+		ratio = 1.f/ratio;
+		rect.top -= (rect.width*ratio - rect.height)/T(2);
+		rect.height = rect.width*ratio;
 	}
 	return rect;
 }

@@ -62,6 +62,10 @@ Parameters parseParameters(int argc, char **argv) {
 				"Specifies how many times per second the physics should be recalculated.")
 		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
 				"Set fps limit. Negative value means no limit.")
+		("screen-width", po::value<unsigned>(&parameters.screenWidth)->default_value(parameters.screenWidth),
+				"Screen width for rendering")
+		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
+				"Screen height for rendering")
 	;
 
 	po::options_description commandLineDescription("Options");

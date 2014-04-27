@@ -17,7 +17,7 @@ namespace car {
 
 RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
 	GameManager(parameters, trackCreator),
-	window(sf::VideoMode(800, 800), "car-game")
+	window(sf::VideoMode(parameters.screenWidth, parameters.screenHeight), "car-game")
 {
 	using namespace boost::math::float_constants;
 
@@ -31,7 +31,7 @@ RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::func
 	turnTelemetry.setAutomaticBoundsDetection(false);
 	turnTelemetry.setBounds(-1.f, 1.f);
 
-	gameView.reset(makeSquare(track.getDimensions()));
+	gameView.reset(resizeToEnclose(track.getDimensions(), static_cast<float>(parameters.screenWidth)/parameters.screenHeight));
 	hudView = window.getDefaultView();
 }
 

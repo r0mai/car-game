@@ -6,10 +6,10 @@ using namespace car;
 
 BOOST_AUTO_TEST_SUITE(mathUtilTest)
 
-BOOST_AUTO_TEST_CASE(makeSquare_square) {
+BOOST_AUTO_TEST_CASE(resizeToEnclose_square_square) {
 	sf::FloatRect rect{3, 4, 5, 5};
 
-	sf::FloatRect square = makeSquare(rect);
+	sf::FloatRect square = resizeToEnclose(rect, 1.f);
 
 	BOOST_CHECK_CLOSE(square.left, 3.f, 0.001);
 	BOOST_CHECK_CLOSE(square.top, 4.f, 0.001);
@@ -17,10 +17,10 @@ BOOST_AUTO_TEST_CASE(makeSquare_square) {
 	BOOST_CHECK_CLOSE(square.height, 5.f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(makeSquare_wide) {
+BOOST_AUTO_TEST_CASE(resizeToEnclose_square_wide) {
 	sf::FloatRect rect{3, 4, 7, 5};
 
-	sf::FloatRect square = makeSquare(rect);
+	sf::FloatRect square = resizeToEnclose(rect, 1.f);
 
 	BOOST_CHECK_CLOSE(square.left, 3.f, 0.001);
 	BOOST_CHECK_CLOSE(square.top, 3.f, 0.001);
@@ -28,10 +28,10 @@ BOOST_AUTO_TEST_CASE(makeSquare_wide) {
 	BOOST_CHECK_CLOSE(square.height, 7.f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(makeSquare_tall) {
+BOOST_AUTO_TEST_CASE(resizeToEnclose_square_tall) {
 	sf::FloatRect rect{3, 4, 5, 7};
 
-	sf::FloatRect square = makeSquare(rect);
+	sf::FloatRect square = resizeToEnclose(rect, 1.f);
 
 	BOOST_CHECK_CLOSE(square.left, 2.f, 0.001);
 	BOOST_CHECK_CLOSE(square.top, 4.f, 0.001);

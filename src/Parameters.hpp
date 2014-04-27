@@ -49,7 +49,8 @@ struct Parameters {
 
 	//parameters for rendering
 	int fpsLimit = -1;
-
+	unsigned screenWidth = 800;
+	unsigned screenHeight = 800;
 };
 
 //May throw if something goes wrong with parsing
