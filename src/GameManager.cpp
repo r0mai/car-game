@@ -7,12 +7,17 @@
 namespace car {
 
 GameManager::GameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
-	parameters(parameters)
+	parameters(parameters),
+	track(trackCreator())
 {
-	Track track = trackCreator();
 	track.check();
-	model.setCar(track.createCar());
+	init();
+}
+
+void GameManager::init() {
+	model = Model{};
 	model.setTrack(track);
+	model.setCar(model.getTrack().createCar());
 	rayPoints = model.getRayPoints(rayCount);
 }
 

@@ -20,11 +20,34 @@ NeuralController::NeuralController(const Parameters& parameters, std::function<T
 	trackCreator(trackCreator)
 {}
 
+namespace {
+
+struct Data {
+	NeuralNetwork network;
+	AIGameManager manager;
+};
+
+}
+
 void NeuralController::run() {
 
 	loadPopulation();
 
 	float bestFitness = 0.f;
+
+	std::vector<Data> datas;
+	datas.reserve(parameters.populationSize);
+	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
+		datas.push_back(Data{
+			{
+				parameters.hiddenLayerCount,
+				parameters.neuronPerHiddenLayer,
+				inputNeuronCount,
+				outputNeuronCount
+			},
+			{parameters, trackCreator}
+		});
+	}
 
 	for (unsigned i = 0; !parameters.generationLimit || i < *parameters.generationLimit; ++i) {
 		std::cout << "Generation: " << i << std::endl;
@@ -32,26 +55,23 @@ void NeuralController::run() {
 		savePopulation();
 
 		Genomes& genomes = population.getPopulation();
+		assert(genomes.size() == parameters.populationSize);
 
 		std::promise<void> genomePromise;
 		std::mutex mutex;
 		std::size_t tasksLeft{genomes.size()};
 
-		for (Genome& genome : genomes) {
-			ioService.post([this, &genome, &tasksLeft, &genomePromise, &mutex]() {
-					NeuralNetwork network(
-						parameters.hiddenLayerCount,
-						parameters.neuronPerHiddenLayer,
-						inputNeuronCount,
-						outputNeuronCount);
-					network.setWeights(genome.weights);
+		for (std::size_t i = 0; i < datas.size(); ++i) {
+			auto& genome = genomes[i];
+			auto& data = datas[i];
+			ioService.post([this, &genome, &data, &tasksLeft, &genomePromise, &mutex]() {
+					data.network.setWeights(genome.weights);
 
-					AIGameManager manager(parameters, trackCreator);
+					data.manager.setNeuralNetwork(data.network);
+					data.manager.init();
+					data.manager.run();
 
-					manager.setNeuralNetwork(network);
-					manager.run();
-
-					genome.fitness = manager.getFitness();
+					genome.fitness = data.manager.getFitness();
 
 					int value;
 					{
