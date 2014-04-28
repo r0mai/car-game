@@ -1,10 +1,40 @@
 
 #include "Parameters.hpp"
 
+#include <stdexcept>
+#include <iostream>
+
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 namespace car {
+
+std::istream& operator>>(std::istream& is, PanMode& panMode) {
+	std::string s;
+	is >> s;
+
+	if (boost::algorithm::iequals(s, std::string{"auto"})) {
+		panMode = PanMode::automatic;
+	} else if (boost::algorithm::iequals(s, std::string{"enabled"})) {
+		panMode = PanMode::enabled;
+	} else if (boost::algorithm::iequals(s, std::string{"disabled"})) {
+		panMode = PanMode::disabled;
+	} else {
+		throw std::logic_error{"Invalid pan mode"};
+	}
+
+	return is;
+}
+
+std::ostream& operator<<(std::ostream& os, PanMode panMode) {
+	switch (panMode) {
+	case PanMode::automatic: return os << "auto";
+	case PanMode::enabled: return os << "enabled";
+	case PanMode::disabled: return os << "disabled";
+	default: return os;
+	}
+}
 
 Parameters parseParameters(int argc, char **argv) {
 
@@ -69,6 +99,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Screen width for rendering,")
 		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
 				"Screen height for rendering.")
+		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
+				"Set panning mode. Allowed values: enabled, disabled, auto")
 	;
 
 	po::options_description commandLineDescription("Options");

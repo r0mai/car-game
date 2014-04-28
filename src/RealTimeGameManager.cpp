@@ -31,7 +31,20 @@ RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::func
 	turnTelemetry.setAutomaticBoundsDetection(false);
 	turnTelemetry.setBounds(-1.f, 1.f);
 
-	gameView.reset(resizeToEnclose(track.getDimensions(), static_cast<float>(parameters.screenWidth)/parameters.screenHeight));
+	const float minPixelPerMeter = 10;
+	sf::FloatRect staticViewRect = resizeToEnclose(track.getDimensions(), static_cast<float>(parameters.screenWidth)/parameters.screenHeight);
+
+	if (parameters.panMode == PanMode::enabled ||
+		(parameters.panMode == PanMode::automatic && parameters.screenWidth / staticViewRect.width > minPixelPerMeter))
+	{
+		gameView.setSize(parameters.screenWidth / minPixelPerMeter, parameters.screenHeight / minPixelPerMeter);
+		gameView.setCenter(model.getCar().getPosition());
+		panningEnabled = true;
+	} else {
+		gameView.reset(staticViewRect);
+		panningEnabled = false;
+	}
+
 	hudView = window.getDefaultView();
 }
 
@@ -53,6 +66,9 @@ void RealTimeGameManager::run() {
 		physicsTimeStepAccumulator += deltaSeconds;
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			advance();
+			if (panningEnabled) {
+				gameView.setCenter(model.getCar().getPosition());
+			}
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 

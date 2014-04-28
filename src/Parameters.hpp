@@ -10,6 +10,10 @@
 
 namespace car {
 
+enum class PanMode {
+	enabled, disabled, automatic
+};
+
 struct Parameters {
 
 	std::string projectRootPath;
@@ -58,6 +62,7 @@ struct Parameters {
 	int fpsLimit = -1;
 	unsigned screenWidth = 800;
 	unsigned screenHeight = 800;
+	PanMode panMode = PanMode::disabled;
 };
 
 //May throw if something goes wrong with parsing

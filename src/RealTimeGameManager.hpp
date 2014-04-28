@@ -33,6 +33,8 @@ protected:
 	sf::View hudView;
 	sf::Font font;
 
+	bool panningEnabled = false;
+
 	float fpsLimit = 64;
 	float fps = -1.f;
 
