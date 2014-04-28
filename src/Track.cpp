@@ -75,6 +75,46 @@ Track createCurvyTrack() {
 	return builder(5.f, points);
 }
 
+Track createEvilTrack() {
+	std::vector<sf::Vector2f> points;
+
+	points.push_back({-55.0f,  55.0f});
+	points.push_back({-30.0f,  55.0f});
+	points.push_back({  0.0f,  30.0f});
+	points.push_back({ 30.0f,  55.0f});
+	points.push_back({ 55.0f,  55.0f});
+	points.push_back({ 55.0f,  35.0f});
+	points.push_back({ 52.0f,  25.0f});
+	points.push_back({ 58.0f,  20.0f});
+	points.push_back({ 50.0f,  15.0f});
+	points.push_back({ 60.0f,  10.0f});
+	points.push_back({ 48.0f,   5.0f});
+	points.push_back({ 62.0f,   0.0f});
+	points.push_back({ 46.0f,  -5.0f});
+	points.push_back({ 64.0f, -15.0f});
+	points.push_back({ 44.0f, -20.0f});
+	points.push_back({ 55.0f, -30.0f});
+	points.push_back({ 55.0f, -55.0f});
+	points.push_back({ 30.0f, -55.0f});
+	points.push_back({ 30.0f,   0.0f});
+	points.push_back({ 20.0f,   0.0f});
+	points.push_back({ 20.0f, -55.0f});
+	points.push_back({ 12.0f, -55.0f});
+	points.push_back({ 12.0f,   0.0f});
+	points.push_back({  4.0f,   0.0f});
+	points.push_back({  4.0f, -55.0f});
+	points.push_back({ -2.5f, -55.0f});
+	points.push_back({ -2.5f,   0.0f});
+	points.push_back({ -9.0f,   0.0f});
+	points.push_back({ -9.0f, -55.0f});
+	points.push_back({-60.0f, -55.0f});
+	points.push_back({-50.0f, -53.0f});
+	points.push_back({-55.0f, -45.0f});
+
+	PolygonTrackBuilder builder{6.f};
+	return builder(5.f, points);
+}
+
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
 }

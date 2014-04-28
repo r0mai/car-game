@@ -10,6 +10,7 @@ enum class TrackType {
 	circle,
 	zigzag,
 	curvy,
+	evil,
 	random
 };
 

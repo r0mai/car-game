@@ -17,6 +17,7 @@ const std::map<std::string, TrackType> trackTypes{
 	{"circle", TrackType::circle},
 	{"zigzag", TrackType::zigzag},
 	{"curvy", TrackType::curvy},
+	{"evil", TrackType::evil},
 	{"random", TrackType::random},
 };
 
@@ -45,6 +46,8 @@ std::function<Track()> TrackCreator::parseArgument(const std::string& arg) {
 		return createZigZagTrack;
 	case TrackType::curvy:
 		return createCurvyTrack;
+	case TrackType::evil:
+		return createEvilTrack;
 	case TrackType::random:
 		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
 			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
