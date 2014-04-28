@@ -107,8 +107,8 @@ void Model::collideCar() {
 		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
 		track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
 		track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
-	
-	if (isCarCollided) {	
+
+	if (isCarCollided) {
 		car.setColor(sf::Color::Red);
 	} else {
 		car.setColor(sf::Color::White);
@@ -158,9 +158,15 @@ void Model::handleInput(float deltaSeconds) {
 
 }
 
-void Model::draw(sf::RenderWindow& window) const {
-	track.draw(window, currentCheckpoint);
+void Model::drawCar(sf::RenderWindow& window) const {
 	car.draw(window);
+}
+
+void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
+	track.drawBoundary(window);
+	if (drawCheckpoints) {
+		track.drawCheckpoints(window, currentCheckpoint);
+	}
 }
 
 sf::Vector2f Model::getCheckpointDirection() const {

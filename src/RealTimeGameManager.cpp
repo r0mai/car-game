@@ -47,7 +47,7 @@ void RealTimeGameManager::run() {
 		fps = 1/deltaSeconds;
 
 		//if we're really really slow
-		if ( deltaSeconds > 0.1f ) {
+		if (deltaSeconds > 0.1f) {
 			deltaSeconds = 0.1f;
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
@@ -61,16 +61,15 @@ void RealTimeGameManager::run() {
 		window.clear(sf::Color::Black);
 
 		window.setView(gameView);
-		model.draw(window);
-		drawRayPoints();
+		drawGame();
 
 		window.setView(hudView);
 		drawTelemetry();
 
 		window.display();
-		if ( fpsLimit > 0 ) {
+		if (fpsLimit > 0) {
 			const sf::Time renderTime = clock.getElapsedTime();
-			if ( renderTime.asSeconds() < 1.f/fpsLimit ) {
+			if (renderTime.asSeconds() < 1.f/fpsLimit) {
 				sf::sleep( sf::seconds(1.f/fpsLimit - renderTime.asSeconds()) );
 			}
 		}
@@ -92,8 +91,23 @@ void RealTimeGameManager::handleUserInput() {
 		case sf::Event::KeyPressed:
 			pressedKeys[event.key.code] = true;
 			switch(event.key.code) {
+			case sf::Keyboard::C:
+				showCar = !showCar;
+				break;
+			case sf::Keyboard::Y:
+				showRays = !showRays;
+				break;
+			case sf::Keyboard::P:
+				showCheckPoints = !showCheckPoints;
+				break;
+			case sf::Keyboard::R:
+				showTrackBoundary = !showTrackBoundary;
+				break;
 			case sf::Keyboard::T:
-				showTelemetry = !showTelemetry;
+				showTelemetryGraphs = !showTelemetryGraphs;
+				break;
+			case sf::Keyboard::X:
+				showTelemetryText = !showTelemetryText;
 				break;
 			case sf::Keyboard::A:
 				isAIControl = !isAIControl;
@@ -114,7 +128,7 @@ void RealTimeGameManager::handleUserInput() {
 		window.close();
 	}
 
-	if ( !isAIControl ) {
+	if (!isAIControl) {
 		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
 		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
 		model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
@@ -134,10 +148,22 @@ void RealTimeGameManager::updateTelemetry() {
 	turnTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getTurnLevel()));
 }
 
-void RealTimeGameManager::drawRayPoints() {
+void RealTimeGameManager::drawGame() {
+	if (showTrackBoundary) {
+		model.drawTrack(window, showCheckPoints);
+	}
+	if (showRays) {
+		drawRays();
+	}
+	if (showCar) {
+		model.drawCar(window);
+	}
+}
+
+void RealTimeGameManager::drawRays() {
 	const Car& car = model.getCar();
 
-	for ( const auto& ray : rayPoints ) {
+	for (const auto& ray : rayPoints) {
 		if (!ray) {
 			continue;
 		}
@@ -148,29 +174,31 @@ void RealTimeGameManager::drawRayPoints() {
 void RealTimeGameManager::drawTelemetry() {
 	using namespace boost::math::float_constants;
 
-	const Car& car = model.getCar();
+	if (showTelemetryText) {
+		const Car& car = model.getCar();
 
-	auto checkpointDirection = model.getCheckpointDirection();
+		auto checkpointDirection = model.getCheckpointDirection();
 
-	std::stringstream ss;
-	ss << std::fixed <<
-		"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
-		", Speed = " << car.getSpeed() <<
-		", Acceleration = " << getLength(car.getAcceleration()) <<
-		", Throttle = " << car.getThrottle() <<
-		",\nBrake = " << car.getBrake() <<
-		", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")";
-	sf::Text text;
-	text.setFont(font);
-	text.setColor(sf::Color::White);
-	text.setCharacterSize(32);
-	text.setString(sf::String(ss.str()));
-	text.setScale(.5, .5);
-	text.setPosition(3., 3.);
+		std::stringstream ss;
+		ss << std::fixed <<
+			"FPS = " << std::setw(4) << std::setfill('0') << static_cast<int>(fps) <<
+			", Speed = " << car.getSpeed() <<
+			", Acceleration = " << getLength(car.getAcceleration()) <<
+			", Throttle = " << car.getThrottle() <<
+			",\nBrake = " << car.getBrake() <<
+			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")";
+		sf::Text text;
+		text.setFont(font);
+		text.setColor(sf::Color::White);
+		text.setCharacterSize(32);
+		text.setString(sf::String(ss.str()));
+		text.setScale(.5, .5);
+		text.setPosition(3., 3.);
 
-	window.draw(text);
+		window.draw(text);
+	}
 
-	if (showTelemetry) {
+	if (showTelemetryGraphs) {
 		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Green);
 		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Yellow);
 		angleTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::White);

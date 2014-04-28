@@ -139,15 +139,17 @@ const Line2f& Track::getCheckpoint(std::size_t n) const {
 	return checkpoints[n];
 }
 
-void Track::draw(sf::RenderWindow& window, int highlightCheckpoint) const {
-	for ( const Line2f& trackLine : lines ) {
+void Track::drawBoundary(sf::RenderWindow& window) const {
+	for (const Line2f& trackLine : lines) {
 		drawLine(window, trackLine);
 	}
+}
 
+void Track::drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint) const {
 	sf::Color checkpointColor{255, 255, 64};
 	sf::Color highlightedCheckpointColor{128, 128, 255};
 
-	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
+	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
 
 		drawLine(window, checkpoints[i],
 				((static_cast<int>(i) == highlightCheckpoint) ?
