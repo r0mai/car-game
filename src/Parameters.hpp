@@ -49,13 +49,11 @@ struct Parameters {
 	boost::optional<std::string> populationOutputFile;
 	boost::optional<std::string> populationInputFile;
 
-	//track type
-	TrackType trackType = TrackType::circle;
+	std::vector<std::string> tracks{"circle"};
 
 	//Parameters for random track generation
 	float minRandomTrackWidth = 5.f;
 	float maxRandomTrackWidth = 12.f;
-	std::vector<unsigned> randomTrackSeed;
 	int randomTrackPoints = 10;
 
 	//parameters for rendering
