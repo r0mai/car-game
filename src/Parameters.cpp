@@ -59,7 +59,7 @@ Parameters parseParameters(int argc, char **argv) {
 				"For AI learning, use all tracks for learning. For real time simulation, use only the first.")
 		("track-points", po::value<int>(&parameters.randomTrackPoints)->default_value(parameters.randomTrackPoints),
 				"Number of points for randomly generated tracks.")
-		("threads", po::value<std::size_t>(&parameters.threadCount)->default_value(parameters.threadCount),
+		("threads", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
 				"Number of threads used for population simulation.")
 		("physics-frequency", po::value<unsigned>(&parameters.physicsTimeStepsPerSecond)->default_value(parameters.physicsTimeStepsPerSecond),
 				"Specifies how many times per second the physics should be recalculated.")
