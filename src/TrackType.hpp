@@ -13,9 +13,6 @@ enum class TrackType {
 	random
 };
 
-std::istream& operator>>(std::istream& is, TrackType& trackType);
-std::ostream& operator<<(std::ostream& os, TrackType trackType);
-
 }
 
 

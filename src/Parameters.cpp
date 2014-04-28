@@ -48,15 +48,14 @@ Parameters parseParameters(int argc, char **argv) {
 				"Specifies where to save the current population.")
 		("input-population", po::value<std::string>(),
 				"Load population from file.")
-		("track", po::value<TrackType>(&parameters.trackType)->default_value(parameters.trackType),
-				"The type of track to use. Allowed values: circle, zigzag, curvy, random")
+		("track", po::value<std::vector<std::string>>(&parameters.tracks)->default_value(parameters.tracks, parameters.tracks[0]),
+				"The type of track to use. Allowed values: circle, zigzag, curvy, random:<seed>. "
+				"It can be given multiple times. For AI learning, use all tracks for learning. "
+				"For real time simulation, use only the first.")
 		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),
 				"Minimum track width for randomly generated tracks.")
 		("max-track-width", po::value<float>(&parameters.maxRandomTrackWidth)->default_value(parameters.maxRandomTrackWidth),
 				"Maximum track width for randomly generated tracks.")
-		("track-seed", po::value<std::vector<unsigned>>(&parameters.randomTrackSeed),
-				"Seeds for randomly generated tracks. It can be given multiple times. "
-				"For AI learning, use all tracks for learning. For real time simulation, use only the first.")
 		("track-points", po::value<int>(&parameters.randomTrackPoints)->default_value(parameters.randomTrackPoints),
 				"Number of points for randomly generated tracks.")
 		("threads", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
