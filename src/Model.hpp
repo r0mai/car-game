@@ -36,7 +36,9 @@ public:
 	unsigned getNumberOfCrossedCheckpoints() const;
 
 	void advanceTime(float deltaSeconds);
-	void draw(sf::RenderWindow& window) const;
+
+	void drawCar(sf::RenderWindow& window) const;
+	void drawTrack(sf::RenderWindow& window, bool drawCheckpoints = true) const;
 
 	sf::Vector2f getCheckpointDirection() const;
 

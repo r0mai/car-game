@@ -23,8 +23,9 @@ public:
 protected:
 	virtual void handleUserInput();
 
+	void drawGame();
 	void drawTelemetry();
-	void drawRayPoints();
+	void drawRays();
 	void updateTelemetry();
 
 	sf::RenderWindow window;
@@ -35,7 +36,13 @@ protected:
 	float fpsLimit = 64;
 	float fps = -1.f;
 
-	bool showTelemetry = false;
+	bool showCar = true;
+	bool showRays = true;
+	bool showCheckPoints = true;
+	bool showTrackBoundary = true;
+	bool showTelemetryText = true;
+	bool showTelemetryGraphs = false;
+
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;
 	Telemetry angleTelemetry;

@@ -158,9 +158,15 @@ void Model::handleInput(float deltaSeconds) {
 
 }
 
-void Model::draw(sf::RenderWindow& window) const {
-	track.draw(window, currentCheckpoint);
+void Model::drawCar(sf::RenderWindow& window) const {
 	car.draw(window);
+}
+
+void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
+	track.drawBoundary(window);
+	if (drawCheckpoints) {
+		track.drawCheckpoints(window, currentCheckpoint);
+	}
 }
 
 sf::Vector2f Model::getCheckpointDirection() const {

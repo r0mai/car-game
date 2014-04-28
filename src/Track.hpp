@@ -37,7 +37,8 @@ public:
 
 	sf::FloatRect getDimensions() const;
 
-	void draw(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
+	void drawBoundary(sf::RenderWindow& window) const;
+	void drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
 
 	void setOrigin(const sf::Vector2f& point, float direction);
 	Car createCar() const;
