@@ -36,8 +36,8 @@ private:
 				parameters.getInputNeuronCount(), parameters.outputNeuronCount));
 
 	void runSimulation(Genome& genome, NeuralControllerData& data);
-	void updateBestFitness(Genomes& genomes, float& bestFitness);
-	void runIteration(Genomes& genomes, std::vector<NeuralControllerData>& datas);
+	void updateBestFitness(float& bestFitness);
+	void runIteration(std::vector<NeuralControllerData>& datas);
 };
 
 }

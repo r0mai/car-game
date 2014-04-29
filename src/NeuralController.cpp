@@ -56,16 +56,16 @@ void NeuralController::run() {
 
 		savePopulation();
 
-		Genomes& genomes = population.getPopulation();
-		assert(genomes.size() == parameters.populationSize);
-
-		runIteration(genomes, datas);
-		updateBestFitness(genomes, bestFitness);
+		runIteration(datas);
+		updateBestFitness(bestFitness);
 		population.evolve();
 	}
 }
 
-void NeuralController::runIteration(Genomes& genomes, std::vector<NeuralControllerData>& datas) {
+void NeuralController::runIteration(std::vector<NeuralControllerData>& datas) {
+	Genomes& genomes = population.getPopulation();
+	assert(genomes.size() == parameters.populationSize);
+
 	std::promise<void> genomePromise;
 	std::mutex mutex;
 	std::size_t tasksLeft{genomes.size()};
@@ -103,9 +103,9 @@ void NeuralController::runSimulation(Genome& genome, NeuralControllerData& data)
 	}
 }
 
-void NeuralController::updateBestFitness(Genomes& genomes, float& bestFitness) {
+void NeuralController::updateBestFitness(float& bestFitness) {
 	float fitnessSum = 0.f;
-	for (Genome& genome : genomes) {
+	for (Genome& genome : population.getPopulation()) {
 		fitnessSum += genome.fitness;
 		if (genome.fitness > bestFitness) {
 
