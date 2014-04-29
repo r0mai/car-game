@@ -37,6 +37,7 @@ private:
 
 	void runSimulation(Genome& genome, NeuralControllerData& data);
 	void updateBestFitness(Genomes& genomes, float& bestFitness);
+	void runIteration(Genomes& genomes, std::vector<NeuralControllerData>& datas);
 };
 
 }

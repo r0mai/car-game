@@ -59,33 +59,36 @@ void NeuralController::run() {
 		Genomes& genomes = population.getPopulation();
 		assert(genomes.size() == parameters.populationSize);
 
-		std::promise<void> genomePromise;
-		std::mutex mutex;
-		std::size_t tasksLeft{genomes.size()};
-
-		for (std::size_t i = 0; i < datas.size(); ++i) {
-			auto& genome = genomes[i];
-			auto& data = datas[i];
-			ioService.post([this, &genome, &data, &tasksLeft, &genomePromise, &mutex]() {
-					runSimulation(genome, data);
-
-					int value;
-					{
-						std::unique_lock<std::mutex> lock{mutex};
-						value = --tasksLeft;
-					}
-					if (value == 0) {
-						genomePromise.set_value();
-					}
-				});
-		}
-
-		auto genomeFuture = genomePromise.get_future();
-		genomeFuture.wait();
-
+		runIteration(genomes, datas);
 		updateBestFitness(genomes, bestFitness);
 		population.evolve();
 	}
+}
+
+void NeuralController::runIteration(Genomes& genomes, std::vector<NeuralControllerData>& datas) {
+	std::promise<void> genomePromise;
+	std::mutex mutex;
+	std::size_t tasksLeft{genomes.size()};
+
+	for (std::size_t i = 0; i < datas.size(); ++i) {
+		auto& genome = genomes[i];
+		auto& data = datas[i];
+		ioService.post([this, &genome, &data, &tasksLeft, &genomePromise, &mutex]() {
+				runSimulation(genome, data);
+
+				int value;
+				{
+					std::unique_lock<std::mutex> lock{mutex};
+					value = --tasksLeft;
+				}
+				if (value == 0) {
+					genomePromise.set_value();
+				}
+			});
+	}
+
+	auto genomeFuture = genomePromise.get_future();
+	genomeFuture.wait();
 }
 
 void NeuralController::runSimulation(Genome& genome, NeuralControllerData& data) {
