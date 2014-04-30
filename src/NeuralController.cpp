@@ -47,6 +47,7 @@ void NeuralController::run() {
 		}
 
 		auto& bestPopulation = *boost::max_element(populations, compareBestFitnesses);
+		savePopulation(bestPopulation.getPopulation());
 		if (bestPopulation.getBestFitness() > bestFitness) {
 			bestFitness = bestPopulation.getBestFitness();
 			std::cout << "New best fitness = " << bestFitness << std::endl;
