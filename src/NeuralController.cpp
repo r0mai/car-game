@@ -1,15 +1,12 @@
-
 #include <iostream>
 #include <fstream>
-#include <future>
-#include <thread>
 
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/range/algorithm.hpp>
 
 #include "NeuralController.hpp"
-#include "AIGameManager.hpp"
-#include "AsyncHelper.hpp"
+#include "PopulationRunner.hpp"
 
 namespace car {
 
@@ -21,112 +18,62 @@ NeuralController::NeuralController(const Parameters& parameters,
 	trackCreators(trackCreators)
 {}
 
-struct NeuralControllerData {
-	NeuralNetwork network;
-	std::vector<AIGameManager> managers;
-};
+namespace {
+
+bool compareBestFitnesses(const PopulationRunner& lhs, const PopulationRunner& rhs) {
+	return lhs.getBestFitness() < rhs.getBestFitness();
+}
+
+}
 
 void NeuralController::run() {
 
-	loadPopulation();
+	std::vector<PopulationRunner> populations;
+	populations.reserve(parameters.startingPopulations);
+
+	for (std::size_t i = 0; i < parameters.startingPopulations; ++i) {
+		populations.emplace_back(parameters, trackCreators, ioService);
+		loadPopulation(populations.back().getPopulation());
+	}
 
 	float bestFitness = 0.f;
 
-	std::vector<NeuralControllerData> datas;
-	datas.reserve(parameters.populationSize);
-	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
-		datas.push_back(NeuralControllerData{
-			{
-				parameters.hiddenLayerCount,
-				parameters.neuronPerHiddenLayer,
-				parameters.getInputNeuronCount(),
-				parameters.outputNeuronCount
-			},
-			{}
-		});
+	for (unsigned generation = 1; !parameters.generationLimit || generation <= *parameters.generationLimit;
+			++generation) {
+		std::cout << "Generation: " << generation << std::endl;
 
-		datas.back().managers.reserve(trackCreators.size());
-		for (const auto& trackCreator: trackCreators) {
-			datas.back().managers.emplace_back(parameters, trackCreator);
+		for (auto& populationData: populations) {
+			populationData.runIteration();
 		}
-	}
 
-	for (unsigned i = 0; !parameters.generationLimit || i < *parameters.generationLimit; ++i) {
-		std::cout << "Generation: " << i << std::endl;
-
-		savePopulation();
-
-		runIteration(datas);
-		updateBestFitness(bestFitness);
-		population.evolve();
-	}
-}
-
-void NeuralController::runIteration(std::vector<NeuralControllerData>& datas) {
-	Genomes& genomes = population.getPopulation();
-	assert(genomes.size() == parameters.populationSize);
-
-	std::promise<void> genomePromise;
-	std::mutex mutex;
-	std::size_t tasksLeft{genomes.size()};
-
-	for (std::size_t i = 0; i < datas.size(); ++i) {
-		auto& genome = genomes[i];
-		auto& data = datas[i];
-		ioService.post([this, &genome, &data, &tasksLeft, &genomePromise, &mutex]() {
-				runSimulation(genome, data);
-
-				int value;
-				{
-					std::unique_lock<std::mutex> lock{mutex};
-					value = --tasksLeft;
-				}
-				if (value == 0) {
-					genomePromise.set_value();
-				}
-			});
-	}
-
-	auto genomeFuture = genomePromise.get_future();
-	genomeFuture.wait();
-}
-
-void NeuralController::runSimulation(Genome& genome, NeuralControllerData& data) {
-	data.network.setWeights(genome.weights);
-	genome.fitness = 0;
-
-	for (auto& manager: data.managers) {
-		manager.setNeuralNetwork(data.network);
-		manager.init();
-		manager.run();
-		genome.fitness += manager.getFitness();
-	}
-}
-
-void NeuralController::updateBestFitness(float& bestFitness) {
-	float fitnessSum = 0.f;
-	for (Genome& genome : population.getPopulation()) {
-		fitnessSum += genome.fitness;
-		if (genome.fitness > bestFitness) {
-
-			bestFitness = genome.fitness;
+		auto& bestPopulation = *boost::max_element(populations, compareBestFitnesses);
+		if (bestPopulation.getBestFitness() > bestFitness) {
+			bestFitness = bestPopulation.getBestFitness();
 			std::cout << "New best fitness = " << bestFitness << std::endl;
+			assert(bestPopulation.getBestGenome() != nullptr);
+			saveNeuralNetwork(*bestPopulation.getBestGenome());
+		}
 
-			//TODO we are reconstucting the same network as above
-			NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					parameters.getInputNeuronCount(), parameters.outputNeuronCount);
-
-			network.setWeights(genome.weights);
-
-			std::ofstream ofs(parameters.bestAIFile);
-			boost::archive::text_oarchive oa(ofs);
-			oa << network;
+		if (populations.size() > 1 && generation % parameters.populationCutoff == 0) {
+			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
+			populations.erase(worstPopulation);
 		}
 	}
-	std::cout << "Population average = " << fitnessSum / population.getPopulation().size() << std::endl;
 }
 
-void NeuralController::loadPopulation() {
+void NeuralController::saveNeuralNetwork(const Genome& genome) {
+	//TODO we are reconstucting the same network as above
+	NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
+			parameters.getInputNeuronCount(), parameters.outputNeuronCount);
+
+	network.setWeights(genome.weights);
+
+	std::ofstream ofs(parameters.bestAIFile);
+	boost::archive::text_oarchive oa(ofs);
+	oa << network;
+}
+
+void NeuralController::loadPopulation(GeneticPopulation& population) const {
 	if (parameters.populationInputFile) {
 		std::ifstream ifs(*parameters.populationInputFile);
 		boost::archive::text_iarchive ia(ifs);
@@ -134,13 +81,14 @@ void NeuralController::loadPopulation() {
 	}
 }
 
-void NeuralController::savePopulation() const {
+void NeuralController::savePopulation(const GeneticPopulation& population) const {
 	if (parameters.populationOutputFile) {
 		std::ofstream ofs(*parameters.populationOutputFile);
 		boost::archive::text_oarchive oa(ofs);
 		oa << population.getPopulation();
 	}
 }
+
 
 }
 

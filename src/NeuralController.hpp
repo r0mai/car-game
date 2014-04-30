@@ -4,15 +4,14 @@
 
 #include <functional>
 
-#include "GeneticPopulation.hpp"
-#include "NeuralNetwork.hpp"
 #include "Parameters.hpp"
 #include "Track.hpp"
 #include "boost/asio/io_service.hpp"
 
 namespace car {
 
-struct NeuralControllerData;
+class GeneticPopulation;
+class Genome;
 
 class NeuralController {
 public:
@@ -22,22 +21,14 @@ public:
 	void run();
 
 private:
-	void loadPopulation();
-	void savePopulation() const;
+	void loadPopulation(GeneticPopulation& population) const;
+	void savePopulation(const GeneticPopulation& population) const;
 
 	boost::asio::io_service& ioService;
 	Parameters parameters;
 	std::vector<std::function<Track()>> trackCreators;
 
-	GeneticPopulation population = GeneticPopulation(
-			parameters.populationSize,
-			NeuralNetwork::getWeightCountForNetwork(
-				parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-				parameters.getInputNeuronCount(), parameters.outputNeuronCount));
-
-	void runSimulation(Genome& genome, NeuralControllerData& data);
-	void updateBestFitness(float& bestFitness);
-	void runIteration(std::vector<NeuralControllerData>& datas);
+	void saveNeuralNetwork(const Genome& genome);
 };
 
 }

@@ -56,6 +56,9 @@ struct Parameters {
 	float maxRandomTrackWidth = 12.f;
 	int randomTrackPoints = 10;
 
+	unsigned startingPopulations = 1;
+	unsigned populationCutoff = 10;
+
 	//parameters for rendering
 	int fpsLimit = -1;
 	unsigned screenWidth = 800;
