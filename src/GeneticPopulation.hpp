@@ -16,6 +16,11 @@ public:
 	GeneticPopulation() = default;
 	GeneticPopulation(unsigned populationSize, unsigned numberOfWeights);
 
+	GeneticPopulation(const GeneticPopulation&) = default;
+	GeneticPopulation(GeneticPopulation&&) = default;
+	GeneticPopulation& operator=(const GeneticPopulation&) = default;
+	GeneticPopulation& operator=(GeneticPopulation&&) = default;
+
 	const Genomes& getPopulation() const;
 	Genomes& getPopulation();
 
