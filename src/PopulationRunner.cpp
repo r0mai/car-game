@@ -1,7 +1,7 @@
 #include "PopulationRunner.hpp"
 
 #include <mutex>
-#include <future>
+#include <condition_variable>
 #include <iostream>
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
@@ -41,7 +41,7 @@ void PopulationRunner::runIteration() {
 	Genomes& genomes = population.getPopulation();
 	assert(genomes.size() == controllerDatas.size());
 
-	std::promise<void> genomePromise;
+	std::condition_variable conditionVariable;
 	std::mutex mutex;
 	std::size_t tasksLeft{controllerDatas.size()};
 
@@ -49,22 +49,24 @@ void PopulationRunner::runIteration() {
 		auto& genome = genomes[i];
 		auto& data = controllerDatas[i];
 
-		ioService->post([this, &genome, &data, &tasksLeft, &genomePromise, &mutex]() {
+		ioService->post([this, &genome, &data, &tasksLeft, &conditionVariable, &mutex]() {
 				runSimulation(genome, data);
 
-				int value;
 				{
 					std::unique_lock<std::mutex> lock{mutex};
-					value = --tasksLeft;
-				}
-				if (value == 0) {
-					genomePromise.set_value();
+					if (--tasksLeft == 0) {
+						conditionVariable.notify_all();
+					}
 				}
 			});
 	}
 
-	auto genomeFuture = genomePromise.get_future();
-	genomeFuture.wait();
+	{
+		std::unique_lock<std::mutex> lock{mutex};
+		while (tasksLeft != 0) {
+			conditionVariable.wait(lock);
+		}
+	}
 
 	updateBestFitness();
 	population.evolve();
