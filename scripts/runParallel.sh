@@ -12,7 +12,7 @@ print_usage() {
 }
 
 interrupt() {
-    kill $(jobs -p)
+    kill "${pids[@]}"
 }
 
 # -------- Main body --------
@@ -41,10 +41,14 @@ trap interrupt SIGHUP
 trap interrupt SIGTERM
 trap interrupt SIGQUIT
 
+pids=()
+
 for config in "${configs[@]}"; do
     $runDir/car-game --ai "${globalConfigOption[@]}" "$config" >"$config.out" &
+    pids+=($!)
 done
-
+echo "${pids[@]}"
+wait "${pids[@]}"
 
 
 shift $(($OPTIND - 1))
