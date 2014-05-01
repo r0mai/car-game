@@ -31,7 +31,7 @@ while getopts ":hC:c:" Option; do
 	    globalConfigOption=("--config=$OPTARG")
 	    ;;
 	c)
-	    configs+=("--config=$OPTARG")
+	    configs+=("$OPTARG")
 	    ;;
     esac
 done
@@ -44,7 +44,7 @@ trap interrupt SIGQUIT
 pids=()
 
 for config in "${configs[@]}"; do
-    $runDir/car-game --ai "${globalConfigOption[@]}" "$config" >"$config.out" &
+    $runDir/car-game --ai "${globalConfigOption[@]}" "--config=$config" >"$config.out" &
     pids+=($!)
 done
 echo "${pids[@]}"
