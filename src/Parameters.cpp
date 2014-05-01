@@ -7,6 +7,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 namespace car {
 
@@ -47,13 +48,15 @@ Parameters parseParameters(int argc, char **argv) {
 
 	parameters.projectRootPath = binaryLocation + "../";
 
-	std::string configFile;
+	std::vector<std::string> configFiles;
 
 	po::options_description commandLineOnlyDescription("Command-line only options");
 	commandLineOnlyDescription.add_options()
 		("help", "produce help message")
 		("ai", "train AI")
-		("config", po::value<std::string>(), "reads configuration parameters from the specified file")
+		("config", po::value<std::vector<std::string>>(&configFiles),
+				"Reads configuration parameters from the specified file. It can be given multiple times. "
+				"Newer values override older ones.")
 	;
 
 	po::options_description configFileDescription("Command-line and config file options");
@@ -121,8 +124,11 @@ Parameters parseParameters(int argc, char **argv) {
 
 	parameters.isTrainingAI = vm.count("ai");
 
-	if (vm.count("config")) {
-		po::store(po::parse_config_file<char>(vm["config"].as<std::string>().c_str(), configFileDescription), vm);
+	// Boost only considers the first config value, but we want it the other way around
+	// so the config files are read in reverse order. Now the new values override the
+	// old ones.
+	for (const auto& configFile: configFiles | boost::adaptors::reversed) {
+		po::store(po::parse_config_file<char>(configFile.c_str(), configFileDescription), vm);
 		po::notify(vm);
 	}
 
