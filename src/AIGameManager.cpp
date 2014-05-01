@@ -27,8 +27,8 @@ float AIGameManager::getFitness() const {
 	auto crossedCheckpoints = model.getNumberOfCrossedCheckpoints();
 
 	const float checkpointMultiplier = 100.f;
-	const float lateCheckpointMultiplier = 1.f;
-	const float distanceMultiplier = 0.2f;
+	const float lateCheckpointMultiplier = 2.f;
+	const float distanceMultiplier = 0.5f;
 
 	float result = model.getCar().getTravelDistance() * distanceMultiplier;
 
