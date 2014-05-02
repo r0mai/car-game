@@ -6,6 +6,22 @@ namespace car {
 namespace {
 
 template <typename T>
+inline bool isWrongDirection(T direction, T origin, T start, T end) {
+	if (direction > 0) {
+		return start < origin && end < origin;
+	} else {
+		return start > origin && end > origin;
+	}
+}
+
+template <typename T>
+inline bool isOutsideRange(T origin1, T origin2, T start, T end) {
+	auto originMin = std::min(origin1, origin2);
+	auto originMax = std::max(origin1, origin2);
+	return (start < originMin && end < originMin) || (start > originMax && end > originMax);
+}
+
+template <typename T>
 bool intersectsInfinite(const Line2<T>& line1, const Line2<T>& line2, sf::Vector2<T> *outPtr) {
 	LineIntersection<T> data{line1, line2};
 
@@ -30,6 +46,11 @@ bool intersectsInfinite(const Line2<T>& line1, const Line2<T>& line2, sf::Vector
 
 template <typename T>
 bool intersects(const Line2<T>& line1, const Line2<T>& line2, sf::Vector2<T> *outPtr) {
+	if (isOutsideRange(line1.start.x, line1.end.x, line2.start.x, line2.end.x) ||
+			isOutsideRange(line1.start.y, line1.end.y, line2.start.y, line2.end.y)) {
+		return false;
+	}
+
 	LineIntersection<T> data{line1, line2};
 
 	auto overlapLine = data.getOverlapLine();
@@ -61,7 +82,13 @@ bool intersects(const Line2<T>& line1, const Line2<T>& line2, sf::Vector2<T> *ou
 }
 
 template <typename T>
-bool intersectsRay(const Line2<T>& line, const sf::Vector2<T>& origin, const sf::Vector2<T>& direction, sf::Vector2<T> *outPtr) {
+bool intersectsRay(const Line2<T>& line, const sf::Vector2<T>& origin,
+		const sf::Vector2<T>& direction, sf::Vector2<T> *outPtr) {
+	if (isWrongDirection(direction.x, origin.x, line.start.x, line.end.x) ||
+			isWrongDirection(direction.y, origin.y, line.start.y, line.end.y)) {
+		return false;
+	}
+
 	LineIntersection<T> data{line, Line2<T>{origin, origin+direction}};
 
 	auto overlapLine = data.getOverlapLine();
