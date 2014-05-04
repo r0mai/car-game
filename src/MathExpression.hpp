@@ -3,6 +3,7 @@
 #define MATHEXPRESSION_HPP_
 
 #include <map>
+#include <string>
 #include <stdexcept>
 
 #include <boost/variant.hpp>
@@ -42,22 +43,32 @@ typedef boost::variant<
    	boost::recursive_wrapper<BinaryOperator<OperatorDivide>>
 > MathExpression;
 
-template<class OperatorTag>
-struct UnaryOperator {
+struct UnaryOperatorBase {
 	MathExpression expr;
 
-	UnaryOperator(const MathExpression& expr) :
+	UnaryOperatorBase(const MathExpression& expr) :
 		expr(expr) {}
 };
 
 template<class OperatorTag>
-struct BinaryOperator {
+struct UnaryOperator : UnaryOperatorBase {
+	using UnaryOperatorBase::UnaryOperatorBase;
+};
+
+struct BinaryOperatorBase {
 	MathExpression left;
 	MathExpression right;
 
-	BinaryOperator(const MathExpression& left, const MathExpression& right) :
+	BinaryOperatorBase(const MathExpression& left, const MathExpression& right) :
 		left(left), right(right) {}
 };
+
+template<class OperatorTag>
+struct BinaryOperator : BinaryOperatorBase {
+	using BinaryOperatorBase::BinaryOperatorBase;
+};
+
+MathExpression parseMathExpression(const std::string& input);
 
 struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 	EvaluateVisitor(const SymbolTable& symbolTable) :
