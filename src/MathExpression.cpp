@@ -27,12 +27,13 @@ namespace ascii = boost::spirit::ascii;
 
 typedef ascii::space_type Skipper;
 
-MathExpression makeAddition(const MathExpression& left, const MathExpression& right) {
-	return BinaryOperator<OperatorAdd>(left, right);
+template<class Op>
+MathExpression makeBinaryOperator(const MathExpression& left, const MathExpression& right) {
+	return BinaryOperator<Op>(left, right);
 }
 
-MathExpression makeMultiplication(const MathExpression& left, const MathExpression& right) {
-	return BinaryOperator<OperatorMultiply>(left, right);
+MathExpression makeSymbol(const std::vector<char>& symbol) {
+	return MathExpression(std::string(symbol.begin(), symbol.end()));
 }
 
 template<class Iterator>
@@ -42,21 +43,26 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		using qi::_val;
 		using qi::_1;
 		using qi::_2;
+		using qi::alnum;
+		using qi::alpha;
 
 		expression = additiveExpression.alias();
 
 		additiveExpression = multiplicativeExpression[_val = _1] >>
-			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeAddition, _val, _1)]);
+			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)]);
 
 		multiplicativeExpression = primary[_val = _1] >>
-			*(('*' >> primary)[_val = phx::bind(makeMultiplication, _val, _1)]);
+			*(('*' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)]);
 
-		primary = qi::float_;
+		symbol = (*alpha)[_val = phx::bind(makeSymbol, _1)];
+
+		primary %= qi::float_ | symbol;
 	}
 
 	qi::rule<Iterator, MathExpression(), Skipper> expression;
 	qi::rule<Iterator, MathExpression(), Skipper> additiveExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> multiplicativeExpression;
+	qi::rule<Iterator, MathExpression(), Skipper> symbol;
 	qi::rule<Iterator, MathExpression(), Skipper> primary;
 };
 
