@@ -49,10 +49,12 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		expression = additiveExpression.alias();
 
 		additiveExpression = multiplicativeExpression[_val = _1] >>
-			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)]);
+			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)] |
+			('-' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorSubtract>, _val, _1)]);
 
 		multiplicativeExpression = primary[_val = _1] >>
-			*(('*' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)]);
+			*(('*' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
+			('/' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)]);
 
 		symbol = (*alpha)[_val = phx::bind(makeSymbol, _1)];
 
