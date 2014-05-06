@@ -56,7 +56,7 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 			*(('*' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
 			('/' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)]);
 
-		symbol = (*alpha)[_val = phx::bind(makeSymbol, _1)];
+		symbol = (+alpha)[_val = phx::bind(makeSymbol, _1)];
 
 		primary %= qi::float_ | symbol;
 	}
