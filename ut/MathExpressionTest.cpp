@@ -45,5 +45,40 @@ BOOST_AUTO_TEST_CASE(test_symbol_parsing_2) {
 	BOOST_CHECK_CLOSE(evaluateMathExpression("s+1", table), FormulaValue(4.0), 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(test_minus_parsing_1) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("2+-1"), FormulaValue(1), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_minus_parsing_2) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("-1"), FormulaValue(-1), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_minus_parsing_3) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("-1+3"), FormulaValue(2), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_minus_parsing_4) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("-2*3"), FormulaValue(-6), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_minus_parsing_5) {
+	SymbolTable table = {{"s", FormulaValue(3.0)}};
+	BOOST_CHECK_CLOSE(evaluateMathExpression("-s", table), FormulaValue(-3.0), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_minus_parsing_6) {
+	SymbolTable table = {{"s", FormulaValue(3.0)}};
+	BOOST_CHECK_CLOSE(evaluateMathExpression("--s", table), FormulaValue(3.0), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_plus_parsing_1) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("+3"), FormulaValue(3), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_plus_parsing_2) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("++3"), FormulaValue(3), 0.001);
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 

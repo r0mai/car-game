@@ -27,7 +27,6 @@ template<class OperatorTag>
 struct BinaryOperator;
 
 struct OperatorMinus;
-struct OperatorPlus;
 
 template<class OperatorTag>
 struct UnaryOperator;
@@ -36,7 +35,6 @@ typedef boost::variant<
 	FormulaValue,
 	Symbol,
    	boost::recursive_wrapper<UnaryOperator<OperatorMinus>>,
-   	boost::recursive_wrapper<UnaryOperator<OperatorPlus>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorAdd>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorSubtract>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorMultiply>>,
@@ -104,10 +102,6 @@ struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 
 	FormulaValue operator()(const UnaryOperator<OperatorMinus>& unary) const {
 		return -boost::apply_visitor(EvaluateVisitor{symbolTable}, unary.expr);
-	}
-
-	FormulaValue operator()(const UnaryOperator<OperatorPlus>& unary) const {
-		return +boost::apply_visitor(EvaluateVisitor{symbolTable}, unary.expr);
 	}
 
 private:

@@ -32,6 +32,11 @@ MathExpression makeBinaryOperator(const MathExpression& left, const MathExpressi
 	return BinaryOperator<Op>(left, right);
 }
 
+template<class Op>
+MathExpression makeUnaryOperator(const MathExpression& expr) {
+	return UnaryOperator<Op>(expr);
+}
+
 MathExpression makeSymbol(const std::vector<char>& symbol) {
 	return MathExpression(std::string(symbol.begin(), symbol.end()));
 }
@@ -45,25 +50,34 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		using qi::_2;
 		using qi::alnum;
 		using qi::alpha;
+		using qi::float_;
 
 		expression = additiveExpression.alias();
 
-		additiveExpression = multiplicativeExpression[_val = _1] >>
+		additiveExpression =
+			multiplicativeExpression[_val = _1] >>
 			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)] |
 			('-' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorSubtract>, _val, _1)]);
 
-		multiplicativeExpression = primary[_val = _1] >>
-			*(('*' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
-			('/' >> primary)[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)]);
+		multiplicativeExpression =
+			unraryPlusMinusExpression[_val = _1] >>
+			*(('*' >> unraryPlusMinusExpression)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
+			('/' >> unraryPlusMinusExpression)[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)]);
+
+		unraryPlusMinusExpression =
+			primary[_val = _1] |
+			'-' >> unraryPlusMinusExpression[_val = phx::bind(makeUnaryOperator<OperatorMinus>, _1)] |
+			'+' >> unraryPlusMinusExpression[_val = _1];
 
 		symbol = (+alpha)[_val = phx::bind(makeSymbol, _1)];
 
-		primary %= qi::float_ | symbol;
+		primary %= float_ | symbol;
 	}
 
 	qi::rule<Iterator, MathExpression(), Skipper> expression;
 	qi::rule<Iterator, MathExpression(), Skipper> additiveExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> multiplicativeExpression;
+	qi::rule<Iterator, MathExpression(), Skipper> unraryPlusMinusExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> symbol;
 	qi::rule<Iterator, MathExpression(), Skipper> primary;
 };
