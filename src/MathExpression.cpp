@@ -71,7 +71,7 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 
 		symbol = (+alpha)[_val = phx::bind(makeSymbol, _1)];
 
-		primary %= float_ | symbol;
+		primary %= float_ | symbol | ('(' >> expression >> ')');
 	}
 
 	qi::rule<Iterator, MathExpression(), Skipper> expression;

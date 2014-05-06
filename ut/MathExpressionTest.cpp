@@ -79,6 +79,18 @@ BOOST_AUTO_TEST_CASE(test_plus_parsing_2) {
 	BOOST_CHECK_CLOSE(evaluateMathExpression("++3"), FormulaValue(3), 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(test_parentheses_1) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("2*(3+4)"), FormulaValue(14), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_parentheses_2) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("-(3+4)"), FormulaValue(-7), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_parentheses_3) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("((((3))))"), FormulaValue(3), 0.001);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
