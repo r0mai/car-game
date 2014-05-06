@@ -43,32 +43,24 @@ typedef boost::variant<
    	boost::recursive_wrapper<BinaryOperator<OperatorDivide>>
 > MathExpression;
 
-struct UnaryOperatorBase {
-	MathExpression expr;
-
-	UnaryOperatorBase(const MathExpression& expr) :
+template<class OperatorTag>
+struct UnaryOperator {
+	UnaryOperator() = default;
+	UnaryOperator(const MathExpression& expr) :
 		expr(expr) {}
+
+	MathExpression expr;
 };
 
 template<class OperatorTag>
-struct UnaryOperator : UnaryOperatorBase {
-	using UnaryOperatorBase::UnaryOperatorBase;
-};
+struct BinaryOperator {
+	BinaryOperator() = default;
+	BinaryOperator(const MathExpression& left, const MathExpression& right) :
+		left(left), right(right) {}
 
-struct BinaryOperatorBase {
 	MathExpression left;
 	MathExpression right;
-
-	BinaryOperatorBase(const MathExpression& left, const MathExpression& right) :
-		left(left), right(right) {}
 };
-
-template<class OperatorTag>
-struct BinaryOperator : BinaryOperatorBase {
-	using BinaryOperatorBase::BinaryOperatorBase;
-};
-
-MathExpression parseMathExpression(const std::string& input);
 
 struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 	EvaluateVisitor(const SymbolTable& symbolTable) :
@@ -120,8 +112,10 @@ struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 
 private:
 	const SymbolTable& symbolTable;
-
 };
+
+MathExpression parseMathExpression(const std::string& input);
+FormulaValue evaluateMathExpression(const std::string& input, const SymbolTable& symbolTable = SymbolTable{});
 
 }
 
