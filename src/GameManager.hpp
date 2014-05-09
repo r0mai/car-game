@@ -41,8 +41,6 @@ protected:
 	NeuralNetwork neuralNetwork = NeuralNetwork(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
 		   rayCount + parameters.extraInputNeuronCount, parameters.outputNeuronCount);
 
-	Weights inputs;
-
 	bool isAIControl = true;
 
 	Model model;
