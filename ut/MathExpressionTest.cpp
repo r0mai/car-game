@@ -3,6 +3,8 @@
 
 #include "MathExpression.hpp"
 
+#include <sstream>
+
 using namespace car;
 
 BOOST_AUTO_TEST_SUITE(MathExpressionTest)
@@ -90,6 +92,42 @@ BOOST_AUTO_TEST_CASE(test_parentheses_2) {
 BOOST_AUTO_TEST_CASE(test_parentheses_3) {
 	BOOST_CHECK_CLOSE(evaluateMathExpression("((((3))))"), FormulaValue(3), 0.001);
 }
+
+BOOST_AUTO_TEST_CASE(test_output_1) {
+	std::stringstream ss; ss << parseMathExpression("3+4");
+	BOOST_CHECK_EQUAL(ss.str(), "3+4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_2) {
+	std::stringstream ss; ss << parseMathExpression("3*4");
+	BOOST_CHECK_EQUAL(ss.str(), "3*4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_3) {
+	std::stringstream ss; ss << parseMathExpression("3-4");
+	BOOST_CHECK_EQUAL(ss.str(), "3-4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_4) {
+	std::stringstream ss; ss << parseMathExpression("3/4");
+	BOOST_CHECK_EQUAL(ss.str(), "3/4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_5) {
+	std::stringstream ss; ss << parseMathExpression("3+3*4");
+	BOOST_CHECK_EQUAL(ss.str(), "3+3*4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_6) {
+	std::stringstream ss; ss << parseMathExpression("(3+3)*4");
+	BOOST_CHECK_EQUAL(ss.str(), "(3+3)*4");
+}
+
+BOOST_AUTO_TEST_CASE(test_output_7) {
+	std::stringstream ss; ss << parseMathExpression("3+3+4");
+	BOOST_CHECK_EQUAL(ss.str(), "3+3+4");
+}
+
 
 
 BOOST_AUTO_TEST_SUITE_END()

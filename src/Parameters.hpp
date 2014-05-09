@@ -7,6 +7,7 @@
 #include <boost/optional.hpp>
 
 #include "TrackType.hpp"
+#include "MathExpression.hpp"
 
 namespace car {
 
@@ -58,6 +59,8 @@ struct Parameters {
 
 	unsigned startingPopulations = 1;
 	unsigned populationCutoff = 10;
+
+	MathExpression fitnessExpression = parseMathExpression("3*(u + 4)*s");
 
 	//parameters for rendering
 	int fpsLimit = -1;

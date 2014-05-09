@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
 #include <boost/variant.hpp>
 
@@ -18,10 +19,25 @@ typedef float FormulaValue;
 typedef std::string Symbol;
 typedef std::map<Symbol, FormulaValue> SymbolTable;
 
-struct OperatorAdd;
-struct OperatorSubtract;
-struct OperatorMultiply;
-struct OperatorDivide;
+struct OperatorAdd {
+	static const int precedence = 1;
+	static const char operatorChar = '+';
+};
+
+struct OperatorSubtract {
+	static const int precedence = 1;
+	static const char operatorChar = '-';
+};
+
+struct OperatorMultiply {
+	static const int precedence = 2;
+	static const char operatorChar = '*';
+};
+
+struct OperatorDivide {
+	static const int precedence = 2;
+	static const char operatorChar = '/';
+};
 
 template<class OperatorTag>
 struct BinaryOperator;
@@ -41,8 +57,11 @@ typedef boost::variant<
    	boost::recursive_wrapper<BinaryOperator<OperatorDivide>>
 > MathExpression;
 
-template<class OperatorTag>
+template<class Op>
 struct UnaryOperator {
+
+	typedef Op OperatorTag;
+
 	UnaryOperator() = default;
 	UnaryOperator(const MathExpression& expr) :
 		expr(expr) {}
@@ -50,8 +69,11 @@ struct UnaryOperator {
 	MathExpression expr;
 };
 
-template<class OperatorTag>
+template<class Op>
 struct BinaryOperator {
+
+	typedef Op OperatorTag;
+
 	BinaryOperator() = default;
 	BinaryOperator(const MathExpression& left, const MathExpression& right) :
 		left(left), right(right) {}
@@ -60,56 +82,11 @@ struct BinaryOperator {
 	MathExpression right;
 };
 
-struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
-	EvaluateVisitor(const SymbolTable& symbolTable) :
-		symbolTable(symbolTable) {}
-
-	FormulaValue operator()(const FormulaValue& value) const {
-		return value;
-	}
-
-	FormulaValue operator()(const Symbol& symbol) const {
-		auto it = symbolTable.find(symbol);
-		if (it == symbolTable.end()) {
-			throw FormulaException{"Symbol \"" + symbol + "\" not found in symbol map."};
-		}
-		return it->second;
-	}
-
-	FormulaValue operator()(const BinaryOperator<OperatorAdd>& binary) const {
-		return
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) +
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
-	}
-
-	FormulaValue operator()(const BinaryOperator<OperatorSubtract>& binary) const {
-		return
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) -
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
-	}
-
-	FormulaValue operator()(const BinaryOperator<OperatorMultiply>& binary) const {
-		return
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) *
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
-	}
-
-	FormulaValue operator()(const BinaryOperator<OperatorDivide>& binary) const {
-		return
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) /
-			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
-	}
-
-	FormulaValue operator()(const UnaryOperator<OperatorMinus>& unary) const {
-		return -boost::apply_visitor(EvaluateVisitor{symbolTable}, unary.expr);
-	}
-
-private:
-	const SymbolTable& symbolTable;
-};
-
 MathExpression parseMathExpression(const std::string& input);
 FormulaValue evaluateMathExpression(const std::string& input, const SymbolTable& symbolTable = SymbolTable{});
+
+std::ostream& operator<<(std::ostream& os, const MathExpression& expression);
+std::istream& operator>>(std::istream& is, MathExpression& expression);
 
 }
 
