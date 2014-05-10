@@ -22,24 +22,13 @@ void AIGameManager::run() {
 }
 
 float AIGameManager::getFitness() const {
-	//TODO this will need some more work probably
-	auto checkpoints = model.getTrack().getNumberOfCheckpoints();
-	auto crossedCheckpoints = model.getNumberOfCrossedCheckpoints();
+	SymbolTable symbolTable = {
+		{"td", model.getCar().getTravelDistance()},
+		{"cps", model.getTrack().getNumberOfCheckpoints()},
+		{"ccps", model.getNumberOfCrossedCheckpoints()}
+	};
 
-	const float checkpointMultiplier = 100.f;
-	const float lateCheckpointMultiplier = 2.f;
-	const float distanceMultiplier = 0.5f;
-
-	float result = model.getCar().getTravelDistance() * distanceMultiplier;
-
-	if (crossedCheckpoints > checkpoints) {
-		result += checkpoints * checkpointMultiplier +
-				(crossedCheckpoints - checkpointMultiplier) * lateCheckpointMultiplier;
-	} else {
-		result += crossedCheckpoints * checkpointMultiplier;
-	}
-
-	return result;;
+	return evaluateMathExpression(parameters.fitnessExpression, symbolTable);
 }
 
 bool AIGameManager::stopCondition() const {

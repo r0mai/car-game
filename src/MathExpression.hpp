@@ -24,7 +24,17 @@ struct OperatorLess {
 	static const std::string operatorString;
 };
 
+struct OperatorLessEqual {
+	static const int precedence = 0;
+	static const std::string operatorString;
+};
+
 struct OperatorGreater {
+	static const int precedence = 0;
+	static const std::string operatorString;
+};
+
+struct OperatorGreaterEqual {
 	static const int precedence = 0;
 	static const std::string operatorString;
 };
@@ -62,7 +72,9 @@ typedef boost::variant<
 	Symbol,
    	boost::recursive_wrapper<UnaryOperator<OperatorMinus>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorLess>>,
+   	boost::recursive_wrapper<BinaryOperator<OperatorLessEqual>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorGreater>>,
+   	boost::recursive_wrapper<BinaryOperator<OperatorGreaterEqual>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorAdd>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorSubtract>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorMultiply>>,
@@ -95,7 +107,8 @@ struct BinaryOperator {
 };
 
 MathExpression parseMathExpression(const std::string& input);
-FormulaValue evaluateMathExpression(const std::string& input, const SymbolTable& symbolTable = SymbolTable{});
+FormulaValue evaluateMathExpressionFromString(const std::string& input, const SymbolTable& symbolTable = SymbolTable{});
+FormulaValue evaluateMathExpression(const MathExpression& expr, const SymbolTable& symbolTable = SymbolTable{});
 
 std::ostream& operator<<(std::ostream& os, const MathExpression& expression);
 std::istream& operator>>(std::istream& is, MathExpression& expression);

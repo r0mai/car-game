@@ -60,7 +60,8 @@ struct Parameters {
 	unsigned startingPopulations = 1;
 	unsigned populationCutoff = 10;
 
-	MathExpression fitnessExpression = parseMathExpression("3*(u + 4)*s");
+	MathExpression fitnessExpression = parseMathExpression(
+		"0.5*td + (ccps > cps)*(100*cps + 2*(ccps-cps)) + (ccps <= cps)*(100*ccps)");
 
 	//parameters for rendering
 	int fpsLimit = -1;

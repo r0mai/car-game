@@ -27,6 +27,8 @@ namespace ascii = boost::spirit::ascii;
 
 const std::string OperatorLess::operatorString = "<";
 const std::string OperatorGreater::operatorString = ">";
+const std::string OperatorLessEqual::operatorString = "<=";
+const std::string OperatorGreaterEqual::operatorString = ">=";
 const std::string OperatorAdd::operatorString = "+";
 const std::string OperatorSubtract::operatorString = "-";
 const std::string OperatorMultiply::operatorString = "*";
@@ -64,7 +66,9 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		comparsionExpression =
 			additiveExpression[_val = _1] >>
 			*(('<' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorLess>, _val, _1)] |
-			('>' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreater>, _val, _1)]);
+			("<=" >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorLessEqual>, _val, _1)] |
+			('>' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreater>, _val, _1)] |
+			(">=" >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreaterEqual>, _val, _1)]);
 
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >>
@@ -140,9 +144,21 @@ struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
 	}
 
+	FormulaValue operator()(const BinaryOperator<OperatorLessEqual>& binary) const {
+		return
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) <=
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
+	}
+
 	FormulaValue operator()(const BinaryOperator<OperatorGreater>& binary) const {
 		return
 			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) >
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
+	}
+
+	FormulaValue operator()(const BinaryOperator<OperatorGreaterEqual>& binary) const {
+		return
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) >=
 			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
 	}
 
@@ -178,8 +194,11 @@ private:
 	const SymbolTable& symbolTable;
 };
 
-FormulaValue evaluateMathExpression(const std::string& input, const SymbolTable& symbolTable) {
-	auto expression = parseMathExpression(input);
+FormulaValue evaluateMathExpressionFromString(const std::string& input, const SymbolTable& symbolTable) {
+	return evaluateMathExpression(parseMathExpression(input), symbolTable);
+}
+
+FormulaValue evaluateMathExpression(const MathExpression& expression, const SymbolTable& symbolTable) {
 	return boost::apply_visitor(EvaluateVisitor{symbolTable}, expression);
 }
 

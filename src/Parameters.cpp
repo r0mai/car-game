@@ -124,8 +124,6 @@ Parameters parseParameters(int argc, char **argv) {
 		std::exit(0);
 	}
 
-	std::cout << parameters.fitnessExpression << std::endl;
-
 	parameters.isTrainingAI = vm.count("ai");
 
 	// Boost only considers the first config value, but we want it the other way around
