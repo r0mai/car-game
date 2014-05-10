@@ -19,24 +19,34 @@ typedef float FormulaValue;
 typedef std::string Symbol;
 typedef std::map<Symbol, FormulaValue> SymbolTable;
 
+struct OperatorLess {
+	static const int precedence = 0;
+	static const std::string operatorString;
+};
+
+struct OperatorGreater {
+	static const int precedence = 0;
+	static const std::string operatorString;
+};
+
 struct OperatorAdd {
 	static const int precedence = 1;
-	static const char operatorChar = '+';
+	static const std::string operatorString;
 };
 
 struct OperatorSubtract {
 	static const int precedence = 1;
-	static const char operatorChar = '-';
+	static const std::string operatorString;
 };
 
 struct OperatorMultiply {
 	static const int precedence = 2;
-	static const char operatorChar = '*';
+	static const std::string operatorString;
 };
 
 struct OperatorDivide {
 	static const int precedence = 2;
-	static const char operatorChar = '/';
+	static const std::string operatorString;
 };
 
 template<class OperatorTag>
@@ -51,6 +61,8 @@ typedef boost::variant<
 	FormulaValue,
 	Symbol,
    	boost::recursive_wrapper<UnaryOperator<OperatorMinus>>,
+   	boost::recursive_wrapper<BinaryOperator<OperatorLess>>,
+   	boost::recursive_wrapper<BinaryOperator<OperatorGreater>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorAdd>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorSubtract>>,
    	boost::recursive_wrapper<BinaryOperator<OperatorMultiply>>,

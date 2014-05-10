@@ -37,6 +37,18 @@ BOOST_AUTO_TEST_CASE(test_div_mul_precedence_2) {
 	BOOST_CHECK_CLOSE(evaluateMathExpression("2/3*6"), FormulaValue(4), 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(test_less_mul_precedence_1) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("3*1>2"), FormulaValue(1), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_less_mul_precedence_2) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("3*(1>2)"), FormulaValue(0), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_less_mul_precedence_3) {
+	BOOST_CHECK_CLOSE(evaluateMathExpression("3*(1<2)"), FormulaValue(3), 0.001);
+}
+
 BOOST_AUTO_TEST_CASE(test_symbol_parsing_1) {
 	SymbolTable table = {{"s", FormulaValue(3.0)}};
 	BOOST_CHECK_CLOSE(evaluateMathExpression("s", table), FormulaValue(3.0), 0.001);

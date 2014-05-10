@@ -25,6 +25,13 @@ namespace phx = boost::phoenix;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
+const std::string OperatorLess::operatorString = "<";
+const std::string OperatorGreater::operatorString = ">";
+const std::string OperatorAdd::operatorString = "+";
+const std::string OperatorSubtract::operatorString = "-";
+const std::string OperatorMultiply::operatorString = "*";
+const std::string OperatorDivide::operatorString = "/";
+
 typedef ascii::space_type Skipper;
 
 template<class Op>
@@ -52,7 +59,12 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		using qi::alpha;
 		using qi::float_;
 
-		expression = additiveExpression.alias();
+		expression = comparsionExpression.alias();
+
+		comparsionExpression =
+			additiveExpression[_val = _1] >>
+			*(('<' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorLess>, _val, _1)] |
+			('>' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreater>, _val, _1)]);
 
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >>
@@ -75,6 +87,7 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 	}
 
 	qi::rule<Iterator, MathExpression(), Skipper> expression;
+	qi::rule<Iterator, MathExpression(), Skipper> comparsionExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> additiveExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> multiplicativeExpression;
 	qi::rule<Iterator, MathExpression(), Skipper> unraryPlusMinusExpression;
@@ -119,6 +132,18 @@ struct EvaluateVisitor : boost::static_visitor<FormulaValue> {
 			throw FormulaException{"Symbol \"" + symbol + "\" not found in symbol map."};
 		}
 		return it->second;
+	}
+
+	FormulaValue operator()(const BinaryOperator<OperatorLess>& binary) const {
+		return
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) <
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
+	}
+
+	FormulaValue operator()(const BinaryOperator<OperatorGreater>& binary) const {
+		return
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.left) >
+			boost::apply_visitor(EvaluateVisitor{symbolTable}, binary.right);
 	}
 
 	FormulaValue operator()(const BinaryOperator<OperatorAdd>& binary) const {
@@ -175,7 +200,7 @@ struct PrintVisitor : boost::static_visitor<void> {
 		if (precedence > Tag::precedence) { os << '('; }
 
 		boost::apply_visitor(PrintVisitor{os, Tag::precedence}, binary.left);
-		os << Tag::operatorChar;
+		os << Tag::operatorString;
 		boost::apply_visitor(PrintVisitor{os, Tag::precedence}, binary.right);
 
 		if (precedence > Tag::precedence) { os << ')'; }
