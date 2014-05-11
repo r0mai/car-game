@@ -202,7 +202,8 @@ void RealTimeGameManager::drawTelemetry() {
 			", Acceleration = " << getLength(car.getAcceleration()) <<
 			", Throttle = " << car.getThrottle() <<
 			",\nBrake = " << car.getBrake() <<
-			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")";
+			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")" <<
+			", TravelDistance = " << car.getTravelDistance();
 		sf::Text text;
 		text.setFont(font);
 		text.setColor(sf::Color::White);
