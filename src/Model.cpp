@@ -81,6 +81,7 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 	}
 
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
+	rayPoints.reserve(count);
 
 	for ( const sf::Vector2f& v : directions ) {
 		rayPoints.push_back(track.collideWithRay(car.getPosition(), v, maxViewDistance));
