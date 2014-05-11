@@ -17,9 +17,9 @@ struct TrackCreatorError: std::logic_error {
 	{}
 };
 
-class TrackCreator {
+class TrackArgumentParser {
 public:
-	TrackCreator(const Parameters& parameters): parameters(parameters) {}
+	TrackArgumentParser(const Parameters& parameters): parameters(parameters) {}
 
 	std::vector<std::function<Track()>>
 	operator()(const std::vector<std::string>& args);

@@ -4,7 +4,7 @@
 #include "Parameters.hpp"
 #include "Track.hpp"
 #include "ThreadPool.hpp"
-#include "TrackCreator.hpp"
+#include "TrackArgumentParser.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
 	Parameters parameters = parseParameters(argc, argv);
 
-	TrackCreator trackCreator{parameters};
+	TrackArgumentParser trackCreator{parameters};
 	std::vector<std::function<Track()>> trackCreators = trackCreator(parameters.tracks);
 
 	if (parameters.isTrainingAI) {
