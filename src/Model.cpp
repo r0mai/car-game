@@ -62,6 +62,8 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 
 	using namespace boost::math::float_constants;
 
+	const float maxViewDistance = 50.f;
+
 	//right, (1, 0) is to the front
 	std::vector<sf::Vector2f> directions(count);
 	for (unsigned i = 0; i < count; ++i) {
@@ -81,7 +83,7 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	for ( const sf::Vector2f& v : directions ) {
-		rayPoints.push_back(track.collideWithRay(car.getPosition(), v));
+		rayPoints.push_back(track.collideWithRay(car.getPosition(), v, maxViewDistance));
 	}
 
 	return rayPoints;
