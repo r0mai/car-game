@@ -3,20 +3,6 @@
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
-
-BOOST_FUSION_ADAPT_TPL_STRUCT(
-	(OperatorTag),
-	(car::BinaryOperator) (OperatorTag),
-	(car::MathExpression, left)
-	(car::MathExpression, right)
-)
-
-BOOST_FUSION_ADAPT_TPL_STRUCT(
-	(OperatorTag),
-	(car::UnaryOperator) (OperatorTag),
-	(car::MathExpression, expr)
-)
 
 namespace car {
 
