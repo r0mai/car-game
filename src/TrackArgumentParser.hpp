@@ -4,17 +4,15 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include <stdexcept>
 #include "Parameters.hpp"
+#include "OptionParseError.hpp"
 
 namespace car {
 
 class Track;
 
-struct TrackCreatorError: std::logic_error {
-	TrackCreatorError(const std::string& what_arg):
-		std::logic_error{what_arg}
-	{}
+struct TrackCreatorError: OptionParseError {
+	using OptionParseError::OptionParseError;
 };
 
 class TrackArgumentParser {

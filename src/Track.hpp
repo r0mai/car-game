@@ -52,9 +52,6 @@ private:
 };
 
 Track createCircleTrack();
-Track createZigZagTrack();
-Track createCurvyTrack();
-Track createEvilTrack();
 
 }
 

@@ -24,7 +24,7 @@ void closeEdges(std::vector<Line2f>& edge) {
 
 }
 
-Track PolygonTrackBuilder::operator()(float trackWidth, const std::vector<sf::Vector2f>& points) {
+Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points) {
 	const float distance = trackWidth / 2.f;
 
 	std::vector<Line2f> rightEdge;

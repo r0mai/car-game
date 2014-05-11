@@ -6,8 +6,6 @@
 
 #include <boost/optional.hpp>
 
-#include "TrackType.hpp"
-
 namespace car {
 
 enum class PanMode {

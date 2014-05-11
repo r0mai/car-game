@@ -6,19 +6,14 @@
 #include <boost/lexical_cast.hpp>
 #include "Track.hpp"
 #include "RandomTrackGenerator.hpp"
-#include "PolygonTrackBuilder.hpp"
-#include "TrackType.hpp"
+#include "PolygonTrackType.hpp"
 
 namespace car {
 
 namespace {
 
-const std::map<std::string, TrackType> trackTypes{
-	{"circle", TrackType::circle},
-	{"zigzag", TrackType::zigzag},
-	{"curvy", TrackType::curvy},
-	{"evil", TrackType::evil},
-	{"random", TrackType::random},
+const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
+	createTrackTypeElement<PolygonTrackType>()
 };
 
 
@@ -39,26 +34,34 @@ std::function<Track()> TrackArgumentParser::parseArgument(const std::string& arg
 		throw TrackCreatorError{"Invalid track type: " + tokens[0]};
 	}
 
-	switch (it->second) {
-	case TrackType::circle:
-		return createCircleTrack;
-	case TrackType::zigzag:
-		return createZigZagTrack;
-	case TrackType::curvy:
-		return createCurvyTrack;
-	case TrackType::evil:
-		return createEvilTrack;
-	case TrackType::random:
-		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
-			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
-			{-60.f, -60.f}, {60.f, 60.f}};
+	std::vector<std::string> args(++tokens.begin(), tokens.end());
+	auto& trackType = *it->second;
 
-		if (tokens.size() == 1) {
-			return std::bind(generator, std::rand());
-		} else {
-			return std::bind(generator, boost::lexical_cast<uint>(tokens[1]));
-		}
+	if (args.size() < trackType.getMinimumNumberOfArgs()) {
+		throw TrackCreatorError{"Too few tokens for track type " + it->first};
 	}
+
+	return trackType.getTrackCreator(args);
+//	switch (it->second) {
+//	case TrackType::circle:
+//		return createCircleTrack;
+//	case TrackType::zigzag:
+//		return createZigZagTrack;
+//	case TrackType::curvy:
+//		return createCurvyTrack;
+//	case TrackType::evil:
+//		return createEvilTrack;
+//	case TrackType::random:
+//		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
+//			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
+//			{-60.f, -60.f}, {60.f, 60.f}};
+//
+//		if (tokens.size() == 1) {
+//			return std::bind(generator, std::rand());
+//		} else {
+//			return std::bind(generator, boost::lexical_cast<uint>(tokens[1]));
+//		}
+//	}
 
 	// should have returned by now
 	assert(false && "Track type not handled");

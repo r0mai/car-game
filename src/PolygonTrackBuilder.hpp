@@ -7,16 +7,7 @@
 
 namespace car {
 
-class PolygonTrackBuilder {
-public:
-	PolygonTrackBuilder(float checkpointDistance):
-		checkpointDistance(checkpointDistance)
-	{}
-
-	Track operator()(float trackWidth, const std::vector<sf::Vector2f>& points);
-private:
-	float checkpointDistance;
-};
+Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points);
 
 } /* namespace car */
 #endif /* POLYGONTRACKBUILDER_HPP_ */
