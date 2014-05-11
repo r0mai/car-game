@@ -1,4 +1,4 @@
-#include "TrackCreator.hpp"
+#include "TrackArgumentParser.hpp"
 
 #include <map>
 #include <boost/range/algorithm.hpp>
@@ -24,7 +24,7 @@ const std::map<std::string, TrackType> trackTypes{
 
 }
 
-std::function<Track()> TrackCreator::parseArgument(const std::string& arg) {
+std::function<Track()> TrackArgumentParser::parseArgument(const std::string& arg) {
 	namespace algo = boost::algorithm;
 
 	std::vector<std::string> tokens;
@@ -67,7 +67,7 @@ std::function<Track()> TrackCreator::parseArgument(const std::string& arg) {
 
 
 std::vector<std::function<Track()>>
-TrackCreator::operator()(const std::vector<std::string>& args) {
+TrackArgumentParser::operator()(const std::vector<std::string>& args) {
 	std::vector<std::function<Track()>> result;
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result),
