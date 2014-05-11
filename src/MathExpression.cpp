@@ -60,25 +60,27 @@ struct MathExpressionGrammar : qi::grammar<Iterator, MathExpression(), Skipper> 
 		using qi::alnum;
 		using qi::alpha;
 		using qi::float_;
+		using qi::char_;
 
 		expression = comparsionExpression.alias();
 
 		comparsionExpression =
 			additiveExpression[_val = _1] >>
-			*(('<' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorLess>, _val, _1)] |
-			("<=" >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorLessEqual>, _val, _1)] |
-			('>' >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreater>, _val, _1)] |
-			(">=" >> additiveExpression)[_val = phx::bind(makeBinaryOperator<OperatorGreaterEqual>, _val, _1)]);
+			*('<' >> additiveExpression[_val = phx::bind(makeBinaryOperator<OperatorLess>, _val, _1)] |
+			"<=" >> additiveExpression[_val = phx::bind(makeBinaryOperator<OperatorLessEqual>, _val, _1)] |
+			'>' >> additiveExpression[_val = phx::bind(makeBinaryOperator<OperatorGreater>, _val, _1)] |
+			">=" >> additiveExpression[_val = phx::bind(makeBinaryOperator<OperatorGreaterEqual>, _val, _1)]);
 
 		additiveExpression =
 			multiplicativeExpression[_val = _1] >>
-			*(('+' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)] |
-			('-' >> multiplicativeExpression)[_val = phx::bind(makeBinaryOperator<OperatorSubtract>, _val, _1)]);
+			*('+' >> multiplicativeExpression[_val = phx::bind(makeBinaryOperator<OperatorAdd>, _val, _1)] |
+			'-' >> multiplicativeExpression[_val = phx::bind(makeBinaryOperator<OperatorSubtract>, _val, _1)]);
 
 		multiplicativeExpression =
 			unraryPlusMinusExpression[_val = _1] >>
-			*(('*' >> unraryPlusMinusExpression)[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
-			('/' >> unraryPlusMinusExpression)[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)]);
+			*('*' >> unraryPlusMinusExpression[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)] |
+			'/' >> unraryPlusMinusExpression[_val = phx::bind(makeBinaryOperator<OperatorDivide>, _val, _1)] |
+			!(char_('+') | char_('-')) >> unraryPlusMinusExpression[_val = phx::bind(makeBinaryOperator<OperatorMultiply>, _val, _1)]);
 
 		unraryPlusMinusExpression =
 			primary[_val = _1] |

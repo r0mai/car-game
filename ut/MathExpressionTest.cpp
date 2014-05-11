@@ -57,6 +57,19 @@ BOOST_AUTO_TEST_CASE(test_lesseq_1) {
 	BOOST_CHECK_CLOSE(evaluateMathExpressionFromString("2<=2"), FormulaValue(1), 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(test_juxtaposition_1) {
+	BOOST_CHECK_CLOSE(evaluateMathExpressionFromString("2 2"), FormulaValue(4), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_juxtaposition_2) {
+	SymbolTable table = {{"s", FormulaValue(3.0)}};
+	BOOST_CHECK_CLOSE(evaluateMathExpressionFromString("2s", table), FormulaValue(6), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(test_juxtaposition_3) {
+	BOOST_CHECK_CLOSE(evaluateMathExpressionFromString("(3)(4)"), FormulaValue(12), 0.001);
+}
+
 BOOST_AUTO_TEST_CASE(test_symbol_parsing_1) {
 	SymbolTable table = {{"s", FormulaValue(3.0)}};
 	BOOST_CHECK_CLOSE(evaluateMathExpressionFromString("s", table), FormulaValue(3.0), 0.001);
