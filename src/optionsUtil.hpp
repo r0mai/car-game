@@ -7,24 +7,9 @@
 
 namespace car {
 
-template <typename Params, typename T>
-boost::program_options::typed_value<T>* optionalParamValue(T Params::* param, Params* params) {
-	namespace po = boost::program_options;
-	if (params) {
-		return po::value<T>(&(params->*param));
-	} else {
-		return po::value<T>();
-	}
-}
-
-template <typename Params, typename T>
-boost::program_options::typed_value<T>* optionalParamValueWithDefaultValue(T Params::* param, Params* params) {
-	auto result = optionalParamValue(param, params);
-	if (params) {
-		return result->default_value(params->*param);
-	} else {
-		return result;
-	}
+template <typename T>
+boost::program_options::typed_value<T>* paramWithDefaultValue(T& value) {
+	return boost::program_options::value(&value)->default_value(value);
 }
 
 sf::Vector2f parsePoint(const std::string& param);

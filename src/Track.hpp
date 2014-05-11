@@ -51,8 +51,6 @@ private:
 	float startingDirection = 0.f;
 };
 
-Track createCircleTrack();
-
 }
 
 #endif /* !TRACK_HPP */

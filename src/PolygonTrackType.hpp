@@ -1,7 +1,6 @@
 #ifndef POLYGONTRACKTYPE_HPP_
 #define POLYGONTRACKTYPE_HPP_
 
-#include <boost/program_options.hpp>
 #include "ITrackType.hpp"
 
 namespace car {

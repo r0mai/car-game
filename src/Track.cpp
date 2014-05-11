@@ -1,6 +1,4 @@
 
-#include <boost/math/constants/constants.hpp>
-
 #include "Track.hpp"
 #include "Car.hpp"
 #include "drawUtil.hpp"
@@ -8,41 +6,6 @@
 #include "createPolygonTrack.hpp"
 
 namespace car {
-
-Track createCircleTrack() {
-
-	using namespace boost::math::float_constants;
-
-	Track track;
-	const int circleResolution = 60;
-	const int numberOfCheckpoints = 72;
-	const float innerCircleRadius = 50.;
-	const float outerCircleRadius = 60.;
-	for ( int i = 0; i < circleResolution; ++i ) {
-		track.addLine(Line2f(
-					innerCircleRadius*std::cos((i-1)*2*pi/circleResolution),
-					innerCircleRadius*std::sin((i-1)*2*pi/circleResolution),
-					innerCircleRadius*std::cos((i)*2*pi/circleResolution),
-					innerCircleRadius*std::sin((i)*2*pi/circleResolution)));
-		track.addLine(Line2f(
-					outerCircleRadius*std::cos((i-1)*2*pi/circleResolution),
-					outerCircleRadius*std::sin((i-1)*2*pi/circleResolution),
-					outerCircleRadius*std::cos((i)*2*pi/circleResolution),
-					outerCircleRadius*std::sin((i)*2*pi/circleResolution)));
-	}
-	for ( int i = 0; i < numberOfCheckpoints; ++i ) {
-		track.addCheckpoint(Line2f(
-				innerCircleRadius*std::cos((i)*2*pi/numberOfCheckpoints),
-				-innerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints),
-				outerCircleRadius*std::cos((i)*2*pi/numberOfCheckpoints),
-				-outerCircleRadius*std::sin((i)*2*pi/numberOfCheckpoints)
-			));
-	}
-
-	track.setOrigin({0.f, 55.f}, 0.f);
-
-	return track;
-}
 
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
