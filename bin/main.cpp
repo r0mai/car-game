@@ -20,8 +20,7 @@ int main(int argc, char **argv) {
 
 	Parameters parameters = parseParameters(argc, argv);
 
-	TrackArgumentParser trackCreator{parameters};
-	std::vector<std::function<Track()>> trackCreators = trackCreator(parameters.tracks);
+	std::vector<std::function<Track()>> trackCreators = trackArgumentParser::parseArguments(parameters.tracks);
 
 	if (parameters.isTrainingAI) {
 		ThreadPool threadPool;

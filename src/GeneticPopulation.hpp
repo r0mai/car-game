@@ -42,8 +42,6 @@ private:
 
 	Genomes population;
 
-	unsigned generationCount = 0;
-
 	unsigned bestFitnessIndex; //updated by calculateStats()
 	unsigned worstFitnessIndex; //updated by calculateStats()
 	float totalFitness; //updated by calculateStats()

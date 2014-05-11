@@ -28,7 +28,7 @@ std::size_t findNearestLine(const std::vector<sf::Vector2f>& points, const sf::V
 
 Track RandomTrackGenerator::operator()(uint seed) const {
 	boost::random::mt19937 rng{seed};
-	for (int i = 0; i < maxTries; ++i) {
+	for (int i = 0; i < params.maxTries; ++i) {
 		Track track = generateTrack(rng);
 		try {
 			track.check();
@@ -45,8 +45,8 @@ Track RandomTrackGenerator::operator()(uint seed) const {
 Track RandomTrackGenerator::generateTrack(boost::random::mt19937& rng) const {
 
 
-	sf::Vector2f startEdge1 = corner1 * 0.2f + corner2 * 0.8f;
-	sf::Vector2f startEdge2 = corner2 * 0.2f + corner1 * 0.8f;
+	sf::Vector2f startEdge1 = params.corner1 * params.inset + params.corner2 * (1.f - params.inset);
+	sf::Vector2f startEdge2 = params.corner2 * params.inset + params.corner1 * (1.f - params.inset);
 
 	std::vector<sf::Vector2f> points{
 		startEdge1, {startEdge2.x, startEdge1.y},
@@ -54,10 +54,12 @@ Track RandomTrackGenerator::generateTrack(boost::random::mt19937& rng) const {
 	};
 
 	using Distribution = boost::random::uniform_real_distribution<float>;
-	Distribution distX{std::min(corner1.x, corner2.x), std::max(corner1.x, corner2.x)};
-	Distribution distY{std::min(corner1.y, corner2.y), std::max(corner1.y, corner2.y)};
+	Distribution distX{std::min(params.corner1.x, params.corner2.x),
+			std::max(params.corner1.x, params.corner2.x)};
+	Distribution distY{std::min(params.corner1.y, params.corner2.y),
+			std::max(params.corner1.y, params.corner2.y)};
 
-	for (int i = 4; i < numberOfPoints; ++i) {
+	for (int i = 4; i < params.numberOfPoints; ++i) {
 		sf::Vector2f newPoint{distX(rng), distY(rng)};
 
 		int index = findNearestLine(points, newPoint) + 1;
@@ -65,9 +67,7 @@ Track RandomTrackGenerator::generateTrack(boost::random::mt19937& rng) const {
 		points.insert(points.begin() + index, newPoint);
 	}
 
-	Distribution distWidth{minPathWidth, maxPathWidth};
-
-	return generator(distWidth(rng), points);
+	return params.generator(points);
 }
 
 } /* namespace car */

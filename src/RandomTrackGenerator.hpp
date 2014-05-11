@@ -5,10 +5,9 @@
 #include <stdexcept>
 #include <boost/random/mersenne_twister.hpp>
 #include "Line2.hpp"
+#include "Track.hpp"
 
 namespace car {
-
-class Track;
 
 struct RandomTrackException: std::logic_error {
 	RandomTrackException(const std::string& what_arg):
@@ -18,34 +17,28 @@ struct RandomTrackException: std::logic_error {
 
 class RandomTrackGenerator {
 public:
-	using Generator = std::function<Track(float, std::vector<sf::Vector2f>)>;
+	using Generator = std::function<Track(const std::vector<sf::Vector2f>&)>;
 
-	RandomTrackGenerator(
-			Generator generator,
-			int maxTries, int numberOfPoints,
-			float minPathWidth, float maxPathWidth,
-			sf::Vector2f corner1, sf::Vector2f corner2):
-				generator(generator), maxTries(maxTries),
-				numberOfPoints(numberOfPoints),
-				minPathWidth(minPathWidth), maxPathWidth(maxPathWidth),
-				corner1(corner1), corner2(corner2)
+	struct Params {
+		Generator generator;
+		int maxTries = 100;
+		int numberOfPoints = 10;
+		float inset = 0.2f;
+
+		sf::Vector2f corner1{-60.f, -60.f};
+		sf::Vector2f corner2{60.f, 60.f};
+	};
+
+	RandomTrackGenerator(const Params& params): params(params)
 	{
-		if (numberOfPoints < 4) {
+		if (params.numberOfPoints < 4) {
 			throw RandomTrackException{"Too few points (minimum = 4)"};
 		}
 	}
 
 	Track operator()(uint seed) const;
 private:
-	Generator generator;
-	int maxTries;
-	int numberOfPoints;
-	float minPathWidth;
-	float maxPathWidth;
-
-	sf::Vector2f corner1;
-	sf::Vector2f corner2;
-
+	Params params;
 	Track generateTrack(boost::random::mt19937& rng) const;
 };
 

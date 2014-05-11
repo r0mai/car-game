@@ -51,11 +51,6 @@ private:
 	float startingDirection = 0.f;
 };
 
-Track createCircleTrack();
-Track createZigZagTrack();
-Track createCurvyTrack();
-Track createEvilTrack();
-
 }
 
 #endif /* !TRACK_HPP */

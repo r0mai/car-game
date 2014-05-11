@@ -6,7 +6,6 @@
 
 #include <boost/optional.hpp>
 
-#include "TrackType.hpp"
 #include "MathExpression.hpp"
 
 namespace car {
@@ -51,11 +50,6 @@ struct Parameters {
 	boost::optional<std::string> populationInputFile;
 
 	std::vector<std::string> tracks{"circle"};
-
-	//Parameters for random track generation
-	float minRandomTrackWidth = 5.f;
-	float maxRandomTrackWidth = 12.f;
-	int randomTrackPoints = 10;
 
 	unsigned startingPopulations = 1;
 	unsigned populationCutoff = 10;

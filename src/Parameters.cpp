@@ -9,6 +9,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
+#include "TrackArgumentParser.hpp"
+
 namespace car {
 
 std::istream& operator>>(std::istream& is, PanMode& panMode) {
@@ -82,15 +84,9 @@ Parameters parseParameters(int argc, char **argv) {
 		("input-population", po::value<std::string>(),
 				"Load population from file.")
 		("track", po::value<std::vector<std::string>>(&parameters.tracks)->default_value(parameters.tracks, parameters.tracks[0]),
-				"The type of track to use. Allowed values: circle, zigzag, curvy, random:<seed>. "
-				"It can be given multiple times. For AI learning, use all tracks for learning. "
+				"The type of track to use. It can be given multiple times. "
+				"For AI learning, use all tracks for learning. "
 				"For real time simulation, use only the first.")
-		("min-track-width", po::value<float>(&parameters.minRandomTrackWidth)->default_value(parameters.minRandomTrackWidth),
-				"Minimum track width for randomly generated tracks.")
-		("max-track-width", po::value<float>(&parameters.maxRandomTrackWidth)->default_value(parameters.maxRandomTrackWidth),
-				"Maximum track width for randomly generated tracks.")
-		("track-points", po::value<int>(&parameters.randomTrackPoints)->default_value(parameters.randomTrackPoints),
-				"Number of points for randomly generated tracks.")
 		("threads", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
 				"Number of threads used for population simulation.")
 		("starting-populations", po::value<unsigned>(&parameters.startingPopulations)->default_value(parameters.startingPopulations),
@@ -120,7 +116,7 @@ Parameters parseParameters(int argc, char **argv) {
 	po::notify(vm);
 
 	if (vm.count("help")) {
-		std::cout << commandLineDescription << std::endl;
+		std::cout << commandLineDescription << "\n\n" << trackArgumentParser::getHelpString() << std::endl;
 		std::exit(0);
 	}
 
