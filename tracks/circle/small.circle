@@ -1,0 +1,5 @@
+inner-radius=10.0
+outer-radius=15.0
+resolution=60
+number-of-checkpoints=30
+

@@ -24,7 +24,7 @@ po::options_description createOptionsDescription(Params& params) {
 					"The distance between each checkpoint.")
 			("track-width", paramWithDefaultValue(params.trackWidth),
 					"The width of the track at straight sections.")
-			("p", po::value<std::vector<std::string>>(&params.points),
+			("p", po::value(&params.points),
 					"The points of the polygon. Each point is one argument with the format x,y")
 			;
 	return optionsDescription;
