@@ -145,21 +145,15 @@ bool Track::collidesWith(const Line2f& line) const {
 
 sf::Vector2f Track::collideWithRay(const sf::Vector2f& origin, const sf::Vector2f& direction,
 		float maxViewDistance) const {
-	float minimumDistanceSQ = maxViewDistance * maxViewDistance;
 	Line2f lineToCheck{origin, origin + normalize(direction) * maxViewDistance};
-	sf::Vector2f closest = lineToCheck.end;
 	for ( const Line2f& trackLine : lines ) {
 		sf::Vector2f out;
 		if ( intersects(trackLine, lineToCheck, &out) ) {
-			float distanceSQ = getDistanceSQ(origin, out);
-			if ( minimumDistanceSQ < 0.f || distanceSQ < minimumDistanceSQ ) {
-				minimumDistanceSQ = distanceSQ;
-				closest = out;
-			}
+			lineToCheck.end = out;
 		}
 	}
 
-	return closest;
+	return lineToCheck.end;
 }
 
 int Track::checkpointCollidesWith(const Line2f& line) const {
