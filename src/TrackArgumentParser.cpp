@@ -10,6 +10,7 @@
 #include "RandomTrackGenerator.hpp"
 #include "PolygonTrackType.hpp"
 #include "CircleTrackType.hpp"
+#include "RandomTrackType.hpp"
 
 namespace algo = boost::algorithm;
 
@@ -22,6 +23,7 @@ namespace {
 const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
 	createTrackTypeElement<CircleTrackType>(),
 	createTrackTypeElement<PolygonTrackType>(),
+	createTrackTypeElement<RandomTrackType>(),
 };
 
 std::function<Track()> parseArgument(const std::string& arg) {

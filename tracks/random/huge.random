@@ -1,0 +1,6 @@
+track-width=6.0
+number-of-points=60
+corner1=-200.0, -200.0
+corner2= 200.0,  200.0
+inset=0.2
+
