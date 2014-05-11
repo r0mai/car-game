@@ -70,15 +70,15 @@ struct UnaryOperator;
 typedef boost::variant<
 	FormulaValue,
 	Symbol,
-   	boost::recursive_wrapper<UnaryOperator<OperatorMinus>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorLess>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorLessEqual>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorGreater>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorGreaterEqual>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorAdd>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorSubtract>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorMultiply>>,
-   	boost::recursive_wrapper<BinaryOperator<OperatorDivide>>
+	boost::recursive_wrapper<UnaryOperator<OperatorMinus>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorLess>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorLessEqual>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorGreater>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorGreaterEqual>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorAdd>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorSubtract>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorMultiply>>,
+	boost::recursive_wrapper<BinaryOperator<OperatorDivide>>
 > MathExpression;
 
 template<class Op>

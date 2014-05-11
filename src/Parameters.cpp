@@ -98,7 +98,7 @@ Parameters parseParameters(int argc, char **argv) {
 		("population-cutoff", po::value<unsigned>(&parameters.populationCutoff)->default_value(parameters.populationCutoff),
 				"The number of generations after the worst population is dropped (if there are more than one).")
 		("fitness-function", po::value<MathExpression>(&parameters.fitnessExpression)->default_value(parameters.fitnessExpression),
-		 		"Fitness function.")
+				"Fitness function.")
 		("physics-frequency", po::value<unsigned>(&parameters.physicsTimeStepsPerSecond)->default_value(parameters.physicsTimeStepsPerSecond),
 				"Specifies how many times per second the physics should be recalculated.")
 		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
