@@ -2,7 +2,7 @@
 #include <sstream>
 #include <boost/range/adaptor/transformed.hpp>
 #include "Track.hpp"
-#include "PolygonTrackBuilder.hpp"
+#include "createPolygonTrack.hpp"
 #include "optionsUtil.hpp"
 
 namespace po = boost::program_options;

@@ -53,7 +53,7 @@ std::function<Track()> parseArgument(const std::string& arg) {
 //	case TrackType::evil:
 //		return createEvilTrack;
 //	case TrackType::random:
-//		RandomTrackGenerator generator{PolygonTrackBuilder{5.f}, 100,
+//		RandomTrackGenerator generator{createPolygonTrack{5.f}, 100,
 //			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
 //			{-60.f, -60.f}, {60.f, 60.f}};
 //
