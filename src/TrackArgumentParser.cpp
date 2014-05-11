@@ -2,13 +2,19 @@
 
 #include <map>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/adaptor/map.hpp>
 #include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 #include "Track.hpp"
 #include "RandomTrackGenerator.hpp"
 #include "PolygonTrackType.hpp"
 
+namespace algo = boost::algorithm;
+
 namespace car {
+
+namespace trackArgumentParser {
 
 namespace {
 
@@ -16,12 +22,7 @@ const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
 	createTrackTypeElement<PolygonTrackType>()
 };
 
-
-}
-
-std::function<Track()> TrackArgumentParser::parseArgument(const std::string& arg) {
-	namespace algo = boost::algorithm;
-
+std::function<Track()> parseArgument(const std::string& arg) {
 	std::vector<std::string> tokens;
 	algo::split(tokens, arg, [](char ch) { return ch == ':'; });
 
@@ -68,15 +69,28 @@ std::function<Track()> TrackArgumentParser::parseArgument(const std::string& arg
 	return {};
 }
 
+}
 
 std::vector<std::function<Track()>>
-TrackArgumentParser::operator()(const std::vector<std::string>& args) {
+parseArguments(const std::vector<std::string>& args) {
 	std::vector<std::function<Track()>> result;
 	result.reserve(args.size());
-	boost::transform(args, std::back_inserter(result),
-			[this](const std::string& arg) { return parseArgument(arg); });
+	boost::transform(args, std::back_inserter(result), parseArgument);
 	return result;
 }
 
+std::string getHelpString() {
+	std::ostringstream ss;
+	ss << "Allowed track types: " <<
+			algo::join(trackTypes | boost::adaptors::map_keys, ", ") << ".\n";
+
+	for (const auto& trackType: trackTypes) {
+		ss << "\nFormat of track type " << trackType.first << ":\n" <<
+				trackType.second->getHelpString();
+	}
+
+	return ss.str();
 }
 
+}
+}

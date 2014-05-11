@@ -15,17 +15,12 @@ struct TrackCreatorError: OptionParseError {
 	using OptionParseError::OptionParseError;
 };
 
-class TrackArgumentParser {
-public:
-	TrackArgumentParser(const Parameters& parameters): parameters(parameters) {}
+namespace trackArgumentParser {
 
-	std::vector<std::function<Track()>>
-	operator()(const std::vector<std::string>& args);
-private:
-	const Parameters& parameters;
+std::vector<std::function<Track()>> parseArguments(const std::vector<std::string>& args);
+std::string getHelpString();
 
-	std::function<Track()> parseArgument(const std::string& arg);
-};
+}
 
 }
 
