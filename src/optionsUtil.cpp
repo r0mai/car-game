@@ -23,13 +23,6 @@ sf::Vector2f parsePoint(const std::string& param) {
 	return {boost::lexical_cast<float>(tokens[0]), boost::lexical_cast<float>(tokens[1])};
 }
 
-void parseConfigFile(const std::string& filename,
-		const boost::program_options::options_description& optionsDescription) {
-	po::variables_map vm;
-	po::store(po::parse_config_file<char>(filename.c_str(), optionsDescription), vm);
-	po::notify(vm);
-}
-
 }
 
 

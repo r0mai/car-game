@@ -1,6 +1,7 @@
 #include "CircleTrackType.hpp"
+
 #include <sstream>
-#include "createCircleTrack.hpp"
+#include <boost/program_options.hpp>
 #include "optionsUtil.hpp"
 
 namespace po = boost::program_options;
@@ -9,8 +10,11 @@ namespace car {
 
 namespace {
 
-po::options_description createOptionsDescription(CircleTrackParams& params) {
-	po::options_description optionsDescription;
+const std::string argumentName = "circle";
+
+}
+
+CircleTrackType::CircleTrackType():optionsDescription{"Circle track type options"} {
 	optionsDescription.add_options()
 			("inner-radius", paramWithDefaultValue(params.innerRadius),
 					"The radius of the inner edge of the track.")
@@ -21,18 +25,11 @@ po::options_description createOptionsDescription(CircleTrackParams& params) {
 			("number-of-checkpoints", paramWithDefaultValue(params.numberOfCheckpoints),
 					"The number of checkpoints for the track.")
 			;
-	return optionsDescription;
 }
 
-const std::string argumentName = "circle";
-
-}
-
-std::function<Track()> CircleTrackType::getTrackCreator(const std::vector<std::string>& args) {
-	CircleTrackParams params;
-	if (args.size() > 0) {
-		parseConfigFile(args[0], createOptionsDescription(params));
-	}
+std::function<Track()> CircleTrackType::getTrackCreator(const boost::program_options::variables_map& /*variablesMap*/,
+		const std::vector<std::string>& /*args*/) {
+	auto params = this->params;
 	return [params]() {
 			return createCircleTrack(params);
 		};
@@ -40,12 +37,14 @@ std::function<Track()> CircleTrackType::getTrackCreator(const std::vector<std::s
 
 std::string CircleTrackType::getHelpString() {
 	std::ostringstream ss;
-	CircleTrackParams params;
 	ss << "Create a circular track from a config file.\n"
-			"If the file is omitted, then the default parameters are used.\n"
-			"Format: " << argumentName << "[:<file name>]\n" <<
-			createOptionsDescription(params);
+			"If the file is omitted, then the default parameters are used.\n" <<
+			optionsDescription;
 	return ss.str();
+}
+
+boost::program_options::options_description CircleTrackType::getOptions() {
+	return optionsDescription;
 }
 
 std::string CircleTrackType::getArgumentName() {
@@ -55,7 +54,6 @@ std::string CircleTrackType::getArgumentName() {
 std::size_t CircleTrackType::getMinimumNumberOfArgs() {
 	return 0;
 }
-
 
 } /* namespace car */
 

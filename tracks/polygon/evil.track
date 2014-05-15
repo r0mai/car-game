@@ -1,3 +1,5 @@
+type=polygon
+
 track-width=5.0
 checkpoint-distance=6.0
 

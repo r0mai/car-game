@@ -8,18 +8,7 @@ namespace po = boost::program_options;
 
 namespace car {
 
-namespace {
-
-struct Params {
-	float checkpointDistance = 5.f;
-	float trackWidth = 5.f;
-	std::string corner1 = "-60.0,-60.0";
-	std::string corner2 = "60.0,60.0";
-	RandomTrackGenerator::Params generatorParams;
-};
-
-po::options_description createOptionsDescription(Params& params) {
-	po::options_description optionsDescription;
+RandomTrackType::RandomTrackType():optionsDescription{"Random track type options"} {
 	optionsDescription.add_options()
 			("checkpoint-distance", paramWithDefaultValue(params.checkpointDistance),
 					"The distance between each checkpoint.")
@@ -38,26 +27,25 @@ po::options_description createOptionsDescription(Params& params) {
 					"The relative position within the generating rectangle where the "
 					"initial points are placed (in ratio of the total size).")
 			;
-	return optionsDescription;
 }
+
+namespace {
 
 const std::string argumentName = "random";
 
 }
 
-std::function<Track()> RandomTrackType::getTrackCreator(const std::vector<std::string>& args) {
+std::function<Track()> RandomTrackType::getTrackCreator(
+		const boost::program_options::variables_map& /*variablesMap*/,
+		const std::vector<std::string>& args) {
 	using std::placeholders::_1;
 
-	Params params;
-	if (!args[0].empty()) {
-		parseConfigFile(args[0], createOptionsDescription(params));
-	}
 	params.generatorParams.corner1 = parsePoint(params.corner1);
 	params.generatorParams.corner2 = parsePoint(params.corner2);
 	params.generatorParams.generator = std::bind(&createPolygonTrack,
 			params.checkpointDistance, params.trackWidth, _1);
 	RandomTrackGenerator generator{params.generatorParams};
-	return std::bind(generator, boost::lexical_cast<uint>(args[1]));
+	return std::bind(generator, boost::lexical_cast<uint>(args[0]));
 }
 
 std::string RandomTrackType::getHelpString() {
@@ -66,10 +54,12 @@ std::string RandomTrackType::getHelpString() {
 	ss << "Create a pseudo-random polygon based track. The track is based off a rectangle and other\n"
 			"points are generated randomly. From this polygon, the polygon track generator is used\n"
 			"to create a track."
-			"Format: " << argumentName << ":[<file name>]:<seed>\n"
-			"If the file name is not given, the default values are used.\n" <<
-			createOptionsDescription(params);
+			"Format: <file name>:<seed>\n" << optionsDescription;
 	return ss.str();
+}
+
+boost::program_options::options_description RandomTrackType::getOptions() {
+	return optionsDescription;
 }
 
 std::string RandomTrackType::getArgumentName() {
@@ -77,7 +67,7 @@ std::string RandomTrackType::getArgumentName() {
 }
 
 std::size_t RandomTrackType::getMinimumNumberOfArgs() {
-	return 2;
+	return 1;
 }
 
 
