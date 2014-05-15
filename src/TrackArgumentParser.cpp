@@ -76,6 +76,10 @@ std::function<Track()> parseArgument(const std::string& arg) {
 
 std::vector<std::function<Track()>>
 parseArguments(const std::vector<std::string>& args) {
+	if (args.empty()) {
+		throw TrackCreatorError{"No tracks specified."};
+	}
+
 	std::vector<std::function<Track()>> result;
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result), parseArgument);

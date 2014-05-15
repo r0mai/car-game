@@ -53,7 +53,7 @@ std::string RandomTrackType::getHelpString() {
 	Params params;
 	ss << "Create a pseudo-random polygon based track. The track is based off a rectangle and other\n"
 			"points are generated randomly. From this polygon, the polygon track generator is used\n"
-			"to create a track."
+			"to create a track.\n"
 			"Format: <file name>:<seed>\n" << optionsDescription;
 	return ss.str();
 }
