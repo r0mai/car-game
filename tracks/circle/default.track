@@ -1,4 +1,5 @@
+type=circle
 inner-radius=50.0
 outer-radius=60.0
-resolution=60.0
+resolution=60
 number-of-checkpoints=72

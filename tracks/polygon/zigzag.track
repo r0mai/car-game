@@ -1,3 +1,5 @@
+type=polygon
+
 track-width=10.0
 
 p=-55.0,  55.0

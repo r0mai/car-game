@@ -6,13 +6,16 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
 #include "Track.hpp"
+#include "optionsUtil.hpp"
 #include "RandomTrackGenerator.hpp"
 #include "PolygonTrackType.hpp"
 #include "CircleTrackType.hpp"
 #include "RandomTrackType.hpp"
 
 namespace algo = boost::algorithm;
+namespace po = boost::program_options;
 
 namespace car {
 
@@ -34,9 +37,22 @@ std::function<Track()> parseArgument(const std::string& arg) {
 		throw TrackCreatorError{"Invalid argument: '" + arg + "'"};
 	}
 
-	auto it = trackTypes.find(tokens[0]);
+	auto filename = tokens[0];
+
+	std::string trackTypeName;
+	po::options_description typeDescription;
+	typeDescription.add_options()
+			("type", po::value(&trackTypeName)->required(), "The type of the track.")
+			;
+
+	auto parsedTypeOptions = po::parse_config_file<char>(filename.c_str(), typeDescription, true);
+	po::variables_map typeVariablesMap;
+	po::store(parsedTypeOptions, typeVariablesMap);
+	po::notify(typeVariablesMap);
+
+	auto it = trackTypes.find(trackTypeName);
 	if (it == trackTypes.end()) {
-		throw TrackCreatorError{"Invalid track type: " + tokens[0]};
+		throw TrackCreatorError{"Invalid track type: " + trackTypeName};
 	}
 
 	std::vector<std::string> args(++tokens.begin(), tokens.end());
@@ -46,37 +62,24 @@ std::function<Track()> parseArgument(const std::string& arg) {
 		throw TrackCreatorError{"Too few tokens for track type " + it->first};
 	}
 
-	return trackType.getTrackCreator(args);
-//	switch (it->second) {
-//	case TrackType::circle:
-//		return createCircleTrack;
-//	case TrackType::zigzag:
-//		return createZigZagTrack;
-//	case TrackType::curvy:
-//		return createCurvyTrack;
-//	case TrackType::evil:
-//		return createEvilTrack;
-//	case TrackType::random:
-//		RandomTrackGenerator generator{createPolygonTrack{5.f}, 100,
-//			parameters.randomTrackPoints, parameters.minRandomTrackWidth, parameters.maxRandomTrackWidth,
-//			{-60.f, -60.f}, {60.f, 60.f}};
-//
-//		if (tokens.size() == 1) {
-//			return std::bind(generator, std::rand());
-//		} else {
-//			return std::bind(generator, boost::lexical_cast<uint>(tokens[1]));
-//		}
-//	}
+	auto optionsDescription = trackType.getOptions();
 
-	// should have returned by now
-	assert(false && "Track type not handled");
-	return {};
+	auto parsedOptions = po::parse_config_file<char>(filename.c_str(), optionsDescription, true);
+	po::variables_map variablesMap;
+	po::store(parsedOptions, variablesMap);
+	po::notify(variablesMap);
+
+	return trackType.getTrackCreator(variablesMap, args);
 }
 
 }
 
 std::vector<std::function<Track()>>
 parseArguments(const std::vector<std::string>& args) {
+	if (args.empty()) {
+		throw TrackCreatorError{"No tracks specified."};
+	}
+
 	std::vector<std::function<Track()>> result;
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result), parseArgument);

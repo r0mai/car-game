@@ -49,7 +49,7 @@ struct Parameters {
 	boost::optional<std::string> populationOutputFile;
 	boost::optional<std::string> populationInputFile;
 
-	std::vector<std::string> tracks{"circle"};
+	std::vector<std::string> tracks;
 
 	unsigned startingPopulations = 1;
 	unsigned populationCutoff = 10;

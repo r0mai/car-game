@@ -1,3 +1,4 @@
+type=circle
 inner-radius=50.0
 outer-radius=55.0
 resolution=60

@@ -14,9 +14,6 @@ boost::program_options::typed_value<T>* paramWithDefaultValue(T& value) {
 
 sf::Vector2f parsePoint(const std::string& param);
 
-void parseConfigFile(const std::string& filename,
-		const boost::program_options::options_description& optionsDescription);
-
 }
 
 #endif /* OPTIONSHELPER_HPP_ */

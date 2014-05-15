@@ -9,16 +9,7 @@ namespace po = boost::program_options;
 
 namespace car {
 
-namespace {
-
-struct Params {
-	float checkpointDistance = 5.f;
-	float trackWidth = 5.f;
-	std::vector<std::string> points;
-};
-
-po::options_description createOptionsDescription(Params& params) {
-	po::options_description optionsDescription;
+PolygonTrackType::PolygonTrackType():optionsDescription{"Polygon track type options"} {
 	optionsDescription.add_options()
 			("checkpoint-distance", paramWithDefaultValue(params.checkpointDistance),
 					"The distance between each checkpoint.")
@@ -27,18 +18,20 @@ po::options_description createOptionsDescription(Params& params) {
 			("p", po::value(&params.points),
 					"The points of the polygon. Each point is one argument with the format x,y")
 			;
-	return optionsDescription;
 }
+
+namespace {
 
 const std::string argumentName = "polygon";
 
 }
 
-std::function<Track()> PolygonTrackType::getTrackCreator(const std::vector<std::string>& args) {
-	Params params;
-	parseConfigFile(args[0], createOptionsDescription(params));
+std::function<Track()> PolygonTrackType::getTrackCreator(
+		const boost::program_options::variables_map& /*variablesMap*/,
+		const std::vector<std::string>& /*args*/) {
 	auto pointParams = params.points | boost::adaptors::transformed(parsePoint);
 	std::vector<sf::Vector2f> points(pointParams.begin(), pointParams.end());
+	auto params = this->params;
 	return [params, points]() {
 			return createPolygonTrack(params.checkpointDistance, params.trackWidth,	points);
 		};
@@ -46,12 +39,14 @@ std::function<Track()> PolygonTrackType::getTrackCreator(const std::vector<std::
 
 std::string PolygonTrackType::getHelpString() {
 	std::ostringstream ss;
-	Params params;
 	ss << "Create a track based on a polygon. This polygon defines the middle line of the track.\n"
 			"The track edges are track-width/2 distance from this polygon in each direction.\n"
-			"Format: " << argumentName << ":<file name>\n" <<
-			createOptionsDescription(params);
+			<< optionsDescription;
 	return ss.str();
+}
+
+boost::program_options::options_description PolygonTrackType::getOptions() {
+	return optionsDescription;
 }
 
 std::string PolygonTrackType::getArgumentName() {
@@ -59,7 +54,7 @@ std::string PolygonTrackType::getArgumentName() {
 }
 
 std::size_t PolygonTrackType::getMinimumNumberOfArgs() {
-	return 1;
+	return 0;
 }
 
 
