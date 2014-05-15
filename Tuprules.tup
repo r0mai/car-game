@@ -1,7 +1,7 @@
 
 .gitignore
 
-CXX = g++
+CXX = @(COMPILER)
 LD = $(CXX)
 
 CPP_FLAGS += -std=c++11
