@@ -8,13 +8,8 @@ namespace po = boost::program_options;
 
 namespace car {
 
-namespace {
-
-const std::string argumentName = "circle";
-
-}
-
-CircleTrackType::CircleTrackType():optionsDescription{"Circle track type options"} {
+CircleTrackType::CircleTrackType():
+		BasicTrackType{"circle"} {
 	optionsDescription.add_options()
 			("inner-radius", paramWithDefaultValue(params.innerRadius),
 					"The radius of the inner edge of the track.")
@@ -29,26 +24,14 @@ CircleTrackType::CircleTrackType():optionsDescription{"Circle track type options
 
 std::function<Track()> CircleTrackType::getTrackCreator(const boost::program_options::variables_map& /*variablesMap*/,
 		const std::vector<std::string>& /*args*/) {
-	auto params = this->params;
-	return [params]() {
-			return createCircleTrack(params);
-		};
+	return std::bind(createCircleTrack, params);
 }
 
 std::string CircleTrackType::getHelpString() {
 	std::ostringstream ss;
-	ss << "Create a circular track from a config file.\n"
-			"If the file is omitted, then the default parameters are used.\n" <<
-			optionsDescription;
+	ss << "Create a circular track from a config file.\n" <<
+			getOptions();
 	return ss.str();
-}
-
-boost::program_options::options_description CircleTrackType::getOptions() {
-	return optionsDescription;
-}
-
-std::string CircleTrackType::getArgumentName() {
-	return argumentName;
 }
 
 std::size_t CircleTrackType::getMinimumNumberOfArgs() {

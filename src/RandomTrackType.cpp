@@ -8,7 +8,7 @@ namespace po = boost::program_options;
 
 namespace car {
 
-RandomTrackType::RandomTrackType():optionsDescription{"Random track type options"} {
+RandomTrackType::RandomTrackType():BasicTrackType{"random"} {
 	optionsDescription.add_options()
 			("checkpoint-distance", paramWithDefaultValue(params.checkpointDistance),
 					"The distance between each checkpoint.")
@@ -27,12 +27,6 @@ RandomTrackType::RandomTrackType():optionsDescription{"Random track type options
 					"The relative position within the generating rectangle where the "
 					"initial points are placed (in ratio of the total size).")
 			;
-}
-
-namespace {
-
-const std::string argumentName = "random";
-
 }
 
 std::function<Track()> RandomTrackType::getTrackCreator(
@@ -56,14 +50,6 @@ std::string RandomTrackType::getHelpString() {
 			"to create a track.\n"
 			"Format: <file name>:<seed>\n" << optionsDescription;
 	return ss.str();
-}
-
-boost::program_options::options_description RandomTrackType::getOptions() {
-	return optionsDescription;
-}
-
-std::string RandomTrackType::getArgumentName() {
-	return argumentName;
 }
 
 std::size_t RandomTrackType::getMinimumNumberOfArgs() {

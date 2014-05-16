@@ -9,7 +9,7 @@ namespace po = boost::program_options;
 
 namespace car {
 
-PolygonTrackType::PolygonTrackType():optionsDescription{"Polygon track type options"} {
+PolygonTrackType::PolygonTrackType():BasicTrackType{"polygon"} {
 	optionsDescription.add_options()
 			("checkpoint-distance", paramWithDefaultValue(params.checkpointDistance),
 					"The distance between each checkpoint.")
@@ -20,21 +20,12 @@ PolygonTrackType::PolygonTrackType():optionsDescription{"Polygon track type opti
 			;
 }
 
-namespace {
-
-const std::string argumentName = "polygon";
-
-}
-
 std::function<Track()> PolygonTrackType::getTrackCreator(
 		const boost::program_options::variables_map& /*variablesMap*/,
 		const std::vector<std::string>& /*args*/) {
 	auto pointParams = params.points | boost::adaptors::transformed(parsePoint);
 	std::vector<sf::Vector2f> points(pointParams.begin(), pointParams.end());
-	auto params = this->params;
-	return [params, points]() {
-			return createPolygonTrack(params.checkpointDistance, params.trackWidth,	points);
-		};
+	return std::bind(createPolygonTrack, params.checkpointDistance, params.trackWidth,	points);
 }
 
 std::string PolygonTrackType::getHelpString() {
@@ -43,14 +34,6 @@ std::string PolygonTrackType::getHelpString() {
 			"The track edges are track-width/2 distance from this polygon in each direction.\n"
 			<< optionsDescription;
 	return ss.str();
-}
-
-boost::program_options::options_description PolygonTrackType::getOptions() {
-	return optionsDescription;
-}
-
-std::string PolygonTrackType::getArgumentName() {
-	return argumentName;
 }
 
 std::size_t PolygonTrackType::getMinimumNumberOfArgs() {
