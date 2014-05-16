@@ -12,6 +12,9 @@ public:
 	virtual std::function<Track()> getTrackCreator(
 			const boost::program_options::variables_map& variablesMap,
 			const std::vector<std::string>& args) override;
+	virtual bool needsReparse(
+			const boost::program_options::variables_map& variablesMap,
+			const std::vector<std::string>& args) override;
 	virtual std::string getHelpString() override;
 	virtual std::size_t getMinimumNumberOfArgs() override;
 private:

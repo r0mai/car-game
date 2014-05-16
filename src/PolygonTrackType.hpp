@@ -2,10 +2,11 @@
 #define POLYGONTRACKTYPE_HPP_
 
 #include "BasicTrackType.hpp"
+#include "PolygonBasedTrackType.hpp"
 
 namespace car {
 
-class PolygonTrackType: public BasicTrackType {
+class PolygonTrackType: public PolygonBasedTrackType {
 public:
 	PolygonTrackType();
 	virtual std::function<Track()> getTrackCreator(
@@ -14,12 +15,7 @@ public:
 	virtual std::string getHelpString() override;
 	virtual std::size_t getMinimumNumberOfArgs() override;
 private:
-	struct Params {
-		float checkpointDistance = 5.f;
-		float trackWidth = 5.f;
-		std::vector<std::string> points;
-	};
-	Params params;
+	std::vector<std::string> points;
 };
 
 } /* namespace car */

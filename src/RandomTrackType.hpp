@@ -1,12 +1,12 @@
 #ifndef RANDOMTRACKTYPE_HPP_
 #define RANDOMTRACKTYPE_HPP_
 
-#include "BasicTrackType.hpp"
+#include "PolygonBasedTrackType.hpp"
 #include "RandomTrackGenerator.hpp"
 
 namespace car {
 
-class RandomTrackType: public BasicTrackType {
+class RandomTrackType: public PolygonBasedTrackType {
 public:
 	RandomTrackType();
 	virtual std::function<Track()> getTrackCreator(
@@ -15,14 +15,9 @@ public:
 	virtual std::string getHelpString() override;
 	virtual std::size_t getMinimumNumberOfArgs() override;
 private:
-	struct Params {
-		float checkpointDistance = 5.f;
-		float trackWidth = 5.f;
-		std::string corner1 = "-60.0,-60.0";
-		std::string corner2 = "60.0,60.0";
-		RandomTrackGenerator::Params generatorParams;
-	};
-	Params params;
+	std::string corner1 = "-60.0,-60.0";
+	std::string corner2 = "60.0,60.0";
+	RandomTrackGenerator::Params generatorParams;
 };
 
 } /* namespace car */

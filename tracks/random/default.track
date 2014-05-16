@@ -1,4 +1,5 @@
 type=random
+polygon-type=simple
 
 track-width=5.0
 number-of-points=10

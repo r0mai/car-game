@@ -27,6 +27,12 @@ std::function<Track()> CircleTrackType::getTrackCreator(const boost::program_opt
 	return std::bind(createCircleTrack, params);
 }
 
+bool CircleTrackType::needsReparse(
+		const boost::program_options::variables_map& /*variablesMap*/,
+		const std::vector<std::string>& /*args*/) {
+	return false;
+}
+
 std::string CircleTrackType::getHelpString() {
 	std::ostringstream ss;
 	ss << "Create a circular track from a config file.\n" <<

@@ -13,6 +13,7 @@
 #include "PolygonTrackType.hpp"
 #include "CircleTrackType.hpp"
 #include "RandomTrackType.hpp"
+#include "SimplePolygonType.hpp"
 
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
@@ -28,6 +29,11 @@ const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
 	createTrackTypeElement<PolygonTrackType>(),
 	createTrackTypeElement<RandomTrackType>(),
 };
+
+const std::map<std::string, std::shared_ptr<IPolygonType>> polygonTypes{
+	createPolygonTypeElement<SimplePolygonType>(),
+};
+
 
 std::function<Track()> parseArgument(const std::string& arg) {
 	std::vector<std::string> tokens;
@@ -62,12 +68,13 @@ std::function<Track()> parseArgument(const std::string& arg) {
 		throw TrackCreatorError{"Too few tokens for track type " + it->first};
 	}
 
-	auto optionsDescription = trackType.getOptions();
-
-	auto parsedOptions = po::parse_config_file<char>(filename.c_str(), optionsDescription, true);
 	po::variables_map variablesMap;
-	po::store(parsedOptions, variablesMap);
-	po::notify(variablesMap);
+	do {
+		auto optionsDescription = trackType.getOptions();
+		auto parsedOptions = po::parse_config_file<char>(filename.c_str(), optionsDescription, true);
+		po::store(parsedOptions, variablesMap);
+		po::notify(variablesMap);
+	} while (trackType.needsReparse(variablesMap, args));
 
 	return trackType.getTrackCreator(variablesMap, args);
 }
@@ -84,6 +91,15 @@ parseArguments(const std::vector<std::string>& args) {
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result), parseArgument);
 	return result;
+}
+
+std::shared_ptr<IPolygonType> getPolygonType(const std::string& name) {
+	auto it = polygonTypes.find(name);
+	if (it == polygonTypes.end()) {
+		throw TrackCreatorError{"Invalid polygon type: " + name};
+	}
+
+	return it->second;
 }
 
 std::string getHelpString() {
