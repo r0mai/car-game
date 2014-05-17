@@ -2,37 +2,33 @@
 #include "mathUtil.hpp"
 #include "Line2.hpp"
 #include <iostream>
+#include <boost/range/algorithm.hpp>
 
 namespace car {
 
 namespace {
 
-void closeEdges(std::vector<Line2f>& edge) {
+std::vector<Line2f> closeEdges(std::vector<Line2f>& edge) {
+	std::vector<Line2f> output;
+	output.reserve(edge.size());
 	for (std::size_t i = 0; i < edge.size(); ++i) {
 		auto& line1 = edge[i];
 		auto& line2 = edge[(i + 1) % edge.size()];
 
-		if (!isParallel(line1, line2)) {
-			sf::Vector2f intersectionPoint;
-			intersectsInfinite(line1, line2, &intersectionPoint);
-
+		sf::Vector2f intersectionPoint;
+		if (intersects(line1, line2, &intersectionPoint)) {
 			line1.end = intersectionPoint;
 			line2.start = intersectionPoint;
+		} else {
+			output.push_back({line1.end, line2.start});
 		}
 	}
+	return output;
 }
 
-}
-
-Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points) {
+void createEdges(std::vector<Line2f>& rightEdge, std::vector<Line2f>& leftEdge,
+		float trackWidth, const std::vector<sf::Vector2f>& points) {
 	const float distance = trackWidth / 2.f;
-
-	std::vector<Line2f> rightEdge;
-	std::vector<Line2f> leftEdge;
-	rightEdge.reserve(points.size());
-	leftEdge.reserve(points.size());
-
-	Track track;
 
 	for (std::size_t i = 0; i < points.size(); ++i) {
 		const auto& point1 = points[i];
@@ -43,17 +39,15 @@ Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::
 		auto shiftDirection = normalize(rotateClockwise(roadVector));
 		auto shift = shiftDirection * distance;
 
-		if (i == 0) {
-			track.setOrigin(point1, std::atan2(roadVector.y, roadVector.x));
-		}
-
 		rightEdge.push_back({point1 + shift, point2 + shift});
 		leftEdge.push_back({point1 - shift, point2 - shift});
-
 	}
+}
 
-	closeEdges(rightEdge);
-	closeEdges(leftEdge);
+Track createTrack(std::vector<Line2f>& rightEdge, std::vector<Line2f>& leftEdge,
+		float checkpointDistance) {
+	const float tooClose = 0.5f;
+	Track track;
 
 	for (std::size_t i = 0; i < rightEdge.size(); ++i) {
 		const auto& line1 = rightEdge[i];
@@ -67,16 +61,45 @@ Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::
 		auto checkpointDirection = rotateCounterclockwise(roadDirection);
 		auto length = getLength(roadVector);
 
+		track.addCheckpoint({line1.start, line2.start});
+
 		for (float position = 0.f; position < length; position += checkpointDistance) {
 			auto base = line1.start + roadDirection * position;
 			sf::Vector2f intersectionPoint;
 
-			if (intersectsRay(line2, base, checkpointDirection, &intersectionPoint)) {
+			if (intersectsRay(line2, base, checkpointDirection, &intersectionPoint) &&
+					!(equals(intersectionPoint.x, line2.start.x, tooClose) &&
+					equals(intersectionPoint.y, line2.start.y, tooClose)) &&
+					!(equals(intersectionPoint.x, line2.end.x, tooClose) &&
+					equals(intersectionPoint.y, line2.end.y, tooClose))) {
 				track.addCheckpoint({base, intersectionPoint});
 			}
 		}
 
 		track.addCheckpoint({line1.end, line2.end});
+	}
+
+	return track;
+}
+
+}
+
+Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points) {
+	std::vector<Line2f> rightEdge;
+	std::vector<Line2f> leftEdge;
+	rightEdge.reserve(points.size());
+	leftEdge.reserve(points.size());
+
+	createEdges(rightEdge, leftEdge, trackWidth, points);
+	auto additions = closeEdges(rightEdge);
+	boost::copy(closeEdges(leftEdge), std::back_inserter(additions));
+	auto track = createTrack(rightEdge, leftEdge, checkpointDistance);
+
+	auto roadVector = points[1] - points[0];
+	track.setOrigin(points[0], std::atan2(roadVector.y, roadVector.x));
+
+	for (const auto& line: additions) {
+		track.addLine(line);
 	}
 
 	return track;
