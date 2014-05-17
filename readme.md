@@ -1,7 +1,7 @@
 car-game
 ========
 
-We're aiming to develop a car game, which can be played against AI opponents, controlled by a nerual network.
+We're aiming to develop a car game, which can be played against AI opponents, controlled by a neural network.
 
 Usage
 -----
