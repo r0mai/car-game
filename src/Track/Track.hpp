@@ -30,7 +30,7 @@ public:
 			float maxViewDistance) const;
 
 	bool collidesWith(const Line2f& line) const;
-	int checkpointCollidesWith(const Line2f& line) const;
+	bool collidesWithCheckpoint(const Line2f& line, std::size_t checkpointId) const;
 
 	std::size_t getNumberOfCheckpoints() const;
 	const Line2f& getCheckpoint(std::size_t n) const;

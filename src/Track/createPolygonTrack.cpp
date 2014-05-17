@@ -46,7 +46,7 @@ void createEdges(std::vector<Line2f>& rightEdge, std::vector<Line2f>& leftEdge,
 
 Track createTrack(std::vector<Line2f>& rightEdge, std::vector<Line2f>& leftEdge,
 		float checkpointDistance) {
-	const float tooClose = 0.5f;
+	const float tooClose = 1.0f;
 	Track track;
 
 	for (std::size_t i = 0; i < rightEdge.size(); ++i) {

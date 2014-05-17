@@ -118,21 +118,32 @@ void Model::collideCar() {
 	}
 }
 
-void Model::handleCheckpoints() {
-	int checkpoint = -1;
-	if (    (checkpoint = track.checkpointCollidesWith(
-					Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner()))) >= 0 ||
-			(checkpoint = track.checkpointCollidesWith(
-					Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner()))) >= 0 ||
-			(checkpoint = track.checkpointCollidesWith(
-					Line2f(car.getFrontRightCorner(), car.getRearRightCorner()))) >= 0 ||
-			(checkpoint = track.checkpointCollidesWith(
-					Line2f(car.getRearLeftCorner(), car.getRearRightCorner()))) >= 0
-	) {
-		assert(checkpoint >= 0);
+bool Model::collidesWithCheckpoint(std::size_t checkpointId) {
+	return track.collidesWithCheckpoint(
+					Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner()),
+					checkpointId) ||
+			track.collidesWithCheckpoint(
+					Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner()),
+					checkpointId) ||
+			track.collidesWithCheckpoint(
+					Line2f(car.getFrontRightCorner(), car.getRearRightCorner()),
+					checkpointId) ||
+			track.collidesWithCheckpoint(
+					Line2f(car.getRearLeftCorner(), car.getRearRightCorner()),
+					checkpointId);
+}
 
-		if (currentCheckpoint < 0 || currentCheckpoint == checkpoint) {
-			currentCheckpoint = (checkpoint + 1) % track.getNumberOfCheckpoints();
+void Model::handleCheckpoints() {
+	if (currentCheckpoint < 0) {
+		for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
+			if (collidesWithCheckpoint(i)) {
+				currentCheckpoint = (i + 1) % track.getNumberOfCheckpoints();
+				++numberOfCrossedCheckpoints;
+			}
+		}
+	} else {
+		if (collidesWithCheckpoint(currentCheckpoint)) {
+			currentCheckpoint = (currentCheckpoint + 1) % track.getNumberOfCheckpoints();
 			++numberOfCrossedCheckpoints;
 		}
 	}
