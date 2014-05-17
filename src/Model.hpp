@@ -46,6 +46,7 @@ private:
 	void collideCar();
 	void handleCheckpoints();
 	void handleInput(float deltaSeconds);
+	bool collidesWithCheckpoint(std::size_t checkpointId);
 
 	Car car;
 	Track track;

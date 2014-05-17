@@ -48,13 +48,8 @@ sf::Vector2f Track::collideWithRay(const sf::Vector2f& origin, const sf::Vector2
 	return lineToCheck.end;
 }
 
-int Track::checkpointCollidesWith(const Line2f& line) const {
-	for ( std::size_t i = 0; i < checkpoints.size(); ++i ) {
-		if ( intersects(line, checkpoints[i]) ) {
-			return i;
-		}
-	}
-	return -1;
+bool Track::collidesWithCheckpoint(const Line2f& line, std::size_t checkpointId) const {
+	return intersects(line, checkpoints[checkpointId]);
 }
 
 std::size_t Track::getNumberOfCheckpoints() const {
