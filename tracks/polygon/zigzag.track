@@ -1,4 +1,5 @@
 type=polygon
+polygon-type=simple
 
 track-width=10.0
 

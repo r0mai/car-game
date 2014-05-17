@@ -14,7 +14,12 @@ class Track;
 
 class ITrackType {
 public:
-	virtual std::function<Track()> getTrackCreator(const boost::program_options::variables_map& variablesMap, const std::vector<std::string>& args) = 0;
+	virtual std::function<Track()> getTrackCreator(
+			const boost::program_options::variables_map& variablesMap,
+			const std::vector<std::string>& args) = 0;
+	virtual bool needsReparse(
+			const boost::program_options::variables_map& variablesMap,
+			const std::vector<std::string>& args) = 0;
 	virtual std::string getHelpString() = 0;
 	virtual std::string getArgumentName() = 0;
 	virtual boost::program_options::options_description getOptions() = 0;
