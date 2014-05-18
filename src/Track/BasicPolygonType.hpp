@@ -4,11 +4,11 @@
 #include "BasicArgumentParsedType.hpp"
 #include "IPolygonType.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 using BasicPolygonType = BasicArgumentParsedType<IPolygonType>;
 
-}
+}} /* namespace car::track */
 
 
 

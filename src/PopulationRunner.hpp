@@ -7,7 +7,7 @@
 #include <boost/asio/io_service.hpp>
 #include "Parameters.hpp"
 #include "GeneticPopulation.hpp"
-#include "Track.hpp"
+#include "Track/Track.hpp"
 #include "AIGameManager.hpp"
 #include "NeuralNetwork.hpp"
 
@@ -18,7 +18,7 @@ class Genome;
 class PopulationRunner {
 public:
 	PopulationRunner(const Parameters& parameters,
-		std::vector<std::function<Track()>> trackCreators,
+		std::vector<std::function<track::Track()>> trackCreators,
 		boost::asio::io_service& ioService);
 
 	PopulationRunner(const PopulationRunner&) = delete;

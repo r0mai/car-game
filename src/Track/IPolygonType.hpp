@@ -9,7 +9,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <SFML/Graphics.hpp>
 
-namespace car {
+namespace car { namespace track {
 
 class Track;
 
@@ -31,7 +31,7 @@ createPolygonTypeElement() {
 	return {std::move(argumentName), std::move(polygonType)};
 }
 
-}
+}} /* namespace car::track */
 
 
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <boost/program_options/options_description.hpp>
 
-namespace car {
+namespace car { namespace track {
 
 template <typename Interface>
 class BasicArgumentParsedType: public Interface {
@@ -24,7 +24,7 @@ private:
 	std::string argumentName;
 };
 
-} /* namespace car */
+}} /* namespace car::track */
 
 
 

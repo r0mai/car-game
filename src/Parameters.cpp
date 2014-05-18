@@ -9,7 +9,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "TrackArgumentParser.hpp"
+#include "Track/TrackArgumentParser.hpp"
 
 namespace car {
 
@@ -117,7 +117,7 @@ Parameters parseParameters(int argc, char **argv) {
 	po::notify(vm);
 
 	if (vm.count("help")) {
-		std::cout << commandLineDescription << "\n\n" << trackArgumentParser::getHelpString() << std::endl;
+		std::cout << commandLineDescription << "\n\n" << track::trackArgumentParser::getHelpString() << std::endl;
 		std::exit(0);
 	}
 

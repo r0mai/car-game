@@ -6,7 +6,7 @@
 #include <boost/optional.hpp>
 
 #include "Car.hpp"
-#include "Track.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 
@@ -15,12 +15,12 @@ public:
 	Model();
 
 	void setCar(const Car& newCar);
-	void setTrack(const Track& newTrack);
+	void setTrack(const track::Track& newTrack);
 
 	const Car& getCar() const;
 	Car& getCar();
-	const Track& getTrack() const;
-	Track& getTrack();
+	const track::Track& getTrack() const;
+	track::Track& getTrack();
 
 	void setRightPressed(bool isPressed);
 	void setLeftPressed(bool isPressed);
@@ -49,7 +49,7 @@ private:
 	bool collidesWithCheckpoint(std::size_t checkpointId);
 
 	Car car;
-	Track track;
+	track::Track track;
 
 	bool isCarCollided = false;
 	float currentTime = 0.f;

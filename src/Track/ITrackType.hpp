@@ -8,7 +8,7 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 
-namespace car {
+namespace car { namespace track {
 
 class Track;
 
@@ -35,7 +35,7 @@ createTrackTypeElement() {
 	return {std::move(argumentName), std::move(trackType)};
 }
 
-}
+}} /* namespace car::track */
 
 
 

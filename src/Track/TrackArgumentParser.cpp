@@ -18,7 +18,7 @@
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 namespace trackArgumentParser {
 
@@ -112,8 +112,17 @@ std::string getHelpString() {
 				trackType.second->getHelpString();
 	}
 
+	ss << "\nAllowed polygon types: " <<
+			algo::join(polygonTypes | boost::adaptors::map_keys, ", ") << ".\n";
+
+	for (const auto& polygonType: polygonTypes) {
+		ss << "\nFormat of polygon type " << polygonType.first << ":\n" <<
+				polygonType.second->getHelpString();
+	}
+
+
 	return ss.str();
 }
 
-}
-}
+} /* namespace trackArgumentParser */
+}} /* namespace car::track */

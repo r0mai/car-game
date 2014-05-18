@@ -2,9 +2,9 @@
 #include "RealTimeGameManager.hpp"
 #include "NeuralController.hpp"
 #include "Parameters.hpp"
-#include "Track.hpp"
 #include "ThreadPool.hpp"
-#include "TrackArgumentParser.hpp"
+#include "Track/Track.hpp"
+#include "Track/TrackArgumentParser.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -20,7 +20,8 @@ int main(int argc, char **argv) {
 
 	Parameters parameters = parseParameters(argc, argv);
 
-	std::vector<std::function<Track()>> trackCreators = trackArgumentParser::parseArguments(parameters.tracks);
+	std::vector<std::function<track::Track()>> trackCreators =
+			track::trackArgumentParser::parseArguments(parameters.tracks);
 
 	if (parameters.isTrainingAI) {
 		ThreadPool threadPool;
@@ -29,7 +30,7 @@ int main(int argc, char **argv) {
 		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
 		controller.run();
 	} else {
-		RealTimeGameManager manager{parameters, trackCreators[0]};
+		RealTimeGameManager manager{parameters, trackCreators[0], parameters.neuralNetworkFile};
 
 		manager.setFPSLimit(parameters.fpsLimit);
 

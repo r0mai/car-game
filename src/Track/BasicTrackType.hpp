@@ -4,11 +4,11 @@
 #include "BasicArgumentParsedType.hpp"
 #include "ITrackType.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 using BasicTrackType = BasicArgumentParsedType<ITrackType>;
 
-}
+}} /* namespace car::track */
 
 
 

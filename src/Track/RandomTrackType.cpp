@@ -6,7 +6,7 @@
 
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 RandomTrackType::RandomTrackType():PolygonBasedTrackType{"random"} {
 	optionsDescription.add_options()
@@ -52,7 +52,7 @@ std::size_t RandomTrackType::getMinimumNumberOfArgs() {
 }
 
 
-} /* namespace car */
+}} /* namespace car::track */
 
 
 

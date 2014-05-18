@@ -7,7 +7,7 @@
 #include "Line2.hpp"
 #include "Track.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 struct RandomTrackException: std::logic_error {
 	RandomTrackException(const std::string& what_arg):
@@ -42,5 +42,6 @@ private:
 	Track generateTrack(boost::random::mt19937& rng) const;
 };
 
-} /* namespace car */
+}} /* namespace car::track */
+
 #endif /* RANDOMTRACKGENERATOR_HPP_ */

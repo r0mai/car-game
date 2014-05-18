@@ -4,7 +4,7 @@
 #include "BasicTrackType.hpp"
 #include "IPolygonType.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 class PolygonBasedTrackType: public BasicTrackType {
 public:
@@ -20,7 +20,7 @@ private:
 	std::string polygonTypeName;
 };
 
-} /* namespace car */
+}} /* namespace car::track */
 
 
 

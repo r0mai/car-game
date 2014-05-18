@@ -14,7 +14,7 @@ void Model::setCar(const Car& newCar) {
 	car = newCar;
 }
 
-void Model::setTrack(const Track& newTrack) {
+void Model::setTrack(const track::Track& newTrack) {
 	track = newTrack;
 }
 
@@ -26,11 +26,11 @@ Car& Model::getCar() {
 	return car;
 }
 
-const Track& Model::getTrack() const {
+const track::Track& Model::getTrack() const {
 	return track;
 }
 
-Track& Model::getTrack() {
+track::Track& Model::getTrack() {
 	return track;
 }
 

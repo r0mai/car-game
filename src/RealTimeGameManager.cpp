@@ -15,12 +15,14 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
+RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::function<track::Track()> trackCreator,
+			bool startWithAi) :
 	GameManager(parameters, trackCreator),
 	window(sf::VideoMode(parameters.screenWidth, parameters.screenHeight), "car-game")
 {
 	using namespace boost::math::float_constants;
 
+	isAIControl = startWithAi;
 	font.loadFromFile(parameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);

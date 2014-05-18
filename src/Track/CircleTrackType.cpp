@@ -6,7 +6,7 @@
 
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 CircleTrackType::CircleTrackType():
 		BasicTrackType{"circle"} {
@@ -44,5 +44,5 @@ std::size_t CircleTrackType::getMinimumNumberOfArgs() {
 	return 0;
 }
 
-} /* namespace car */
+}} /* namespace car::track */
 

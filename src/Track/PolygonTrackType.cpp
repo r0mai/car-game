@@ -6,7 +6,7 @@
 
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 PolygonTrackType::PolygonTrackType():PolygonBasedTrackType{"polygon"} {
 	optionsDescription.add_options()
@@ -38,5 +38,5 @@ std::size_t PolygonTrackType::getMinimumNumberOfArgs() {
 }
 
 
-} /* namespace car */
+}} /* namespace car::track */
 

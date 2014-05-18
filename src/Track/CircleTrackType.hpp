@@ -4,7 +4,7 @@
 #include "BasicTrackType.hpp"
 #include "createCircleTrack.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 class CircleTrackType: public BasicTrackType {
 public:
@@ -21,7 +21,7 @@ private:
 	CircleTrackParams params;
 };
 
-} /* namespace car */
+}} /* namespace car::track */
 
 
 

@@ -12,7 +12,7 @@ SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track
 SCRIPTS_DIR = $(TUP_CWD)/scripts
 
-INCLUDE_DIRS += -I$(SOURCE_DIR) -I$(TRACK_DIR)
+INCLUDE_DIRS += -I$(SOURCE_DIR)
 
 LIBS += -lsfml-graphics
 LIBS += -lsfml-window

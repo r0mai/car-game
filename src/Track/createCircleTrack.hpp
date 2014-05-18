@@ -3,7 +3,7 @@
 
 #include "Track.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 struct CircleTrackParams {
 	float innerRadius = 50.f;
@@ -14,7 +14,7 @@ struct CircleTrackParams {
 
 Track createCircleTrack(const CircleTrackParams& params);
 
-}
+}} /* namespace car::track */
 
 
 
