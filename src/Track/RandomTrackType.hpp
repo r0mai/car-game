@@ -4,7 +4,7 @@
 #include "PolygonBasedTrackType.hpp"
 #include "RandomTrackGenerator.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 class RandomTrackType: public PolygonBasedTrackType {
 public:
@@ -20,7 +20,7 @@ private:
 	RandomTrackGenerator::Params generatorParams;
 };
 
-} /* namespace car */
+}} /* namespace car::track */
 
 
 #endif /* RANDOMTRACKTYPE_HPP_ */

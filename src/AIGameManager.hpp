@@ -7,7 +7,7 @@ namespace car {
 
 class AIGameManager : public GameManager {
 public:
-	AIGameManager(const Parameters& parameters, std::function<Track()> trackCreator);
+	AIGameManager(const Parameters& parameters, std::function<track::Track()> trackCreator);
 
 	void run();
 

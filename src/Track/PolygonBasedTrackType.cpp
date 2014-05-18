@@ -3,7 +3,7 @@
 
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 PolygonBasedTrackType::PolygonBasedTrackType(const std::string& argumentName):
 		BasicTrackType{argumentName}
@@ -33,5 +33,5 @@ boost::program_options::options_description PolygonBasedTrackType::getOptions() 
 }
 
 
-}
+}} /* namespace car::track */
 

@@ -5,7 +5,7 @@
 #include "mathUtil.hpp"
 #include "createPolygonTrack.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
@@ -144,5 +144,5 @@ void Track::check() const
 	}
 }
 
-}
+}} /* namespace car::track */
 

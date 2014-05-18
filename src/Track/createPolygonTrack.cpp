@@ -4,7 +4,7 @@
 #include <iostream>
 #include <boost/range/algorithm.hpp>
 
-namespace car {
+namespace car { namespace track {
 
 namespace {
 
@@ -105,4 +105,4 @@ Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::
 	return track;
 }
 
-} /* namespace car */
+}} /* namespace car::track */

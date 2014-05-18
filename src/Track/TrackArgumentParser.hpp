@@ -8,7 +8,7 @@
 #include "OptionParseError.hpp"
 #include "IPolygonType.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 class Track;
 
@@ -24,7 +24,7 @@ std::string getHelpString();
 
 }
 
-}
+}} /* namespace car::track */
 
 
 

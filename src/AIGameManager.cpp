@@ -11,7 +11,7 @@
 
 namespace car {
 
-AIGameManager::AIGameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
+AIGameManager::AIGameManager(const Parameters& parameters, std::function<track::Track()> trackCreator) :
 	GameManager(parameters, trackCreator) {}
 
 

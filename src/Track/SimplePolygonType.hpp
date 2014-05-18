@@ -3,7 +3,7 @@
 
 #include "BasicPolygonType.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 class SimplePolygonType: public BasicPolygonType {
 public:
@@ -19,7 +19,7 @@ private:
 	Params params;
 };
 
-}
+}} /* namespace car::track */
 
 
 

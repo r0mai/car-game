@@ -14,7 +14,7 @@ namespace car {
 class GameManager {
 public:
 
-	GameManager(const Parameters& parameters, std::function<Track()> trackCreator);
+	GameManager(const Parameters& parameters, std::function<track::Track()> trackCreator);
 
 	void advance();
 
@@ -44,7 +44,7 @@ protected:
 	bool isAIControl = true;
 
 	Model model;
-	Track track;
+	track::Track track;
 };
 
 }

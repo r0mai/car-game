@@ -1,7 +1,7 @@
 #include "createCircleTrack.hpp"
 #include <boost/math/constants/constants.hpp>
 
-namespace car {
+namespace car { namespace track {
 
 Track createCircleTrack(const CircleTrackParams& params) {
 	using namespace boost::math::float_constants;
@@ -37,6 +37,6 @@ Track createCircleTrack(const CircleTrackParams& params) {
 }
 
 
-}
+}} /* namespace car::track */
 
 

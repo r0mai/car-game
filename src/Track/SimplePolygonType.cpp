@@ -2,7 +2,7 @@
 #include "createPolygonTrack.hpp"
 #include "optionsUtil.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 SimplePolygonType::SimplePolygonType():BasicPolygonType{"simple"} {
 	optionsDescription.add_options()
@@ -23,7 +23,7 @@ std::string SimplePolygonType::getHelpString() {
 	return "";
 }
 
-}
+}} /* namespace car::track */
 
 
 

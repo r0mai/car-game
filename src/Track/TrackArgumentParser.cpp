@@ -18,7 +18,7 @@
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
 
-namespace car {
+namespace car { namespace track {
 
 namespace trackArgumentParser {
 
@@ -115,5 +115,5 @@ std::string getHelpString() {
 	return ss.str();
 }
 
-}
-}
+} /* namespace trackArgumentParser */
+}} /* namespace car::track */

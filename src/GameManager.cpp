@@ -6,7 +6,7 @@
 
 namespace car {
 
-GameManager::GameManager(const Parameters& parameters, std::function<Track()> trackCreator) :
+GameManager::GameManager(const Parameters& parameters, std::function<track::Track()> trackCreator) :
 	parameters(parameters),
 	track(trackCreator())
 {

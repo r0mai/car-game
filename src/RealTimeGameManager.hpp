@@ -10,11 +10,13 @@
 
 namespace car {
 
-class Track;
+namespace track {
+	class Track;
+}
 
 class RealTimeGameManager : public GameManager {
 public:
-	RealTimeGameManager(const Parameters& parameter, std::function<Track()> trackCreator);
+	RealTimeGameManager(const Parameters& parameter, std::function<track::Track()> trackCreator);
 
 	void run();
 

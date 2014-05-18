@@ -13,13 +13,15 @@
 
 namespace car {
 
+class Car;
+
+namespace track {
+
 struct TrackError: std::logic_error {
 	TrackError(const std::string& what_arg):
 		std::logic_error{what_arg}
 	{}
 };
-
-class Car;
 
 class Track {
 public:
@@ -51,6 +53,6 @@ private:
 	float startingDirection = 0.f;
 };
 
-}
+}} /* namespace car::track */
 
 #endif /* !TRACK_HPP */

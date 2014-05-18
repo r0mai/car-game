@@ -5,7 +5,7 @@
 #include "Track.hpp"
 #include "mathUtil.hpp"
 
-namespace car {
+namespace car { namespace track {
 
 namespace {
 
@@ -70,4 +70,4 @@ Track RandomTrackGenerator::generateTrack(boost::random::mt19937& rng) const {
 	return params.generator(points);
 }
 
-} /* namespace car */
+}} /* namespace car::track */
