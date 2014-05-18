@@ -9,7 +9,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "TrackArgumentParser.hpp"
+#include "Track/TrackArgumentParser.hpp"
 
 namespace car {
 

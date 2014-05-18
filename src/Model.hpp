@@ -6,7 +6,7 @@
 #include <boost/optional.hpp>
 
 #include "Car.hpp"
-#include "Track.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 

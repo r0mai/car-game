@@ -7,7 +7,7 @@
 #include <boost/asio/io_service.hpp>
 #include "Parameters.hpp"
 #include "GeneticPopulation.hpp"
-#include "Track.hpp"
+#include "Track/Track.hpp"
 #include "AIGameManager.hpp"
 #include "NeuralNetwork.hpp"
 

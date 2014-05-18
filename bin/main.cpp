@@ -2,9 +2,9 @@
 #include "RealTimeGameManager.hpp"
 #include "NeuralController.hpp"
 #include "Parameters.hpp"
-#include "Track.hpp"
 #include "ThreadPool.hpp"
-#include "TrackArgumentParser.hpp"
+#include "Track/Track.hpp"
+#include "Track/TrackArgumentParser.hpp"
 
 #include <cstdlib>
 #include <ctime>

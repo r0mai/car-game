@@ -1,5 +1,5 @@
 
 include_rules
-
+INCLUDE_DIRS += -I$(TRACK_DIR)
 : foreach *.cpp |> !cxx |>
 
