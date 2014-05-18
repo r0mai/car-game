@@ -112,6 +112,15 @@ std::string getHelpString() {
 				trackType.second->getHelpString();
 	}
 
+	ss << "\nAllowed polygon types: " <<
+			algo::join(polygonTypes | boost::adaptors::map_keys, ", ") << ".\n";
+
+	for (const auto& polygonType: polygonTypes) {
+		ss << "\nFormat of polygon type " << polygonType.first << ":\n" <<
+				polygonType.second->getHelpString();
+	}
+
+
 	return ss.str();
 }
 

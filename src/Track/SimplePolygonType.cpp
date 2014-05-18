@@ -20,7 +20,12 @@ std::function<Track(const std::vector<sf::Vector2f>)> SimplePolygonType::getTrac
 }
 
 std::string SimplePolygonType::getHelpString() {
-	return "";
+	std::ostringstream ss;
+	ss << "The track is created by shifting each line of the polygon track-width/2\n"
+			"in each direction, then normalizing at the edges. Checkpoints are\n"
+			"generated at each end of the lines and between the lines at regular\n"
+			"intervals.\n" << optionsDescription;
+	return ss.str();
 }
 
 }} /* namespace car::track */
