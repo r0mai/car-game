@@ -16,7 +16,8 @@ namespace track {
 
 class RealTimeGameManager : public GameManager {
 public:
-	RealTimeGameManager(const Parameters& parameter, std::function<track::Track()> trackCreator);
+	RealTimeGameManager(const Parameters& parameter, std::function<track::Track()> trackCreator,
+			bool startWithAi);
 
 	void run();
 

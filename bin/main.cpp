@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
 		controller.run();
 	} else {
-		RealTimeGameManager manager{parameters, trackCreators[0]};
+		RealTimeGameManager manager{parameters, trackCreators[0], parameters.neuralNetworkFile};
 
 		manager.setFPSLimit(parameters.fpsLimit);
 
