@@ -32,15 +32,19 @@ bool compareBestFitnesses(const PopulationRunner& lhs, const PopulationRunner& r
 
 static void printInfo(unsigned generation, float bestFitness, const std::vector<float>& populationAverages) {
 	std::stringstream ss;
-	ss << "Generation: " << generation << ", ";
-	ss << "Current best fitness: " << bestFitness << ", ";
+	ss << "Generation: " << generation << '\n';
+	ss << "Current best fitness: " << bestFitness << '\n';
 	ss << "Population averages: ";
 	for (float a : populationAverages) {
-		 ss << a << ", ";
+		ss << a << ", ";
 	}
+
 	if (isatty(1)) { //if stdout is a terminal
-		std::cout << "\033[2K\r";
-		std::cout << ss.str() << std::flush;
+		const auto tty_clear_down = "\033[J";
+		const auto tty_cursor_up = "\033[1A";
+		std::cout << tty_clear_down;
+		std::cout << ss.str();
+		std::cout << tty_cursor_up << tty_cursor_up << '\r' << std::flush;
 	} else {
 		std::cout << ss.str() << std::endl;
 	}
