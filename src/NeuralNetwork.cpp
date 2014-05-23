@@ -15,13 +15,13 @@ NeuralNetwork::NeuralNetwork(
 		unsigned outputNeuronCount) : inputNeuronCount(inputNeuronCount)
 {
 	if (hiddenLayerCount > 0) {
-		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount));
+		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount, true));
 		for (unsigned i = 0; i < hiddenLayerCount - 1; ++i) {
-			layers.push_back(NeuronLayer(hiddenLayerNeuronCount, hiddenLayerNeuronCount));
+			layers.push_back(NeuronLayer(hiddenLayerNeuronCount, hiddenLayerNeuronCount, true));
 		}
-		layers.push_back(NeuronLayer(outputNeuronCount, hiddenLayerNeuronCount));
+		layers.push_back(NeuronLayer(outputNeuronCount, hiddenLayerNeuronCount, false));
 	} else {
-		layers.push_back(NeuronLayer(outputNeuronCount, inputNeuronCount));
+		layers.push_back(NeuronLayer(outputNeuronCount, inputNeuronCount, false));
 	}
 }
 
@@ -77,22 +77,15 @@ unsigned NeuralNetwork::getOutputNeuronCount() const {
 	return layers.back().neurons.size();
 }
 
-Weights NeuralNetwork::evaluateInput(const Weights& input) const {
+Weights NeuralNetwork::evaluateInput(const Weights& input) {
 	assert(input.size() == inputNeuronCount);
 
 	Weights nextInput = input;
 	Weights output;
-	for (const NeuronLayer& layer : layers) {
+	for (NeuronLayer& layer : layers) {
 		output.clear();
-		for (const Neuron& neuron : layer.neurons) {
-			Weight netInput = 0;
-			assert(neuron.weights.size() - 1 == nextInput.size());
-			for (unsigned i = 0; i < nextInput.size(); ++i) {
-				netInput += neuron.weights[i]*nextInput[i];
-			}
-			netInput += -1.f*neuron.weights.back();
-			//sigmoid like function : x/(1+abs(x))
-			output.push_back(sigmoidApproximation(netInput));
+		for (Neuron& neuron : layer.neurons) {
+			output.push_back(neuron.run(nextInput));
 		}
 		nextInput = output; //we could move here probably
 	}

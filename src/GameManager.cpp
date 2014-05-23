@@ -47,6 +47,10 @@ void GameManager::handleInput() {
 		float brakeOutput = clamp((2.f/3.f)*outputs[1] + (1.f/3.f), 0.f, 1.f);
 		float turnLevelOutput = outputs[2];
 
+		if (std::isnan(throttleOutput)) {
+			std::cout << "Something is NaN: " << outputs[0] << std::endl;
+		}
+
 		car.setThrottle(throttleOutput);
 		car.setBrake(brakeOutput);
 		car.setTurnLevel(turnLevelOutput);
@@ -79,7 +83,6 @@ Weights GameManager::callNeuralNetwork() {
 	auto checkpointDirection = model.getCheckpointDirection();
 	inputs[rayCount+1] = sigmoidApproximation(checkpointDirection.x/checkpointDirectionDamping);
 	inputs[rayCount+2] = sigmoidApproximation(checkpointDirection.y/checkpointDirectionDamping);
-
 	return neuralNetwork.evaluateInput(inputs);
 }
 

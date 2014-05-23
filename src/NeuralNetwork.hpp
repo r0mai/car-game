@@ -33,7 +33,7 @@ public:
 	unsigned getInputNeuronCount() const;
 	unsigned getOutputNeuronCount() const;
 
-	Weights evaluateInput(const Weights& input) const;
+	Weights evaluateInput(const Weights& input);
 
 private:
 	unsigned inputNeuronCount;

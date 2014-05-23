@@ -17,15 +17,15 @@ BOOST_AUTO_TEST_CASE(getWeight_returns_correct_value_0_hidderlayer) {
 BOOST_AUTO_TEST_CASE(getWeight_returns_correct_value_1_hidderlayer) {
 	NeuralNetwork nn(1, 2, 2, 3);
 
-	BOOST_CHECK_EQUAL(nn.getWeights().size(), 3*2 + 3*3);
-	BOOST_CHECK_EQUAL(nn.getWeightCount(), 3*2 + 3*3);
+	BOOST_CHECK_EQUAL(nn.getWeights().size(), 17);
+	BOOST_CHECK_EQUAL(nn.getWeightCount(), 17);
 }
 
 BOOST_AUTO_TEST_CASE(getWeight_returns_correct_value_2_hidderlayer) {
 	NeuralNetwork nn(2, 2, 2, 3);
 
-	BOOST_CHECK_EQUAL(nn.getWeights().size(), 3*2 + 3*2 + 3*3);
-	BOOST_CHECK_EQUAL(nn.getWeightCount(), 3*2 + 3*2 + 3*3);
+	BOOST_CHECK_EQUAL(nn.getWeights().size(), 25);
+	BOOST_CHECK_EQUAL(nn.getWeightCount(), 25);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
