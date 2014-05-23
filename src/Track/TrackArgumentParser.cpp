@@ -14,6 +14,7 @@
 #include "CircleTrackType.hpp"
 #include "RandomTrackType.hpp"
 #include "SimplePolygonType.hpp"
+#include "PointAdderRandomPolygonGeneratorType.hpp"
 
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
@@ -24,14 +25,27 @@ namespace trackArgumentParser {
 
 namespace {
 
+template <typename Type>
+std::pair<std::string, std::shared_ptr<Type>>
+createTypeElement() {
+	auto element = std::make_shared<Type>();
+	auto argumentName = element->getArgumentName();
+	return {std::move(argumentName), std::move(element)};
+}
+
 const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
-	createTrackTypeElement<CircleTrackType>(),
-	createTrackTypeElement<PolygonTrackType>(),
-	createTrackTypeElement<RandomTrackType>(),
+	createTypeElement<CircleTrackType>(),
+	createTypeElement<PolygonTrackType>(),
+	createTypeElement<RandomTrackType>(),
 };
 
 const std::map<std::string, std::shared_ptr<IPolygonType>> polygonTypes{
-	createPolygonTypeElement<SimplePolygonType>(),
+	createTypeElement<SimplePolygonType>(),
+};
+
+const std::map<std::string, std::shared_ptr<IRandomPolygonGeneratorType>>
+		randomPolygonGeneratorTypes{
+	createTypeElement<PointAdderRandomPolygonGeneratorType>(),
 };
 
 
@@ -102,6 +116,16 @@ std::shared_ptr<IPolygonType> getPolygonType(const std::string& name) {
 	return it->second;
 }
 
+std::shared_ptr<IRandomPolygonGeneratorType>
+getRandomPolygonGeneratorType(const std::string& name) {
+	auto it = randomPolygonGeneratorTypes.find(name);
+	if (it == randomPolygonGeneratorTypes.end()) {
+		throw TrackCreatorError{"Invalid random polygon generator type: " + name};
+	}
+
+	return it->second;
+}
+
 std::string getHelpString() {
 	std::ostringstream ss;
 	ss << "Allowed track types: " <<
@@ -118,6 +142,15 @@ std::string getHelpString() {
 	for (const auto& polygonType: polygonTypes) {
 		ss << "\nFormat of polygon type " << polygonType.first << ":\n" <<
 				polygonType.second->getHelpString();
+	}
+
+	ss << "\nAllowed random polygon generator types: " <<
+			algo::join(randomPolygonGeneratorTypes | boost::adaptors::map_keys, ", ") << ".\n";
+
+	for (const auto& randomPolygonGeneratorType: randomPolygonGeneratorTypes) {
+		ss << "\nFormat of random polygon generator type " <<
+				randomPolygonGeneratorType.first << ":\n" <<
+				randomPolygonGeneratorType.second->getHelpString();
 	}
 
 

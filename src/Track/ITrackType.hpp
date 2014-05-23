@@ -27,14 +27,6 @@ public:
 	virtual ~ITrackType() {}
 };
 
-template <typename TrackType>
-std::pair<std::string, std::shared_ptr<ITrackType>>
-createTrackTypeElement() {
-	auto trackType = std::make_shared<TrackType>();
-	auto argumentName = trackType->getArgumentName();
-	return {std::move(argumentName), std::move(trackType)};
-}
-
 }} /* namespace car::track */
 
 

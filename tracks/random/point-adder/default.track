@@ -1,5 +1,6 @@
 type=random
 polygon-type=simple
+algorithm=point-adder
 
 track-width=5.0
 number-of-points=10

@@ -3,6 +3,7 @@
 
 #include "PolygonBasedTrackType.hpp"
 #include "RandomTrackGenerator.hpp"
+#include "IRandomPolygonGeneratorType.hpp"
 
 namespace car { namespace track {
 
@@ -13,10 +14,14 @@ public:
 			const boost::program_options::variables_map& variablesMap,
 			const std::vector<std::string>& args) override;
 	virtual std::string getHelpString() override;
+	virtual bool needsReparse(
+			const boost::program_options::variables_map& variablesMap,
+			const std::vector<std::string>& args) override;
+	virtual boost::program_options::options_description getOptions() override;
 	virtual std::size_t getMinimumNumberOfArgs() override;
 private:
-	std::string corner1 = "-60.0,-60.0";
-	std::string corner2 = "60.0,60.0";
+	std::string algorithm;
+	std::shared_ptr<IRandomPolygonGeneratorType> polygonGeneratorType;
 	RandomTrackGenerator::Params generatorParams;
 };
 
