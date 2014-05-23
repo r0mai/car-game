@@ -85,7 +85,7 @@ void PopulationRunner::runSimulation(Genome& genome, NeuralControllerData& data)
 }
 
 void PopulationRunner::updateBestFitness() {
-	float fitnessSum = 0.f;
+	fitnessSum = 0.f;
 	for (Genome& genome : population.getPopulation()) {
 		fitnessSum += genome.fitness;
 		if (genome.fitness > bestFitness) {
@@ -93,8 +93,6 @@ void PopulationRunner::updateBestFitness() {
 			bestGenome = &genome;
 		}
 	}
-	std::cout << "Population average = " <<
-			fitnessSum / population.getPopulation().size() << std::endl;
 }
 
 } /* namespace car */

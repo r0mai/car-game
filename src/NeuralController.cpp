@@ -1,4 +1,8 @@
+
+#include <unistd.h>
+
 #include <iostream>
+#include <sstream>
 #include <fstream>
 
 #include <boost/archive/text_iarchive.hpp>
@@ -26,6 +30,23 @@ bool compareBestFitnesses(const PopulationRunner& lhs, const PopulationRunner& r
 
 }
 
+static void printInfo(unsigned generation, float bestFitness, const std::vector<float>& populationAverages) {
+	std::stringstream ss;
+	ss << "Generation: " << generation << ", ";
+	ss << "Current best fitness: " << bestFitness << ", ";
+	ss << "Population averages: ";
+	for (float a : populationAverages) {
+		 ss << a << ", ";
+	}
+	if (isatty(1)) { //if stdout is a terminal
+		std::cout << "\033[2K\r";
+		std::cout << ss.str() << std::flush;
+	} else {
+		std::cout << ss.str() << std::endl;
+	}
+}
+
+
 void NeuralController::run() {
 
 	std::vector<PopulationRunner> populations;
@@ -40,17 +61,17 @@ void NeuralController::run() {
 
 	for (unsigned generation = 1; !parameters.generationLimit || generation <= *parameters.generationLimit;
 			++generation) {
-		std::cout << "Generation: " << generation << std::endl;
 
+		std::vector<float> populationAverages;
 		for (auto& populationData: populations) {
 			populationData.runIteration();
+			populationAverages.push_back(populationData.getAverageFitness());
 		}
 
 		auto& bestPopulation = *boost::max_element(populations, compareBestFitnesses);
 		savePopulation(bestPopulation.getPopulation());
 		if (bestPopulation.getBestFitness() > bestFitness) {
 			bestFitness = bestPopulation.getBestFitness();
-			std::cout << "New best fitness = " << bestFitness << std::endl;
 			assert(bestPopulation.getBestGenome() != nullptr);
 			saveNeuralNetwork(*bestPopulation.getBestGenome());
 		}
@@ -59,6 +80,7 @@ void NeuralController::run() {
 			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
 			populations.erase(worstPopulation);
 		}
+		printInfo(generation, bestFitness, populationAverages);
 	}
 }
 
