@@ -47,10 +47,6 @@ void GameManager::handleInput() {
 		float brakeOutput = clamp((2.f/3.f)*outputs[1] + (1.f/3.f), 0.f, 1.f);
 		float turnLevelOutput = outputs[2];
 
-		if (std::isnan(throttleOutput)) {
-			std::cout << "Something is NaN: " << outputs[0] << std::endl;
-		}
-
 		car.setThrottle(throttleOutput);
 		car.setBrake(brakeOutput);
 		car.setTurnLevel(turnLevelOutput);
