@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(consistent_conversion_from_coordinate_to_position_and_back)
 BOOST_AUTO_TEST_CASE(coordinateFromPosition_inside_range) {
 	std::size_t width = 3, height = 2;
 	MatrixAdaptor m{width, height};
-	std::size_t coordinate = 4;
+	std::size_t coordinate = m.size() - 1;
 	auto position = m.coordinateFromPosition(coordinate);
 	BOOST_CHECK_NE(position.x, MatrixAdaptor::outsideRange());
 	BOOST_CHECK_NE(position.y, MatrixAdaptor::outsideRange());
@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE(coordinateFromPosition_inside_range) {
 BOOST_AUTO_TEST_CASE(coordinateFromPosition_outside_range) {
 	std::size_t width = 3, height = 2;
 	MatrixAdaptor m{width, height};
-	std::size_t coordinate = 10;
+	std::size_t coordinate = m.size() + 1;
 	auto position = m.coordinateFromPosition(coordinate);
 	BOOST_CHECK_EQUAL(position.x, MatrixAdaptor::outsideRange());
 	BOOST_CHECK_EQUAL(position.y, MatrixAdaptor::outsideRange());
