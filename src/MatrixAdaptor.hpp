@@ -19,7 +19,7 @@ public:
 	std::size_t getWidth() const { return width; }
 	std::size_t getHeight() const { return height; }
 
-	std::size_t operator[](const MatrixCoordinate& p) {
+	std::size_t positionFromCoordinate(const MatrixCoordinate& p) {
 		if (p.x < width && p.y < height) {
 			return p.y * width + p.x;
 		} else {
