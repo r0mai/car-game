@@ -27,6 +27,14 @@ public:
 		}
 	}
 
+	MatrixCoordinate coordinateFromPosition(std::size_t position) {
+		if (position < width * height) {
+			return {position % width, position / width};
+		} else {
+			return {outsideRange(), outsideRange()};
+		}
+	}
+
 	static constexpr std::size_t outsideRange() {
 		return std::numeric_limits<std::size_t>::max();
 	};
