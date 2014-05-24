@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(point_inside_range) {
 	std::size_t width = 3, height = 5;
 	MatrixAdaptor m{width, height};
 	MatrixCoordinate p{1, 2};
-	BOOST_CHECK_LT(m.positionFromCoordinate(p), width*height);
+	BOOST_CHECK_LT(m.positionFromCoordinate(p), m.size());
 }
 
 BOOST_AUTO_TEST_CASE(too_big_x) {
@@ -40,8 +40,8 @@ BOOST_AUTO_TEST_CASE(coordinateFromPosition_inside_range) {
 	MatrixAdaptor m{width, height};
 	std::size_t coordinate = m.size() - 1;
 	auto position = m.coordinateFromPosition(coordinate);
-	BOOST_CHECK_NE(position.x, MatrixAdaptor::outsideRange());
-	BOOST_CHECK_NE(position.y, MatrixAdaptor::outsideRange());
+	BOOST_CHECK_LT(position.x, width);
+	BOOST_CHECK_LT(position.y, height);
 }
 
 BOOST_AUTO_TEST_CASE(coordinateFromPosition_outside_range) {
