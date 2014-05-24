@@ -88,7 +88,7 @@ Parameters parseParameters(int argc, char **argv) {
 				"For AI learning, use all tracks for learning. "
 				"For real time simulation, use only the first.\n"
 				"Format: filename[:arg1[:arg2[:...]]]")
-		("threads", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
+		("threads,j", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
 				"Number of threads used for population simulation.")
 		("starting-populations", po::value<unsigned>(&parameters.startingPopulations)->default_value(parameters.startingPopulations),
 				"The number of independent populations to start the learning with.")
