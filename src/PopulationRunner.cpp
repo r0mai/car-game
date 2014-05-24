@@ -15,7 +15,7 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 			population{parameters.populationSize,
 				NeuralNetwork::getWeightCountForNetwork(
 					parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					parameters.getInputNeuronCount(), parameters.outputNeuronCount)}
+					parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence)}
 {
 	controllerDatas.reserve(parameters.populationSize);
 	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
@@ -24,7 +24,8 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
 				parameters.getInputNeuronCount(),
-				parameters.outputNeuronCount
+				parameters.outputNeuronCount,
+				parameters.useRecurrence
 			},
 			{}
 		});

@@ -87,7 +87,7 @@ void NeuralController::run() {
 void NeuralController::saveNeuralNetwork(const Genome& genome) {
 	//TODO we are reconstucting the same network as above
 	NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-			parameters.getInputNeuronCount(), parameters.outputNeuronCount);
+			parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence);
 
 	network.setWeights(genome.weights);
 

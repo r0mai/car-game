@@ -12,16 +12,17 @@ NeuralNetwork::NeuralNetwork(
 		unsigned hiddenLayerCount,
 		unsigned hiddenLayerNeuronCount,
 		unsigned inputNeuronCount,
-		unsigned outputNeuronCount) : inputNeuronCount(inputNeuronCount)
+		unsigned outputNeuronCount,
+		bool useRecurrence) : inputNeuronCount(inputNeuronCount)
 {
 	if (hiddenLayerCount > 0) {
-		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount, true));
+		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount, useRecurrence));
 		for (unsigned i = 0; i < hiddenLayerCount - 1; ++i) {
-			layers.push_back(NeuronLayer(hiddenLayerNeuronCount, hiddenLayerNeuronCount, true));
+			layers.push_back(NeuronLayer(hiddenLayerNeuronCount, hiddenLayerNeuronCount, useRecurrence));
 		}
-		layers.push_back(NeuronLayer(outputNeuronCount, hiddenLayerNeuronCount, false));
+		layers.push_back(NeuronLayer(outputNeuronCount, hiddenLayerNeuronCount, useRecurrence));
 	} else {
-		layers.push_back(NeuronLayer(outputNeuronCount, inputNeuronCount, false));
+		layers.push_back(NeuronLayer(outputNeuronCount, inputNeuronCount, useRecurrence));
 	}
 }
 
@@ -29,10 +30,11 @@ unsigned NeuralNetwork::getWeightCountForNetwork(
 		unsigned hiddenLayerCount,
 		unsigned hiddenLayerNeuronCount,
 		unsigned inputNeuronCount,
-		unsigned outputNeuronCount)
+		unsigned outputNeuronCount,
+		bool useRecurrence)
 {
 	//we shouldn't create an object here, but this is quicker for now
-	return NeuralNetwork(hiddenLayerCount, hiddenLayerNeuronCount, inputNeuronCount, outputNeuronCount).getWeightCount();
+	return NeuralNetwork(hiddenLayerCount, hiddenLayerNeuronCount, inputNeuronCount, outputNeuronCount, useRecurrence).getWeightCount();
 }
 
 Weights NeuralNetwork::getWeights() const {

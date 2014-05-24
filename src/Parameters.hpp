@@ -30,6 +30,7 @@ struct Parameters {
 	unsigned populationSize = 60;
 	unsigned hiddenLayerCount = 2;
 	unsigned neuronPerHiddenLayer = 16;
+	bool useRecurrence = false;
 
 	unsigned rayCount = 14;
 	//1 for speed input and 2 for the direction of the next CP
