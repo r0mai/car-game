@@ -3,6 +3,7 @@
 #include "Line2.hpp"
 #include <iostream>
 #include <boost/range/algorithm.hpp>
+#include "TrackArgumentParser.hpp"
 
 namespace car { namespace track {
 
@@ -85,6 +86,10 @@ Track createTrack(std::vector<Line2f>& rightEdge, std::vector<Line2f>& leftEdge,
 }
 
 Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points) {
+	if (points.size() < 2) {
+		throw TrackCreatorError{"To few points"};
+	}
+
 	std::vector<Line2f> rightEdge;
 	std::vector<Line2f> leftEdge;
 	rightEdge.reserve(points.size());

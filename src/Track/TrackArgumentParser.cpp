@@ -15,6 +15,7 @@
 #include "RandomTrackType.hpp"
 #include "SimplePolygonType.hpp"
 #include "PointAdderRandomPolygonGeneratorType.hpp"
+#include "RandomWalkPolygonGeneratorType.hpp"
 
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
@@ -46,6 +47,7 @@ const std::map<std::string, std::shared_ptr<IPolygonType>> polygonTypes{
 const std::map<std::string, std::shared_ptr<IRandomPolygonGeneratorType>>
 		randomPolygonGeneratorTypes{
 	createTypeElement<PointAdderRandomPolygonGeneratorType>(),
+	createTypeElement<RandomWalkPolygonGeneratorType>(),
 };
 
 
