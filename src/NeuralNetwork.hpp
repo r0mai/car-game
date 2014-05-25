@@ -18,13 +18,15 @@ public:
 			unsigned hiddenLayerCount,
 			unsigned hiddenLayerNeuronCount,
 			unsigned inputNeuronCount,
-			unsigned outputNeuronCount);
+			unsigned outputNeuronCount,
+			bool useRecurrence);
 
 	static unsigned getWeightCountForNetwork(
 			unsigned hiddenLayerCount,
 			unsigned hiddenLayerNeuronCount,
 			unsigned inputNeuronCount,
-			unsigned outputNeuronCount);
+			unsigned outputNeuronCount,
+			bool useRecurrence);
 
 	Weights getWeights() const;
 	void setWeights(const Weights& weights);
@@ -33,7 +35,7 @@ public:
 	unsigned getInputNeuronCount() const;
 	unsigned getOutputNeuronCount() const;
 
-	Weights evaluateInput(const Weights& input) const;
+	Weights evaluateInput(const Weights& input);
 
 private:
 	unsigned inputNeuronCount;

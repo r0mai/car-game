@@ -39,7 +39,7 @@ protected:
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	NeuralNetwork neuralNetwork = NeuralNetwork(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-		   rayCount + parameters.extraInputNeuronCount, parameters.outputNeuronCount);
+		   parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence);
 
 	bool isAIControl = true;
 

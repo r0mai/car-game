@@ -29,6 +29,7 @@ public:
 	void runIteration();
 
 	float getBestFitness() const { return bestFitness; }
+	float getAverageFitness() const { return fitnessSum / population.getPopulation().size(); }
 	const Genome* getBestGenome() const { return bestGenome; }
 	const GeneticPopulation& getPopulation() const { return population; }
 	GeneticPopulation& getPopulation() { return population; }
@@ -42,7 +43,8 @@ private:
 
 	GeneticPopulation population;
 	std::vector<NeuralControllerData> controllerDatas;
-	float bestFitness = 0.f;
+	float fitnessSum = 0.f; // Updated by updateBestFitness
+	float bestFitness = 0.f; // Updated by updateBestFitness
 	const Genome* bestGenome = nullptr;
 
 	void runSimulation(Genome& genome, NeuralControllerData& data);

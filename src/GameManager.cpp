@@ -79,7 +79,6 @@ Weights GameManager::callNeuralNetwork() {
 	auto checkpointDirection = model.getCheckpointDirection();
 	inputs[rayCount+1] = sigmoidApproximation(checkpointDirection.x/checkpointDirectionDamping);
 	inputs[rayCount+2] = sigmoidApproximation(checkpointDirection.y/checkpointDirectionDamping);
-
 	return neuralNetwork.evaluateInput(inputs);
 }
 

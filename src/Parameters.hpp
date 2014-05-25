@@ -3,6 +3,7 @@
 #define PARAMETERS_HPP_
 
 #include <string>
+#include <thread>
 
 #include <boost/optional.hpp>
 
@@ -29,6 +30,7 @@ struct Parameters {
 	unsigned populationSize = 60;
 	unsigned hiddenLayerCount = 2;
 	unsigned neuronPerHiddenLayer = 16;
+	bool useRecurrence = false;
 
 	unsigned rayCount = 14;
 	//1 for speed input and 2 for the direction of the next CP
@@ -40,7 +42,7 @@ struct Parameters {
 	boost::optional<std::string> neuralNetworkFile;
 
 	//number of threads used for training
-	unsigned threadCount = 1;
+	unsigned threadCount = [] { auto j = std::thread::hardware_concurrency(); return j > 0 ? j : 1; }();
 
 	//place to save the file for the best AI trained
 	std::string bestAIFile = "best.car";

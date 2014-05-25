@@ -73,6 +73,7 @@ Parameters parseParameters(int argc, char **argv) {
 				"Number of hidden layers in the nerual network.")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
 				"Number of neurons/hidden layer in the nerual network.")
+		("use-recurrence", "Use recurrence for the neurons")
 		("ray-count", po::value<unsigned>(&parameters.rayCount)->default_value(parameters.rayCount),
 				"Number of rays providing information to the car.")
 		("neural-network", po::value<std::string>(),
@@ -88,7 +89,7 @@ Parameters parseParameters(int argc, char **argv) {
 				"For AI learning, use all tracks for learning. "
 				"For real time simulation, use only the first.\n"
 				"Format: filename[:arg1[:arg2[:...]]]")
-		("threads", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
+		("threads,j", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
 				"Number of threads used for population simulation.")
 		("starting-populations", po::value<unsigned>(&parameters.startingPopulations)->default_value(parameters.startingPopulations),
 				"The number of independent populations to start the learning with.")
@@ -122,6 +123,7 @@ Parameters parseParameters(int argc, char **argv) {
 	}
 
 	parameters.isTrainingAI = vm.count("ai");
+	parameters.useRecurrence = vm.count("use-recurrence");
 
 	// Boost only considers the first config value, but we want it the other way around
 	// so the config files are read in reverse order. Now the new values override the

@@ -15,7 +15,7 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 			population{parameters.populationSize,
 				NeuralNetwork::getWeightCountForNetwork(
 					parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					parameters.getInputNeuronCount(), parameters.outputNeuronCount)}
+					parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence)}
 {
 	controllerDatas.reserve(parameters.populationSize);
 	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
@@ -24,7 +24,8 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
 				parameters.getInputNeuronCount(),
-				parameters.outputNeuronCount
+				parameters.outputNeuronCount,
+				parameters.useRecurrence
 			},
 			{}
 		});
@@ -85,7 +86,7 @@ void PopulationRunner::runSimulation(Genome& genome, NeuralControllerData& data)
 }
 
 void PopulationRunner::updateBestFitness() {
-	float fitnessSum = 0.f;
+	fitnessSum = 0.f;
 	for (Genome& genome : population.getPopulation()) {
 		fitnessSum += genome.fitness;
 		if (genome.fitness > bestFitness) {
@@ -93,8 +94,6 @@ void PopulationRunner::updateBestFitness() {
 			bestGenome = &genome;
 		}
 	}
-	std::cout << "Population average = " <<
-			fitnessSum / population.getPopulation().size() << std::endl;
 }
 
 } /* namespace car */
