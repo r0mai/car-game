@@ -101,7 +101,7 @@ Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::
 	auto track = createTrack(rightEdge, leftEdge, checkpointDistance);
 
 	auto roadVector = points[1] - points[0];
-	track.setOrigin(points[0], std::atan2(roadVector.y, roadVector.x));
+	track.setOrigin((points[0] + points[1]) / 2.f, std::atan2(roadVector.y, roadVector.x));
 
 	for (const auto& line: additions) {
 		track.addLine(line);
