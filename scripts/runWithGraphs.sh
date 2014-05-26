@@ -2,7 +2,7 @@
 
 if which feedgnuplot 1>/dev/null; then
 	feedGnuPlotBinary=`which feedgnuplot`
-elif [[ -z "$FEEDGNUPLOTDIR"  ]]; then
+elif [[ ! -z "$FEEDGNUPLOTDIR" ]]; then
 	feedGnuPlotBinary="$FEEDGNUPLOTDIR/bin/feedgnuplot"
 else
 	echo 'Please set $FEEDGNUPLOTDIR to the directory of feedgnuplot, or put it in $PATH'
