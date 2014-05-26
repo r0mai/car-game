@@ -7,7 +7,12 @@ then
 	exit
 fi
 
-feedGnuPlotBinary=$FEEDGNUPLOTDIR/bin/feedgnuplot
+if [[ -x `which feedgnuplot` ]]
+then
+	feedGnuPlotBinary=`which feedgnuplot`
+else
+	feedGnuPlotBinary=$FEEDGNUPLOTDIR/bin/feedgnuplot
+fi
 
 lines=$(tput lines)
 columns=$(tput cols)
