@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Please export a directory in which feedgnuplot can be found.
-if [[ -z "$FEEDGNUPLOTDIR"  ]] &&  ! which feedgnuplot
+if [[ -z "$FEEDGNUPLOTDIR"  ]] &&  ! which feedgnuplot 2>/dev/null
 then
 	echo "Please set \$FEEDGNUPLOTDIR to the directory of feedgnuplot!."
 	exit
@@ -9,7 +9,7 @@ fi
 
 if [[ -x `which feedgnuplot` ]]
 then
-	feedGnuPlotBinary=`which feedgnuplot`
+	feedGnuPlotBinary=`which feedgnuplot 2>/dev/null`
 else
 	feedGnuPlotBinary=$FEEDGNUPLOTDIR/bin/feedgnuplot
 fi
