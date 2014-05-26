@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Please export a directory in which feedgnuplot can be found.
-if [[ -z "$FEEDGNUPLOTDIR" ]]
+if [[ -z "$FEEDGNUPLOTDIR"  ]] || `which feedgnuplot`
 then
 	echo "Please set \$FEEDGNUPLOTDIR to the directory of feedgnuplot!."
 	exit
@@ -12,8 +12,17 @@ feedGnuPlotBinary=$FEEDGNUPLOTDIR/bin/feedgnuplot
 lines=$(tput lines)
 columns=$(tput cols)
 
+# output format is:
+# Generation: 641, Current best fitness: 23749.9, Population averages: 5833.79,
 
+
+cleanup() {
+	tput rmcup
+}
+
+trap cleanup SIGINT
 
 tput smcup
-$@ | sed -u 's/.*ges: \(.*\),/\1/g' | $feedGnuPlotBinary --stream --terminal "dumb $columns,$lines" --lines --title 'Car-game' --xlen 100
-tput rmcup
+$@ | sed -u 's/Generation: \(.*\), Current best fitness: \(.*\), Population averages: \(.*\),/\1 \2 \3/g' | $feedGnuPlotBinary --stream --terminal "dumb $columns,$lines" --lines --domain --title 'Car-game' --xlen 100 --legend 0 'Best Fitness' --legend 1 'Population average'
+
+cleanup
