@@ -13,5 +13,7 @@ lines=$(tput lines)
 columns=$(tput cols)
 
 
-$@ | sed -u 's/.*ges: \(.*\),/\1/g' | $feedGnuPlotBinary --stream --terminal "dumb $columns,$lines" --lines
 
+tput smcup
+$@ | sed -u 's/.*ges: \(.*\),/\1/g' | $feedGnuPlotBinary --stream --terminal "dumb $columns,$lines" --lines --title 'Car-game' --xlen 100
+tput rmcup
