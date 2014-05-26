@@ -7,7 +7,7 @@ then
 	exit
 fi
 
-if [[ -x `which feedgnuplot` ]]
+if which feedgnuplot
 then
 	feedGnuPlotBinary=`which feedgnuplot 2>/dev/null`
 else
