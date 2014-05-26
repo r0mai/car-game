@@ -24,7 +24,7 @@ trap cleanup SIGINT
 tput smcup
 $@ | sed -u 's/Generation: \(.*\), Current best fitness: \(.*\), Population averages: \(.*\),/\1 \2 \3/g' | \
 	$feedGnuPlotBinary --stream --terminal "dumb $columns,$lines" \
-	--lines --domain --title 'Car-game' --xlen 100 --legend 0 'Best Fitness' --legend 1 'Population average'
+	--lines --domain --title 'Car-game' --legend 0 'Best Fitness' --legend 1 'Population average'
 
 cleanup
 
