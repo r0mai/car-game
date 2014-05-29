@@ -1,7 +1,6 @@
 
 #include "RealTimeGameManager.hpp"
 
-#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
