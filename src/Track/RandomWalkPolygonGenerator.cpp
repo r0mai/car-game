@@ -40,6 +40,29 @@ Graph& createSubgraph(Graph& graph, const Filter& filter) {
 	return subgraph;
 }
 
+template <typename Filter>
+class MatrixFilter {
+public:
+	MatrixFilter(const MatrixAdaptor& matrix, const Filter& filter):
+		matrix(matrix), filter(filter)
+	{}
+
+	template <typename Graph, typename Vertex>
+	bool operator()(const Graph& graph, const Vertex& vertex) const {
+		std::size_t index = boost::get(boost::vertex_index, graph, vertex);
+		auto coordinate = matrix.coordinateFromPosition(index);
+		return filter(coordinate);
+	}
+private:
+	MatrixAdaptor matrix;
+	Filter filter;
+};
+
+template <typename Filter>
+MatrixFilter<Filter> matrixFilter(const MatrixAdaptor& matrix, const Filter& filter) {
+	return MatrixFilter<Filter>{matrix, filter};
+}
+
 }
 
 std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
@@ -70,18 +93,16 @@ std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 	auto diagonalEnd = std::min(params.horizontalResolution, params.verticalResolution) - 1;
 	MatrixCoordinate beginCoordinate{0, 0};
 	MatrixCoordinate endCoordinate{diagonalEnd, diagonalEnd};
-	auto& subgraph1 = createSubgraph(mainGraph, [&](const Graph&, Vertex vertex) {
-			std::size_t index = boost::get(boost::vertex_index, mainGraph, vertex);
-			auto coordinate = matrix.coordinateFromPosition(index);
+	auto& subgraph1 = createSubgraph(mainGraph,
+		matrixFilter(matrix, [&](const MatrixCoordinate& coordinate) {
 			return coordinate == beginCoordinate || coordinate == endCoordinate ||
 					coordinate.x < coordinate.y;
-		});
-	auto& subgraph2 = createSubgraph(mainGraph, [&](const Graph&, Vertex vertex) {
-			std::size_t index = boost::get(boost::vertex_index, mainGraph, vertex);
-			auto coordinate = matrix.coordinateFromPosition(index);
+		}));
+	auto& subgraph2 = createSubgraph(mainGraph,
+		matrixFilter(matrix, [&](const MatrixCoordinate& coordinate) {
 			return coordinate == beginCoordinate || coordinate == endCoordinate ||
 					coordinate.x >= coordinate.y;
-		});
+		}));
 	std::vector<MatrixCoordinate> resultCoordinates;
 
 	boost::random_spanning_tree(subgraph1, rng,
