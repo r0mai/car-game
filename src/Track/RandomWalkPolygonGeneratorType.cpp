@@ -10,7 +10,7 @@ RandomWalkPolygonGeneratorType::RandomWalkPolygonGeneratorType():
 					paramWithDefaultValue(generatorParams.horizontalResolution),
 					"The horizontal size of the grid.")
 			("vertical-resolution",
-					paramWithDefaultValue(generatorParams.horizontalResolution),
+					paramWithDefaultValue(generatorParams.verticalResolution),
 					"The vertical size of the grid.")
 			("grid-size", paramWithDefaultValue(generatorParams.gridSize),
 					"The width and height of each cell in the grid.")

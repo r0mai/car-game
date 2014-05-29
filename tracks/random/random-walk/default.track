@@ -2,8 +2,8 @@ type=random
 polygon-type=simple
 algorithm=random-walk
 
-horizontal-resolution=15
-vertical-resolution=15
+horizontal-resolution=10
+vertical-resolution=10
 grid-size=15
 jitter=5
 
