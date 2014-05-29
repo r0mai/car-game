@@ -45,6 +45,7 @@ public:
 private:
 	void collideCar();
 	void handleCheckpoints();
+	bool findFirstCheckpoint();
 	void handleInput(float deltaSeconds);
 	bool collidesWithCheckpoint(std::size_t checkpointId);
 

@@ -133,13 +133,31 @@ bool Model::collidesWithCheckpoint(std::size_t checkpointId) {
 					checkpointId);
 }
 
+bool Model::findFirstCheckpoint() {
+	for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
+		if (collidesWithCheckpoint(i)) {
+			currentCheckpoint = (i + 1) % track.getNumberOfCheckpoints();
+			++numberOfCrossedCheckpoints;
+			return true;
+		}
+	}
+
+	Line2f finderLine{car.getPosition(),
+			track.collideWithRay(car.getPosition(), car.getOrientation(), 50.f)};
+	for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
+		if (track.collidesWithCheckpoint(finderLine, i)) {
+			currentCheckpoint = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Model::handleCheckpoints() {
 	if (currentCheckpoint < 0) {
-		for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
-			if (collidesWithCheckpoint(i)) {
-				currentCheckpoint = (i + 1) % track.getNumberOfCheckpoints();
-				++numberOfCrossedCheckpoints;
-			}
+		if (!findFirstCheckpoint()) {
+			return;
 		}
 	} else {
 		if (collidesWithCheckpoint(currentCheckpoint)) {
