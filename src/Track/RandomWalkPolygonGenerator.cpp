@@ -141,10 +141,6 @@ std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 	const float originY = -0.5f * params.verticalResolution * params.gridSize;
 	boost::random::uniform_real_distribution<float> jitterDistribution{
 			  -params.jitter, params.jitter};
-	std::cerr << "horizontal resolution = " << params.horizontalResolution <<
-		", vertical resolution = " << params.verticalResolution <<
-		", grid size = " << params.gridSize << ", jitter = " << params.jitter <<
-		", originX = " << originX << ", originY = " << originY << std::endl;
 	for (const auto& coordinate: resultCoordinates) {
 		float x = originX + coordinate.x * params.gridSize + jitterDistribution(rng);
 		float y = originY + coordinate.y * params.gridSize + jitterDistribution(rng);

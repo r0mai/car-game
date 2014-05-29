@@ -1,7 +1,6 @@
 #include "createPolygonTrack.hpp"
 #include "mathUtil.hpp"
 #include "Line2.hpp"
-#include <iostream>
 #include <boost/range/algorithm.hpp>
 #include "TrackArgumentParser.hpp"
 

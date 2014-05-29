@@ -5,7 +5,8 @@
 #include <map>
 #include <string>
 #include <stdexcept>
-#include <iostream>
+#include <istream>
+#include <ostream>
 
 #include <boost/variant.hpp>
 
