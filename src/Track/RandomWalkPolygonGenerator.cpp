@@ -63,6 +63,32 @@ MatrixFilter<Filter> matrixFilter(const MatrixAdaptor& matrix, const Filter& fil
 	return MatrixFilter<Filter>{matrix, filter};
 }
 
+template <typename Graph, class RandomGenerator>
+void randomWalk(Graph& subgraph, const MatrixAdaptor& matrix, RandomGenerator& rng,
+		const MatrixCoordinate& beginCoordinate, const MatrixCoordinate& endCoordinate,
+		std::vector<MatrixCoordinate>& resultCoordinates) {
+	boost::random_spanning_tree(subgraph, rng,
+			boost::vertex_index_map(boost::get(boost::vertex_index, subgraph))
+			.root_vertex(subgraph.global_to_local(
+					matrix.positionFromCoordinate(endCoordinate)))
+			.weight_map(boost::get(boost::edge_weight, subgraph))
+			.predecessor_map(boost::get(&VertexProperties::predecessor, subgraph))
+			.color_map(boost::get(&VertexProperties::color, subgraph))
+		);
+
+	for (Vertex position =
+				subgraph.global_to_local(matrix.positionFromCoordinate(beginCoordinate));
+			subgraph.local_to_global(position) !=
+				matrix.positionFromCoordinate(endCoordinate);
+			position = subgraph[position].predecessor) {
+		assert(position != boost::graph_traits<Graph>::null_vertex());
+		auto realPosition = subgraph.local_to_global(position);
+		auto coordinate = matrix.coordinateFromPosition(realPosition);
+		resultCoordinates.push_back(coordinate);
+	}
+
+}
+
 }
 
 std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
@@ -103,45 +129,11 @@ std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 			return coordinate == beginCoordinate || coordinate == endCoordinate ||
 					coordinate.x >= coordinate.y;
 		}));
+
 	std::vector<MatrixCoordinate> resultCoordinates;
 
-	boost::random_spanning_tree(subgraph1, rng,
-			boost::vertex_index_map(boost::get(boost::vertex_index, subgraph1))
-			.root_vertex(subgraph1.global_to_local(
-					matrix.positionFromCoordinate(endCoordinate)))
-			.weight_map(boost::get(boost::edge_weight, subgraph1))
-			.predecessor_map(boost::get(&VertexProperties::predecessor, subgraph1))
-			.color_map(boost::get(&VertexProperties::color, subgraph1))
-		);
-
-	for (Vertex position = subgraph1.global_to_local(matrix.positionFromCoordinate(beginCoordinate));
-			subgraph1.local_to_global(position) !=
-				matrix.positionFromCoordinate(endCoordinate);
-			position = subgraph1[position].predecessor) {
-		assert(position != boost::graph_traits<Graph>::null_vertex());
-		auto realPosition = subgraph1.local_to_global(position);
-		auto coordinate = matrix.coordinateFromPosition(realPosition);
-		resultCoordinates.push_back(coordinate);
-	}
-
-	boost::random_spanning_tree(subgraph2, rng,
-			boost::vertex_index_map(boost::get(boost::vertex_index, subgraph2))
-			.root_vertex(subgraph2.global_to_local(
-					matrix.positionFromCoordinate(beginCoordinate)))
-			.weight_map(boost::get(boost::edge_weight, subgraph2))
-			.predecessor_map(boost::get(&VertexProperties::predecessor, subgraph2))
-			.color_map(boost::get(&VertexProperties::color, subgraph2))
-		);
-
-	for (Vertex position = subgraph2.global_to_local(matrix.positionFromCoordinate(endCoordinate));
-			subgraph2.local_to_global(position) !=
-				matrix.positionFromCoordinate(beginCoordinate);
-			position = subgraph2[position].predecessor) {
-		assert(position != boost::graph_traits<Graph>::null_vertex());
-		auto realPosition = subgraph2.local_to_global(position);
-		auto coordinate = matrix.coordinateFromPosition(realPosition);
-		resultCoordinates.push_back(coordinate);
-	}
+	randomWalk(subgraph1, matrix, rng, beginCoordinate, endCoordinate, resultCoordinates);
+	randomWalk(subgraph2, matrix, rng, endCoordinate, beginCoordinate, resultCoordinates);
 
 	std::vector<sf::Vector2f> result;
 	result.reserve(resultCoordinates.size());
