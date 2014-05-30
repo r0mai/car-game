@@ -1,5 +1,6 @@
 #include "RandomWalkPolygonGeneratorType.hpp"
 #include "optionsUtil.hpp"
+#include "WilsonRandomWalk.hpp"
 
 namespace car { namespace track {
 
@@ -22,7 +23,7 @@ RandomWalkPolygonGeneratorType::RandomWalkPolygonGeneratorType():
 std::function<std::vector<sf::Vector2f>(RandomGenerator&)>
 RandomWalkPolygonGeneratorType::getPolygonCreator(
 		const boost::program_options::variables_map& /*variablesMap*/) {
-
+	generatorParams.randomWalkAlgorithm = std::make_shared<randomWalk::WilsonRandomWalk>();
 	return RandomWalkPolygonGenerator{generatorParams};
 }
 
