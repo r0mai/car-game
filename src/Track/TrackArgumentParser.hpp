@@ -5,17 +5,13 @@
 #include <string>
 #include <functional>
 #include "Parameters.hpp"
-#include "OptionParseError.hpp"
+#include "TrackCreatorError.hpp"
 #include "IPolygonType.hpp"
 #include "IRandomPolygonGeneratorType.hpp"
 
 namespace car { namespace track {
 
 class Track;
-
-struct TrackCreatorError: OptionParseError {
-	using OptionParseError::OptionParseError;
-};
 
 namespace trackArgumentParser {
 

@@ -15,6 +15,7 @@ public:
 	virtual std::string getHelpString() override;
 private:
 	RandomWalkPolygonGenerator::Params generatorParams;
+	std::string randomWalkAlgorithm;
 };
 
 }} /* namespace car::track */
