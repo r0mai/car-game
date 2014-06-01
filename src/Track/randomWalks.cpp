@@ -2,6 +2,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include "WilsonRandomWalk.hpp"
+#include "PrimRandomWalk.hpp"
 #include "TrackCreatorError.hpp"
 #include "LazyArgumentMap.hpp"
 
@@ -14,6 +15,7 @@ namespace {
 LAZY_ARGUMENT_MAP(BaseRandomWalk, randomWalkTypes) {
 	return {
 		{"wilson", std::make_shared<WilsonRandomWalk>()},
+		{"prim", std::make_shared<PrimRandomWalk>()},
 	};
 }
 
