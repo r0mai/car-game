@@ -1,7 +1,6 @@
 #ifndef SRC_TRACK_WILSONRANDOMWALK_HPP
 #define SRC_TRACK_WILSONRANDOMWALK_HPP
 
-#include <boost/graph/random_spanning_tree.hpp>
 #include "BaseRandomWalk.hpp"
 
 namespace car { namespace track {
