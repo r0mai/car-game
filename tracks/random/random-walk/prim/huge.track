@@ -1,0 +1,12 @@
+type=random
+polygon-type=simple
+algorithm=random-walk
+random-walk-algorithm=prim
+
+horizontal-resolution=30
+vertical-resolution=30
+grid-size=13
+jitter=5
+
+track-width=5.0
+

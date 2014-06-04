@@ -16,6 +16,7 @@
 #include "SimplePolygonType.hpp"
 #include "PointAdderRandomPolygonGeneratorType.hpp"
 #include "RandomWalkPolygonGeneratorType.hpp"
+#include "LazyArgumentMap.hpp"
 
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;
@@ -34,15 +35,19 @@ createTypeElement() {
 	return {std::move(argumentName), std::move(element)};
 }
 
-const std::map<std::string, std::shared_ptr<ITrackType>> trackTypes{
-	createTypeElement<CircleTrackType>(),
-	createTypeElement<PolygonTrackType>(),
-	createTypeElement<RandomTrackType>(),
-};
+LAZY_ARGUMENT_MAP(ITrackType, trackTypes) {
+	return {
+		createTypeElement<CircleTrackType>(),
+		createTypeElement<PolygonTrackType>(),
+		createTypeElement<RandomTrackType>(),
+	};
+}
 
-const std::map<std::string, std::shared_ptr<IPolygonType>> polygonTypes{
-	createTypeElement<SimplePolygonType>(),
-};
+LAZY_ARGUMENT_MAP(IPolygonType, polygonTypes) {
+	return {
+		createTypeElement<SimplePolygonType>(),
+	};
+}
 
 const std::map<std::string, std::shared_ptr<IRandomPolygonGeneratorType>>
 		randomPolygonGeneratorTypes{
@@ -72,8 +77,8 @@ std::function<Track()> parseArgument(const std::string& arg) {
 	po::store(parsedTypeOptions, typeVariablesMap);
 	po::notify(typeVariablesMap);
 
-	auto it = trackTypes.find(trackTypeName);
-	if (it == trackTypes.end()) {
+	auto it = trackTypes().find(trackTypeName);
+	if (it == trackTypes().end()) {
 		throw TrackCreatorError{"Invalid track type: " + trackTypeName};
 	}
 
@@ -110,8 +115,8 @@ parseArguments(const std::vector<std::string>& args) {
 }
 
 std::shared_ptr<IPolygonType> getPolygonType(const std::string& name) {
-	auto it = polygonTypes.find(name);
-	if (it == polygonTypes.end()) {
+	auto it = polygonTypes().find(name);
+	if (it == polygonTypes().end()) {
 		throw TrackCreatorError{"Invalid polygon type: " + name};
 	}
 
@@ -131,17 +136,17 @@ getRandomPolygonGeneratorType(const std::string& name) {
 std::string getHelpString() {
 	std::ostringstream ss;
 	ss << "Allowed track types: " <<
-			algo::join(trackTypes | boost::adaptors::map_keys, ", ") << ".\n";
+			algo::join(trackTypes() | boost::adaptors::map_keys, ", ") << ".\n";
 
-	for (const auto& trackType: trackTypes) {
+	for (const auto& trackType: trackTypes()) {
 		ss << "\nFormat of track type " << trackType.first << ":\n" <<
 				trackType.second->getHelpString();
 	}
 
 	ss << "\nAllowed polygon types: " <<
-			algo::join(polygonTypes | boost::adaptors::map_keys, ", ") << ".\n";
+			algo::join(polygonTypes() | boost::adaptors::map_keys, ", ") << ".\n";
 
-	for (const auto& polygonType: polygonTypes) {
+	for (const auto& polygonType: polygonTypes()) {
 		ss << "\nFormat of polygon type " << polygonType.first << ":\n" <<
 				polygonType.second->getHelpString();
 	}

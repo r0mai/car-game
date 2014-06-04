@@ -1,30 +1,14 @@
 #include "RandomWalkPolygonGenerator.hpp"
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/properties.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/random_spanning_tree.hpp>
-#include <boost/graph/subgraph.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 #include "MatrixAdaptor.hpp"
+#include "RandomWalkGraph.hpp"
 
 namespace car { namespace track {
 
+using namespace randomWalk;
+
 namespace {
-
-struct VertexProperties {
-	boost::default_color_type color = boost::white_color;
-	std::size_t predecessor = 0;
-};
-
-using BaseGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS,
-	  VertexProperties,
-	  boost::property<boost::edge_index_t, std::size_t,
-	  boost::property<boost::edge_weight_t, double>>>;
-using Graph = boost::subgraph<BaseGraph>;
-using Vertex = boost::graph_traits<BaseGraph>::vertex_descriptor;
-using VertexIterator = boost::graph_traits<BaseGraph>::vertex_iterator;
-using Edge = boost::graph_traits<BaseGraph>::edge_descriptor;
 
 template <typename Filter>
 Graph& createSubgraph(Graph& graph, const Filter& filter) {
@@ -63,18 +47,13 @@ MatrixFilter<Filter> matrixFilter(const MatrixAdaptor& matrix, const Filter& fil
 	return MatrixFilter<Filter>{matrix, filter};
 }
 
-template <typename Graph, class RandomGenerator>
-void randomWalk(Graph& subgraph, const MatrixAdaptor& matrix, RandomGenerator& rng,
+template <typename Graph>
+void createPath(Graph& subgraph, const MatrixAdaptor& matrix,
 		const MatrixCoordinate& beginCoordinate, const MatrixCoordinate& endCoordinate,
+		BaseRandomWalk& randomWalkAlgorithm,
 		std::vector<MatrixCoordinate>& resultCoordinates) {
-	boost::random_spanning_tree(subgraph, rng,
-			boost::vertex_index_map(boost::get(boost::vertex_index, subgraph))
-			.root_vertex(subgraph.global_to_local(
-					matrix.positionFromCoordinate(endCoordinate)))
-			.weight_map(boost::get(boost::edge_weight, subgraph))
-			.predecessor_map(boost::get(&VertexProperties::predecessor, subgraph))
-			.color_map(boost::get(&VertexProperties::color, subgraph))
-		);
+	randomWalkAlgorithm.randomWalk(subgraph, subgraph.global_to_local(
+					matrix.positionFromCoordinate(endCoordinate)));
 
 	for (Vertex position =
 				subgraph.global_to_local(matrix.positionFromCoordinate(beginCoordinate));
@@ -93,6 +72,7 @@ void randomWalk(Graph& subgraph, const MatrixAdaptor& matrix, RandomGenerator& r
 
 std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 		RandomGenerator& rng) const {
+	params.randomWalkAlgorithm->setRandomGenerator(rng);
 	MatrixAdaptor matrix{params.horizontalResolution, params.verticalResolution};
 
 	std::vector<Edge> edges;
@@ -108,7 +88,7 @@ std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 				if (neighbourPosition != MatrixAdaptor::outsideRange()) {
 					auto edge = boost::add_edge(vertex, neighbourPosition, mainGraph).first;
 					boost::put(boost::edge_index, mainGraph, edge, edgeIndex++);
-					boost::put(boost::edge_weight, mainGraph, edge, 1.f);
+					params.randomWalkAlgorithm->initializeEdge(mainGraph, edge);
 				}
 			};
 
@@ -132,8 +112,10 @@ std::vector<sf::Vector2f> RandomWalkPolygonGenerator::operator()(
 
 	std::vector<MatrixCoordinate> resultCoordinates;
 
-	randomWalk(subgraph1, matrix, rng, beginCoordinate, endCoordinate, resultCoordinates);
-	randomWalk(subgraph2, matrix, rng, endCoordinate, beginCoordinate, resultCoordinates);
+	createPath(subgraph1, matrix, beginCoordinate, endCoordinate,
+			*params.randomWalkAlgorithm, resultCoordinates);
+	createPath(subgraph2, matrix, endCoordinate, beginCoordinate,
+			*params.randomWalkAlgorithm, resultCoordinates);
 
 	std::vector<sf::Vector2f> result;
 	result.reserve(resultCoordinates.size());

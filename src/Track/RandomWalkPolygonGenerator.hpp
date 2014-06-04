@@ -4,6 +4,7 @@
 #include "RandomGenerator.hpp"
 #include "RandomTrackException.hpp"
 #include "Line2.hpp"
+#include "BaseRandomWalk.hpp"
 
 namespace car { namespace track {
 
@@ -14,6 +15,7 @@ public:
 		std::size_t verticalResolution = 10;
 		float gridSize = 20.f;
 		float jitter = 2.f;
+		std::shared_ptr<randomWalk::BaseRandomWalk> randomWalkAlgorithm;
 	};
 
 	RandomWalkPolygonGenerator(const Params& params): params(params)

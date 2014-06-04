@@ -1,6 +1,7 @@
 type=random
 polygon-type=simple
 algorithm=random-walk
+random-walk-algorithm=wilson
 
 horizontal-resolution=15
 vertical-resolution=15

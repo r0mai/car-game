@@ -1,5 +1,8 @@
 #include "RandomWalkPolygonGeneratorType.hpp"
 #include "optionsUtil.hpp"
+#include "randomWalks.hpp"
+
+namespace po = boost::program_options;
 
 namespace car { namespace track {
 
@@ -16,13 +19,17 @@ RandomWalkPolygonGeneratorType::RandomWalkPolygonGeneratorType():
 					"The width and height of each cell in the grid.")
 			("jitter", paramWithDefaultValue(generatorParams.jitter),
 					"The maximum amount to shift each point in the grid in each direction.")
+			("random-walk-algorithm", po::value(&randomWalkAlgorithm)->required(),
+					("The algorithm used to traverse the graph. " +
+					randomWalk::getHelpString()).c_str())
+
 			;
 }
 
 std::function<std::vector<sf::Vector2f>(RandomGenerator&)>
 RandomWalkPolygonGeneratorType::getPolygonCreator(
 		const boost::program_options::variables_map& /*variablesMap*/) {
-
+	generatorParams.randomWalkAlgorithm = randomWalk::getRandomWalk(randomWalkAlgorithm);
 	return RandomWalkPolygonGenerator{generatorParams};
 }
 
