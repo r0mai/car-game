@@ -23,6 +23,7 @@ using Graph = boost::subgraph<BaseGraph>;
 using Vertex = boost::graph_traits<BaseGraph>::vertex_descriptor;
 using VertexIterator = boost::graph_traits<BaseGraph>::vertex_iterator;
 using Edge = boost::graph_traits<BaseGraph>::edge_descriptor;
+using EdgeIterator = boost::graph_traits<BaseGraph>::edge_iterator;
 
 } // namespace randomWalk
 

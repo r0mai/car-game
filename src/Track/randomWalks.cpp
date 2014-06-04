@@ -3,6 +3,7 @@
 #include <boost/range/adaptor/map.hpp>
 #include "WilsonRandomWalk.hpp"
 #include "PrimRandomWalk.hpp"
+#include "DfsRandomWalk.hpp"
 #include "TrackCreatorError.hpp"
 #include "LazyArgumentMap.hpp"
 
@@ -16,6 +17,7 @@ LAZY_ARGUMENT_MAP(BaseRandomWalk, randomWalkTypes) {
 	return {
 		{"wilson", std::make_shared<WilsonRandomWalk>()},
 		{"prim", std::make_shared<PrimRandomWalk>()},
+		{"dfs", std::make_shared<DfsRandomWalk>()},
 	};
 }
 
