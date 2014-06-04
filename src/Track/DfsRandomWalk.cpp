@@ -10,10 +10,7 @@ namespace car { namespace track {
 
 namespace randomWalk {
 
-void DfsRandomWalk::initializeEdge(Graph& graph, const Edge& edge) {
-	boost::random::uniform_real_distribution<float> distribution{0.f, 1.f};
-	float weight = distribution(*rng);
-	boost::put(boost::edge_weight, graph, edge, weight);
+void DfsRandomWalk::initializeEdge(Graph&, const Edge&) {
 }
 
 void DfsRandomWalk::randomWalk(Graph& graph, const Vertex& rootVertex) {
