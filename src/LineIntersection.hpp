@@ -87,8 +87,21 @@ private:
 							(line2.end.y - line2.start.y)*(line2.start.x -line1.start.x);
 	}
 
+	static T getCoincidenceByCoordinate(const Line2<T>& line1, const Line2<T>& line2,
+			T sf::Vector2<T>::*c, T t2) {
+		T t1v1 = (line2.start.*c * (1 - t2) + line2.end.*c * t2 - line1.start.*c);
+		T v1 = (line1.end.*c - line1.start.*c);
+		if (v1 > 0) {
+			if (t1v1 < 0) t1v1 = 0;
+			if (t1v1 > v1) t1v1 = v1;
+		} else {
+			if (t1v1 > 0) t1v1 = 0;
+			if (t1v1 < v1) t1v1 = v1;
+		}
+		return line1.start.*c + t1v1;
+	}
+
 	void calculateCoincidence(const Line2<T>& line1, const Line2<T>& line2) {
-		Line2<T> result;
 
 		// now check if the two segments are disjunct
 		if (line1.start.x>line2.start.x && line1.end.x>line2.start.x && line1.start.x>line2.end.x && line1.end.x>line2.end.x)
@@ -101,31 +114,11 @@ private:
 			return;
 		// else the lines are overlapping to some extent
 		else {
-			// find the points which are not contributing to the
-			// common part
-			if ((line2.start.x>=line1.start.x && line2.start.x>=line1.end.x && line2.start.x>=line2.end.x) ||
-					(line2.start.y>=line1.start.y && line2.start.y>=line1.end.y && line2.start.y>=line2.end.y))
-				result.end=line2.start;
-			else if ((line2.end.x>=line1.start.x && line2.end.x>=line1.end.x && line2.end.x>=line2.start.x) ||
-					(line2.end.y>=line1.start.y && line2.end.y>=line1.end.y && line2.end.y>=line2.start.y))
-				result.end=line2.end;
-			else if ((line1.start.x>=line2.start.x && line1.start.x>=line1.end.x && line1.start.x>=line2.end.x) ||
-					(line1.start.y>=line2.start.y && line1.start.y>=line1.end.y && line1.start.y>=line2.end.y))
-				result.end=line1.start;
-			else
-				result.end=line1.end;
-
-			if (result.end != line2.start && ((line2.start.x<=line1.start.x && line2.start.x<=line1.end.x && line2.start.x<=line2.end.x) ||
-					(line2.start.y<=line1.start.y && line2.start.y<=line1.end.y && line2.start.y<=line2.end.y)))
-				result.start=line2.start;
-			else if (result.end != line2.end && ((line2.end.x<=line1.start.x && line2.end.x<=line1.end.x && line2.end.x<=line2.start.x) ||
-					(line2.end.y<=line1.start.y && line2.end.y<=line1.end.y && line2.end.y<=line2.start.y)))
-				result.start=line2.end;
-			else if (result.end != line1.start && ((line1.start.x<=line2.start.x && line1.start.x<=line1.end.x && line1.start.x<=line2.end.x)
-					|| (line1.start.y<=line2.start.y && line1.start.y<=line1.end.y && line1.start.y<=line2.end.y)))
-				result.start=line1.start;
-			else
-				result.start=line1.end;
+			Line2<T> result;
+			result.start.x = getCoincidenceByCoordinate(line1, line2, &sf::Vector2<T>::x, 0);
+			result.start.y = getCoincidenceByCoordinate(line1, line2, &sf::Vector2<T>::y, 0);
+			result.end.x = getCoincidenceByCoordinate(line1, line2, &sf::Vector2<T>::x, 1);
+			result.end.y = getCoincidenceByCoordinate(line1, line2, &sf::Vector2<T>::y, 1);
 
 			overlapLine = result;
 		}
