@@ -182,6 +182,20 @@ struct CoincidentLinesFixture {
 		BOOST_CHECK_CLOSE(overlapLine->end.x, p3.x, 0.001);
 		BOOST_CHECK_CLOSE(overlapLine->end.y, p3.y, 0.001);
 	}
+
+	void checkTouch(const Line2f& line1, const Line2f& line2) {
+		LineIntersection<float> intersection{line1, line2};
+
+		BOOST_CHECK(intersection.isParallel());
+		BOOST_CHECK(intersection.isCoincident());
+		BOOST_CHECK(!intersection.getIntersectionPoint());
+		auto overlapLine = intersection.getOverlapLine();
+		BOOST_REQUIRE(overlapLine);
+		BOOST_CHECK_CLOSE(overlapLine->start.x, p2.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->start.y, p2.y, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.x, p2.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.y, p2.y, 0.001);
+	}
 };
 
 BOOST_FIXTURE_TEST_CASE(coincident_not_overlapping_lines,
@@ -242,9 +256,29 @@ BOOST_FIXTURE_TEST_CASE(coincident_lines_line1_within_line2_reversed,
 	checkIntersection({p2, p3}, {p4, p1});
 }
 
-BOOST_FIXTURE_TEST_CASE(coincident_lines_line2_reversed__within_line1,
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line2_reversed_within_line1,
 		CoincidentLinesFixture) {
 	checkIntersection({p1, p4}, {p3, p2});
+}
+
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_end_line2_start,
+		CoincidentLinesFixture) {
+	checkTouch({p1, p2}, {p2, p3});
+}
+
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_start_line2_start,
+		CoincidentLinesFixture) {
+	checkTouch({p2, p1}, {p2, p3});
+}
+
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_end_line2_end,
+		CoincidentLinesFixture) {
+	checkTouch({p1, p2}, {p3, p2});
+}
+
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_start_line2_end,
+		CoincidentLinesFixture) {
+	checkTouch({p2, p1}, {p3, p2});
 }
 
 BOOST_AUTO_TEST_SUITE_END()
