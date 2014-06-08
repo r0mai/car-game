@@ -159,9 +159,49 @@ BOOST_AUTO_TEST_CASE(parallel_lines) {
 	BOOST_CHECK(!intersection.getIntersectionPoint());
 }
 
-BOOST_AUTO_TEST_CASE(coincident_not_overlapping_lines) {
-	Line2f line1{{1.f, 0.f}, {2.f, 2.f}};
-	Line2f line2{{3.f, 4.f}, {4.f, 6.f}};
+struct CoincidentLinesFixture {
+	sf::Vector2f p1{1.f, 0.f};
+	sf::Vector2f p2{3.f, 4.f};
+	sf::Vector2f p3{4.f, 6.f};
+	sf::Vector2f p4{5.f, 8.f};
+
+	void checkIntersection(const Line2f& line1, const Line2f& line2) {
+		LineIntersection<float> intersection{line1, line2};
+
+		BOOST_CHECK(intersection.isParallel());
+		BOOST_CHECK(intersection.isCoincident());
+		BOOST_CHECK(!intersection.getIntersectionPoint());
+		auto overlapLine = intersection.getOverlapLine();
+		BOOST_REQUIRE(overlapLine);
+		// We don't care which point is the start and which is the end.
+		if (overlapLine->start.x > overlapLine->end.x) {
+			std::swap(overlapLine->start, overlapLine->end);
+		}
+		BOOST_CHECK_CLOSE(overlapLine->start.x, p2.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->start.y, p2.y, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.x, p3.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.y, p3.y, 0.001);
+	}
+
+	void checkTouch(const Line2f& line1, const Line2f& line2) {
+		LineIntersection<float> intersection{line1, line2};
+
+		BOOST_CHECK(intersection.isParallel());
+		BOOST_CHECK(intersection.isCoincident());
+		BOOST_CHECK(!intersection.getIntersectionPoint());
+		auto overlapLine = intersection.getOverlapLine();
+		BOOST_REQUIRE(overlapLine);
+		BOOST_CHECK_CLOSE(overlapLine->start.x, p2.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->start.y, p2.y, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.x, p2.x, 0.001);
+		BOOST_CHECK_CLOSE(overlapLine->end.y, p2.y, 0.001);
+	}
+};
+
+BOOST_FIXTURE_TEST_CASE(coincident_not_overlapping_lines,
+		CoincidentLinesFixture) {
+	Line2f line1{p1, p2};
+	Line2f line2{p3, p4};
 
 	LineIntersection<float> intersection{line1, line2};
 
@@ -171,258 +211,75 @@ BOOST_AUTO_TEST_CASE(coincident_not_overlapping_lines) {
 	BOOST_CHECK(!intersection.getIntersectionPoint());
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_start) {
-	Line2f line1{{1.f, 0.f}, {4.f, 6.f}};
-	Line2f line2{{3.f, 4.f}, {5.f, 8.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_start,
+		CoincidentLinesFixture) {
+	checkIntersection({p1, p3}, {p2, p4});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_end) {
-	Line2f line1{{1.f, 0.f}, {4.f, 6.f}};
-	Line2f line2{{5.f, 8.f}, {3.f, 4.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_end,
+		CoincidentLinesFixture) {
+	checkIntersection({p1, p3}, {p4, p2});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_start) {
-	Line2f line1{{4.f, 6.f}, {1.f, 0.f}};
-	Line2f line2{{3.f, 4.f}, {5.f, 8.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_start,
+		CoincidentLinesFixture) {
+	checkIntersection({p3, p1}, {p2, p4});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_end) {
-	Line2f line1{{4.f, 6.f}, {1.f, 0.f}};
-	Line2f line2{{5.f, 8.f}, {3.f, 4.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_end,
+		CoincidentLinesFixture) {
+	checkIntersection({p3, p1}, {p4, p2});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_line1_within_line2) {
-	Line2f line1{{3.f, 4.f}, {4.f, 6.f}};
-	Line2f line2{{1.f, 0.f}, {5.f, 8.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line1_within_line2,
+		CoincidentLinesFixture) {
+	checkIntersection({p2, p3}, {p1, p4});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_line2_within_line1) {
-	Line2f line1{{1.f, 0.f}, {5.f, 8.f}};
-	Line2f line2{{3.f, 4.f}, {4.f, 6.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line2_within_line1,
+		CoincidentLinesFixture) {
+	checkIntersection({p1, p4}, {p2, p3});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_start_reverse) {
-	Line2f line1{{1.f, 0.f}, {4.f, 6.f}};
-	Line2f line2{{5.f, 8.f}, {3.f, 4.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line1_reversed_within_line2,
+		CoincidentLinesFixture) {
+	checkIntersection({p3, p2}, {p1, p4});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_end_line2_end_reverse) {
-	Line2f line1{{1.f, 0.f}, {4.f, 6.f}};
-	Line2f line2{{3.f, 4.f}, {5.f, 8.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line2_within_line1_reversed,
+		CoincidentLinesFixture) {
+	checkIntersection({p4, p1}, {p2, p3});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_start_reverse) {
-	Line2f line1{{4.f, 6.f}, {1.f, 0.f}};
-	Line2f line2{{5.f, 8.f}, {3.f, 4.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line1_within_line2_reversed,
+		CoincidentLinesFixture) {
+	checkIntersection({p2, p3}, {p4, p1});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_overlap_at_line1_start_line2_end_reverse) {
-	Line2f line1{{4.f, 6.f}, {1.f, 0.f}};
-	Line2f line2{{3.f, 4.f}, {5.f, 8.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_line2_reversed_within_line1,
+		CoincidentLinesFixture) {
+	checkIntersection({p1, p4}, {p3, p2});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_line1_within_line2_reverse) {
-	Line2f line1{{3.f, 4.f}, {4.f, 6.f}};
-	Line2f line2{{5.f, 8.f}, {1.f, 0.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_end_line2_start,
+		CoincidentLinesFixture) {
+	checkTouch({p1, p2}, {p2, p3});
 }
 
-BOOST_AUTO_TEST_CASE(coincident_lines_line2_within_line1_reverse) {
-	Line2f line1{{1.f, 0.f}, {5.f, 8.f}};
-	Line2f line2{{4.f, 6.f}, {3.f, 4.f}};
-
-	LineIntersection<float> intersection{line1, line2};
-
-	BOOST_CHECK(intersection.isParallel());
-	BOOST_CHECK(intersection.isCoincident());
-	BOOST_CHECK(!intersection.getIntersectionPoint());
-	auto overlapLine = intersection.getOverlapLine();
-	BOOST_REQUIRE(overlapLine);
-	// We don't care which point is the start and which is the end.
-	if (overlapLine->start.x > overlapLine->end.x) {
-		std::swap(overlapLine->start, overlapLine->end);
-	}
-	BOOST_CHECK_CLOSE(overlapLine->start.x, 3, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->start.y, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.x, 4, 0.001);
-	BOOST_CHECK_CLOSE(overlapLine->end.y, 6, 0.001);
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_start_line2_start,
+		CoincidentLinesFixture) {
+	checkTouch({p2, p1}, {p2, p3});
 }
 
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_end_line2_end,
+		CoincidentLinesFixture) {
+	checkTouch({p1, p2}, {p3, p2});
+}
+
+BOOST_FIXTURE_TEST_CASE(coincident_lines_touch_at_line1_start_line2_end,
+		CoincidentLinesFixture) {
+	checkTouch({p2, p1}, {p3, p2});
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
