@@ -49,5 +49,14 @@ BOOST_AUTO_TEST_CASE(duplicate_values) {
 	BOOST_CHECK_THROW(prefixMapUnderTest.insert(key, 745), DuplicateValue);
 }
 
+BOOST_AUTO_TEST_CASE(initializer_list) {
+	int value = 1;
+	int something = 3;
+	PrefixMap<int> prefixMapUnderTest{{"value", value}, {"something", something}};
+	BOOST_CHECK_EQUAL(prefixMapUnderTest.at("v"), value);
+	BOOST_CHECK_EQUAL(prefixMapUnderTest.at("s"), something);
+	BOOST_CHECK_THROW(prefixMapUnderTest.at("x"), ValueNotFound);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -26,6 +26,7 @@ struct DuplicateValue: PrefixMapError {
 };
 
 
+// TODO make it more std container compliant
 template <typename Char, typename Value>
 class BasicPrefixMap {
 	struct Node {
@@ -33,14 +34,27 @@ class BasicPrefixMap {
 		std::map<Char, Node> children;
 
 		Node() = default;
-		Node(const Node&) = delete;
-		Node& operator=(const Node&) = delete;
+		Node(const Node&) = default;
+		Node& operator=(const Node&) = default;
 		Node(Node&&) = default;
 		Node& operator=(Node&&) = default;
 	};
 
 public:
 	using string = std::basic_string<Char>;
+	using value_type = std::pair<string, Value>;
+
+	BasicPrefixMap() = default;
+	BasicPrefixMap(const BasicPrefixMap&) = default;
+	BasicPrefixMap& operator=(const BasicPrefixMap&) = default;
+	BasicPrefixMap(BasicPrefixMap&&) = default;
+	BasicPrefixMap& operator=(BasicPrefixMap&&) = default;
+
+	BasicPrefixMap(std::initializer_list<value_type> values) {
+		for (auto& value: values) {
+			insert(value.first, std::move(value.second));
+		}
+	}
 
 	void insert(const string& key, const Value& value) {
 		insertNode(key).value = value;
