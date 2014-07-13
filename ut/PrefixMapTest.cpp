@@ -89,6 +89,28 @@ BOOST_AUTO_TEST_CASE(iterator_insert) {
 	BOOST_CHECK_THROW(prefixMapUnderTest.at("x"), ValueNotFound);
 }
 
+BOOST_AUTO_TEST_CASE(iterate) {
+	std::vector<std::pair<std::string, int>> v{
+		{"value1", 12}, {"value2", 42}, {"something", 333}, {"value3", 0}};
+	PrefixMap<int> prefixMapUnderTest(v.begin(), v.end());
+	std::sort(v.begin(), v.end());
+
+	auto it = prefixMapUnderTest.cbegin();
+	BOOST_CHECK_EQUAL(it->first, v[0].first);
+	BOOST_CHECK_EQUAL(it->second, v[0].second);
+	++it;
+	BOOST_CHECK_EQUAL(it->first, v[1].first);
+	BOOST_CHECK_EQUAL(it->second, v[1].second);
+	++it;
+	BOOST_CHECK_EQUAL(it->first, v[2].first);
+	BOOST_CHECK_EQUAL(it->second, v[2].second);
+	++it;
+	BOOST_CHECK_EQUAL(it->first, v[3].first);
+	BOOST_CHECK_EQUAL(it->second, v[3].second);
+	++it;
+	BOOST_CHECK(it == prefixMapUnderTest.cend());
+}
+
 struct TestValue {
 	bool copied = false;
 	bool moved = false;

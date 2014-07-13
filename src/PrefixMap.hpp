@@ -3,9 +3,12 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <deque>
 #include <stdexcept>
 #include <memory>
+
+#include <iostream>
 
 namespace car {
 
@@ -49,6 +52,88 @@ private:
 	};
 
 public:
+
+	friend class const_iterator;
+	class const_iterator {
+		friend class BasicPrefixMap;
+	public:
+
+		const_iterator() = default;
+		const_iterator(const const_iterator&) = default;
+		const_iterator(const_iterator&&) = default;
+
+		const_iterator& operator=(const const_iterator&) = default;
+		const_iterator& operator=(const_iterator&&) = default;
+
+		bool operator==(const const_iterator& other) {
+			return stack == other.stack;
+		}
+		bool operator!=(const const_iterator& other) {
+			return !(*this == other);
+		}
+
+		const value_type& operator*() {
+			return *stack.back().first->second.value;
+		}
+		const value_type* operator->() {
+			return stack.back().first->second.value.get();
+		}
+
+		const_iterator& operator++() {
+			findNextValue();
+			return *this;
+		}
+		const_iterator operator++(int) {
+			auto old = *this;
+			++*this;
+			return old;
+		}
+
+	private:
+
+		using StackIterator = typename Node::MapType::const_iterator;
+
+		std::vector<std::pair<StackIterator, StackIterator>> stack;
+
+		const_iterator(const Node& node) {
+			stack.push_back({node.children.begin(), node.children.end()});
+			findNextValue();
+		}
+
+		void findNextValue() {
+			while (!stack.empty()) {
+				for (int i = 0; i < stack.size(); ++i)
+				std::cerr << " ";
+
+				auto& top = stack.back();
+				auto& it = top.first;
+				const auto& end = top.second;
+
+				++it;
+
+				if (it == end) {
+					std::cerr << "node end ";
+					stack.pop_back();
+				} else {
+					std::cerr << "node " << it->first << " ";
+					const auto& node = it->second;
+
+					if (!node.children.empty()) {
+						std::cerr << "has children ";
+						assert(!node.value);
+						stack.push_back({node.children.begin(), node.children.end()});
+					}
+
+					if (node.value) {
+						std::cerr << "is leaf" << std::endl;
+						return;
+					}
+				}
+				std::cerr << std::endl;
+			}
+		}
+
+	};
 
 	BasicPrefixMap() = default;
 	BasicPrefixMap(const BasicPrefixMap&) = default;
@@ -98,6 +183,14 @@ public:
 	Value& at(const string& key) {
 		return const_cast<Node&>(findNode(key)).value->second;
 	}
+
+	const_iterator cbegin() const {
+		return const_iterator{rootNode};
+	}
+	const_iterator cend() const {
+		return const_iterator{};
+	}
+
 private:
 	Node rootNode;
 
