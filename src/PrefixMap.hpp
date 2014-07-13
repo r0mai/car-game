@@ -5,7 +5,7 @@
 #include <map>
 #include <deque>
 #include <stdexcept>
-#include <boost/optional.hpp>
+#include <memory>
 
 namespace car {
 
@@ -29,9 +29,17 @@ struct DuplicateValue: PrefixMapError {
 // TODO make it more std container compliant
 template <typename Char, typename Value>
 class BasicPrefixMap {
+public:
+
+	using string = std::basic_string<Char>;
+	using value_type = std::pair<const string, Value>;
+
+private:
+
 	struct Node {
-		boost::optional<Value> value;
-		std::map<Char, Node> children;
+		std::unique_ptr<value_type> value;
+		using MapType = std::map<Char, Node>;
+		MapType children;
 
 		Node() = default;
 		Node(const Node&) = default;
@@ -41,8 +49,6 @@ class BasicPrefixMap {
 	};
 
 public:
-	using string = std::basic_string<Char>;
-	using value_type = std::pair<string, Value>;
 
 	BasicPrefixMap() = default;
 	BasicPrefixMap(const BasicPrefixMap&) = default;
@@ -51,23 +57,46 @@ public:
 	BasicPrefixMap& operator=(BasicPrefixMap&&) = default;
 
 	BasicPrefixMap(std::initializer_list<value_type> values) {
-		for (auto& value: values) {
-			insert(value.first, std::move(value.second));
+		insert(values);
+	}
+
+	template <typename InputIterator>
+	BasicPrefixMap(InputIterator begin, InputIterator end) {
+		insert(begin, end);
+	}
+
+	template <typename... Args>
+	void emplace(Args&&... args) {
+		std::unique_ptr<value_type> value{new value_type{std::forward<Args>(args)...}};
+		insertNode(value->first).value = std::move(value);
+	}
+
+	void insert(const value_type& value) {
+		emplace(value);
+	}
+
+	template <typename P, typename = typename std::enable_if<
+		std::is_constructible<value_type, P&&>::value>::type>
+	void insert(P&& value) {
+		emplace(std::forward<P>(value));
+	}
+
+	template <typename InputIterator>
+	void insert(InputIterator begin, InputIterator end) {
+		for (; begin != end; ++begin) {
+			insert(*begin);
 		}
 	}
 
-	void insert(const string& key, const Value& value) {
-		insertNode(key).value = value;
-	}
-	void insert(const string& key, Value&& value) {
-		insertNode(key).value = std::move(value);
+	void insert(std::initializer_list<value_type> values) {
+		insert(values.begin(), values.end());
 	}
 
 	const Value& at(const string& key) const {
-		return *findNode(key).value;
+		return findNode(key).value->second;
 	}
 	Value& at(const string& key) {
-		return *const_cast<Node&>(findNode(key)).value;
+		return const_cast<Node&>(findNode(key)).value->second;
 	}
 private:
 	Node rootNode;
