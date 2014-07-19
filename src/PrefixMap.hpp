@@ -8,8 +8,6 @@
 #include <stdexcept>
 #include <memory>
 
-#include <iostream>
-
 namespace car {
 
 struct PrefixMapError: std::logic_error {
@@ -110,33 +108,25 @@ public:
 
 		void findNextValue() {
 			while (!stack.empty()) {
-				for (std::size_t i = 0; i < stack.size(); ++i)
-					std::cerr << " ";
-
 				auto& top = stack.back();
 				auto& it = top.first;
 				const auto& end = top.second;
 
 				if (it == end) {
-					std::cerr << "node end ";
 					stack.pop_back();
 					increment();
 				} else {
-					std::cerr << "node " << it->first << " ";
 					const auto& node = it->second;
 
 					if (!node.children.empty()) {
-						std::cerr << "has children ";
 						assert(!node.value);
 						stack.push_back({node.children.begin(), node.children.end()});
 					}
 
 					if (node.value) {
-						std::cerr << "is leaf" << std::endl;
 						return;
 					}
 				}
-				std::cerr << std::endl;
 			}
 		}
 
