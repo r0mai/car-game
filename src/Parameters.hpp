@@ -15,6 +15,10 @@ enum class PanMode {
 	enabled, disabled, automatic
 };
 
+enum class GameType {
+	realtime, learning
+};
+
 struct Parameters {
 
 	std::string projectRootPath;

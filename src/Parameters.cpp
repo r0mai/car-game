@@ -7,6 +7,7 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "Track/TrackArgumentParser.hpp"
@@ -20,8 +21,24 @@ LAZY_ARGUMENT_PREFIX_MAP(PanMode, panModes) {
 	return {
 		STRING_ENUM_VALUE(PanMode, automatic),
 		STRING_ENUM_VALUE(PanMode, enabled),
-		STRING_ENUM_VALUE(PanMode, disabled)
+		STRING_ENUM_VALUE(PanMode, disabled),
 	};
+}
+
+LAZY_ARGUMENT_PREFIX_MAP(GameType, gameTypes) {
+	return {
+		STRING_ENUM_VALUE(GameType, realtime),
+		STRING_ENUM_VALUE(GameType, learning),
+	};
+}
+
+template <typename T>
+std::string argumentValues(const PrefixMap<T>& map) {
+	std::vector<std::string> values;
+	for (const auto& value: map) {
+		values.push_back(value.first);
+	}
+	return boost::algorithm::join(values, ", ");
 }
 
 std::istream& operator>>(std::istream& is, PanMode& panMode) {
@@ -37,6 +54,22 @@ std::ostream& operator<<(std::ostream& os, PanMode panMode) {
 	case PanMode::automatic: return os << "auto";
 	case PanMode::enabled: return os << "enabled";
 	case PanMode::disabled: return os << "disabled";
+	default: return os;
+	}
+}
+
+std::istream& operator>>(std::istream& is, GameType& gameType) {
+	std::string s;
+	is >> s;
+	gameType = gameTypes().at(s);
+
+	return is;
+}
+
+std::ostream& operator<<(std::ostream& os, GameType panMode) {
+	switch (panMode) {
+	case GameType::realtime: return os << "realtime";
+	case GameType::learning: return os << "learning";
 	default: return os;
 	}
 }
@@ -64,6 +97,9 @@ Parameters parseParameters(int argc, char **argv) {
 	;
 
 	po::options_description configFileDescription("Command-line and config file options");
+
+	std::string panModeDescription = "Set panning mode. Allowed values: " + argumentValues(panModes());
+
 	configFileDescription.add_options()
 		("seed", po::value<int>(),
 				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
@@ -108,7 +144,7 @@ Parameters parseParameters(int argc, char **argv) {
 		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
 				"Screen height for rendering.")
 		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
-				"Set panning mode. Allowed values: enabled, disabled, auto")
+				panModeDescription.c_str())
 	;
 
 	po::options_description commandLineDescription("Options");

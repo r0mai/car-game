@@ -132,6 +132,50 @@ public:
 
 	};
 
+	class iterator {
+
+		friend class BasicPrefixMap;
+
+	public:
+
+		iterator() = default;
+		iterator(const iterator&) = default;
+		iterator(iterator&&) = default;
+
+		iterator& operator=(const iterator&) = default;
+		iterator& operator=(iterator&&) = default;
+
+		bool operator==(const iterator& other) {
+			return it == other.it;
+		}
+		bool operator!=(const iterator& other) {
+			return !(*this == other);
+		}
+
+		value_type& operator*() {
+			return const_cast<value_type&>(*it);
+		}
+		const value_type* operator->() {
+			return &const_cast<value_type&>(*it);
+		}
+
+		iterator& operator++() {
+			++it;
+			return *this;
+		}
+		iterator operator++(int) {
+			auto old = *this;
+			++*this;
+			return old;
+		}
+
+		iterator(const Node& node):it{node} {
+		}
+
+	private:
+		const_iterator it;
+	};
+
 	BasicPrefixMap() = default;
 	BasicPrefixMap(const BasicPrefixMap&) = default;
 	BasicPrefixMap& operator=(const BasicPrefixMap&) = default;
@@ -187,6 +231,19 @@ public:
 	const_iterator cend() const {
 		return const_iterator{};
 	}
+	iterator begin() {
+		return iterator{rootNode};
+	}
+	iterator end() {
+		return iterator{};
+	}
+	const_iterator begin() const {
+		return const_iterator{rootNode};
+	}
+	const_iterator end() const {
+		return const_iterator{};
+	}
+
 
 private:
 	Node rootNode;
