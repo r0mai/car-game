@@ -10,22 +10,24 @@
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "Track/TrackArgumentParser.hpp"
+#include "PrefixMap.hpp"
+#include "LazyArgumentMap.hpp"
+#include "StringEnumValue.hpp"
 
 namespace car {
+
+LAZY_ARGUMENT_PREFIX_MAP(PanMode, panModes) {
+	return {
+		STRING_ENUM_VALUE(PanMode, automatic),
+		STRING_ENUM_VALUE(PanMode, enabled),
+		STRING_ENUM_VALUE(PanMode, disabled)
+	};
+}
 
 std::istream& operator>>(std::istream& is, PanMode& panMode) {
 	std::string s;
 	is >> s;
-
-	if (boost::algorithm::iequals(s, std::string{"auto"})) {
-		panMode = PanMode::automatic;
-	} else if (boost::algorithm::iequals(s, std::string{"enabled"})) {
-		panMode = PanMode::enabled;
-	} else if (boost::algorithm::iequals(s, std::string{"disabled"})) {
-		panMode = PanMode::disabled;
-	} else {
-		throw std::logic_error{"Invalid pan mode"};
-	}
+	panMode = panModes().at(s);
 
 	return is;
 }
