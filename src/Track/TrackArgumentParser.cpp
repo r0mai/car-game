@@ -35,7 +35,7 @@ createTypeElement() {
 	return {std::move(argumentName), std::move(element)};
 }
 
-LAZY_ARGUMENT_MAP(ITrackType, trackTypes) {
+LAZY_ARGUMENT_MAP(std::shared_ptr<ITrackType>, trackTypes) {
 	return {
 		createTypeElement<CircleTrackType>(),
 		createTypeElement<PolygonTrackType>(),
@@ -43,7 +43,7 @@ LAZY_ARGUMENT_MAP(ITrackType, trackTypes) {
 	};
 }
 
-LAZY_ARGUMENT_MAP(IPolygonType, polygonTypes) {
+LAZY_ARGUMENT_MAP(std::shared_ptr<IPolygonType>, polygonTypes) {
 	return {
 		createTypeElement<SimplePolygonType>(),
 	};

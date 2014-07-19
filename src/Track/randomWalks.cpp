@@ -13,7 +13,7 @@ namespace randomWalk {
 
 namespace {
 
-LAZY_ARGUMENT_MAP(BaseRandomWalk, randomWalkTypes) {
+LAZY_ARGUMENT_MAP(std::shared_ptr<BaseRandomWalk>, randomWalkTypes) {
 	return {
 		{"wilson", std::make_shared<WilsonRandomWalk>()},
 		{"prim", std::make_shared<PrimRandomWalk>()},
