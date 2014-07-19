@@ -91,23 +91,25 @@ BOOST_AUTO_TEST_CASE(iterator_insert) {
 
 BOOST_AUTO_TEST_CASE(iterate) {
 	std::vector<std::pair<std::string, int>> v{
-		{"value1", 12}, {"value2", 42}, {"something", 333}, {"value3", 0}};
+		{"value1", 12}, {"value2", 42}, {"something", 333}, {"value3", 0},
+		{"soooo", 235}};
 	PrefixMap<int> prefixMapUnderTest(v.begin(), v.end());
 	std::sort(v.begin(), v.end());
 
 	auto it = prefixMapUnderTest.cbegin();
-	BOOST_CHECK_EQUAL(it->first, v[0].first);
-	BOOST_CHECK_EQUAL(it->second, v[0].second);
-	++it;
-	BOOST_CHECK_EQUAL(it->first, v[1].first);
-	BOOST_CHECK_EQUAL(it->second, v[1].second);
-	++it;
-	BOOST_CHECK_EQUAL(it->first, v[2].first);
-	BOOST_CHECK_EQUAL(it->second, v[2].second);
-	++it;
-	BOOST_CHECK_EQUAL(it->first, v[3].first);
-	BOOST_CHECK_EQUAL(it->second, v[3].second);
-	++it;
+
+	for (const auto& value: v) {
+		BOOST_CHECK_EQUAL(it->first, value.first);
+		BOOST_CHECK_EQUAL(it->second, value.second);
+		++it;
+	}
+	BOOST_CHECK(it == prefixMapUnderTest.cend());
+}
+
+BOOST_AUTO_TEST_CASE(iterate_empty) {
+	PrefixMap<int> prefixMapUnderTest;
+
+	auto it = prefixMapUnderTest.cbegin();
 	BOOST_CHECK(it == prefixMapUnderTest.cend());
 }
 

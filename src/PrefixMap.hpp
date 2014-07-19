@@ -80,6 +80,7 @@ public:
 		}
 
 		const_iterator& operator++() {
+			increment();
 			findNextValue();
 			return *this;
 		}
@@ -100,20 +101,26 @@ public:
 			findNextValue();
 		}
 
+		void increment() {
+			if (!stack.empty()) {
+				assert(stack.back().first != stack.back().second);
+				++stack.back().first;
+			}
+		}
+
 		void findNextValue() {
 			while (!stack.empty()) {
-				for (int i = 0; i < stack.size(); ++i)
-				std::cerr << " ";
+				for (std::size_t i = 0; i < stack.size(); ++i)
+					std::cerr << " ";
 
 				auto& top = stack.back();
 				auto& it = top.first;
 				const auto& end = top.second;
 
-				++it;
-
 				if (it == end) {
 					std::cerr << "node end ";
 					stack.pop_back();
+					increment();
 				} else {
 					std::cerr << "node " << it->first << " ";
 					const auto& node = it->second;
