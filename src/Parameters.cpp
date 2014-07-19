@@ -87,10 +87,13 @@ Parameters parseParameters(int argc, char **argv) {
 
 	std::vector<std::string> configFiles;
 
+	std::string gameTypeDescription = "The type of game to run. Allowed values: " + argumentValues(gameTypes());
+
 	po::options_description commandLineOnlyDescription("Command-line only options");
 	commandLineOnlyDescription.add_options()
 		("help", "produce help message")
-		("ai", "train AI")
+		("game-type", po::value(&parameters.gameType)->default_value(parameters.gameType),
+				gameTypeDescription.c_str())
 		("config", po::value<std::vector<std::string>>(&configFiles),
 				"Reads configuration parameters from the specified file. It can be given multiple times. "
 				"Newer values override older ones.")
@@ -160,7 +163,6 @@ Parameters parseParameters(int argc, char **argv) {
 		std::exit(0);
 	}
 
-	parameters.isTrainingAI = vm.count("ai");
 	parameters.useRecurrence = vm.count("use-recurrence");
 
 	// Boost only considers the first config value, but we want it the other way around

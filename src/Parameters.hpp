@@ -24,7 +24,7 @@ struct Parameters {
 	std::string projectRootPath;
 
 	//running mode
-	bool isTrainingAI = false;
+	GameType gameType = GameType::realtime;
 
 	boost::optional<unsigned> generationLimit;
 

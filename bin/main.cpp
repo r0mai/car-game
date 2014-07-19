@@ -22,13 +22,16 @@ int main(int argc, char **argv) {
 	std::vector<std::function<track::Track()>> trackCreators =
 			track::trackArgumentParser::parseArguments(parameters.tracks);
 
-	if (parameters.isTrainingAI) {
+	switch (parameters.gameType) {
+	case GameType::learning: {
 		ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
 		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
 		controller.run();
-	} else {
+		break;
+	 }
+	case GameType::realtime: {
 		RealTimeGameManager manager{parameters, trackCreators[0], parameters.neuralNetworkFile};
 
 		manager.setFPSLimit(parameters.fpsLimit);
@@ -43,6 +46,8 @@ int main(int argc, char **argv) {
 			manager.setNeuralNetwork(network);
 		}
 		manager.run();
+		break;
+	 }
 	}
 	return 0;
 }
