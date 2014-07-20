@@ -22,7 +22,7 @@ CircleTrackType::CircleTrackType():
 			;
 }
 
-std::function<Track()> CircleTrackType::getTrackCreator(const boost::program_options::variables_map& /*variablesMap*/,
+TrackCreator CircleTrackType::getTrackCreator(const boost::program_options::variables_map& /*variablesMap*/,
 		const std::vector<std::string>& /*args*/) {
 	return std::bind(createCircleTrack, params);
 }

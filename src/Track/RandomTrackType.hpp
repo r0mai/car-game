@@ -10,7 +10,7 @@ namespace car { namespace track {
 class RandomTrackType: public PolygonBasedTrackType {
 public:
 	RandomTrackType();
-	virtual std::function<Track()> getTrackCreator(
+	virtual TrackCreator getTrackCreator(
 			const boost::program_options::variables_map& variablesMap,
 			const std::vector<std::string>& args) override;
 	virtual std::string getHelpString() override;

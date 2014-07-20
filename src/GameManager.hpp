@@ -8,13 +8,14 @@
 #include "Model.hpp"
 #include "Parameters.hpp"
 #include "NeuralNetwork.hpp"
+#include "Track/TrackCreator.hpp"
 
 namespace car {
 
 class GameManager {
 public:
 
-	GameManager(const Parameters& parameters, std::function<track::Track()> trackCreator);
+	GameManager(const Parameters& parameters, track::TrackCreator trackCreator);
 
 	void advance();
 
@@ -31,10 +32,10 @@ protected:
 
 	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
 
-	//We have to store rayCount here as well, because with setNeuralNetwork it is possible to
-	//set a neuralNetwork which is not consistent with what is specified in parameters
-	//TODO something has to be done about who stores the variables concerning the number of
-	//inputs/outputs
+	// We have to store rayCount here as well, because with setNeuralNetwork it
+	// is possible to set a neuralNetwork which is not consistent with what is
+	// specified in parameters TODO something has to be done about who stores
+	// the variables concerning the number of inputs/outputs
 	unsigned rayCount = parameters.rayCount;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 

@@ -8,6 +8,7 @@
 #include "TrackCreatorError.hpp"
 #include "IPolygonType.hpp"
 #include "IRandomPolygonGeneratorType.hpp"
+#include "TrackCreator.hpp"
 
 namespace car { namespace track {
 
@@ -15,7 +16,7 @@ class Track;
 
 namespace trackArgumentParser {
 
-std::vector<std::function<Track()>> parseArguments(const std::vector<std::string>& args);
+TrackCreators parseArguments(const std::vector<std::string>& args);
 std::shared_ptr<IPolygonType> getPolygonType(const std::string& name);
 std::shared_ptr<IRandomPolygonGeneratorType>
 getRandomPolygonGeneratorType(const std::string& name);

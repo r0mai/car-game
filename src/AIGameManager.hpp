@@ -2,12 +2,13 @@
 #define AIGAMEMANAGER_HPP
 
 #include "GameManager.hpp"
+#include "Track/TrackCreator.hpp"
 
 namespace car {
 
 class AIGameManager : public GameManager {
 public:
-	AIGameManager(const Parameters& parameters, std::function<track::Track()> trackCreator);
+	AIGameManager(const Parameters& parameters, track::TrackCreator trackCreator);
 
 	void run();
 

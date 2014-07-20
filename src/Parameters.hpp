@@ -15,14 +15,19 @@ enum class PanMode {
 	enabled, disabled, automatic
 };
 
+enum class GameType {
+	realtime, learning, benchmark
+};
+
 struct Parameters {
 
 	std::string projectRootPath;
 
 	//running mode
-	bool isTrainingAI = false;
+	GameType gameType = GameType::realtime;
 
 	boost::optional<unsigned> generationLimit;
+	unsigned printoutFrequency = 1;
 
 	unsigned physicsTimeStepsPerSecond = 64;
 

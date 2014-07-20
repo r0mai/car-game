@@ -7,25 +7,45 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "Track/TrackArgumentParser.hpp"
+#include "PrefixMap.hpp"
+#include "LazyArgumentMap.hpp"
+#include "StringEnumValue.hpp"
 
 namespace car {
+
+LAZY_ARGUMENT_PREFIX_MAP(PanMode, panModes) {
+	return {
+		STRING_ENUM_VALUE(PanMode, automatic),
+		STRING_ENUM_VALUE(PanMode, enabled),
+		STRING_ENUM_VALUE(PanMode, disabled),
+	};
+}
+
+LAZY_ARGUMENT_PREFIX_MAP(GameType, gameTypes) {
+	return {
+		STRING_ENUM_VALUE(GameType, realtime),
+		STRING_ENUM_VALUE(GameType, learning),
+		STRING_ENUM_VALUE(GameType, benchmark),
+	};
+}
+
+template <typename T>
+std::string argumentValues(const PrefixMap<T>& map) {
+	std::vector<std::string> values;
+	for (const auto& value: map) {
+		values.push_back(value.first);
+	}
+	return boost::algorithm::join(values, ", ");
+}
 
 std::istream& operator>>(std::istream& is, PanMode& panMode) {
 	std::string s;
 	is >> s;
-
-	if (boost::algorithm::iequals(s, std::string{"auto"})) {
-		panMode = PanMode::automatic;
-	} else if (boost::algorithm::iequals(s, std::string{"enabled"})) {
-		panMode = PanMode::enabled;
-	} else if (boost::algorithm::iequals(s, std::string{"disabled"})) {
-		panMode = PanMode::disabled;
-	} else {
-		throw std::logic_error{"Invalid pan mode"};
-	}
+	panMode = panModes().at(s);
 
 	return is;
 }
@@ -35,6 +55,23 @@ std::ostream& operator<<(std::ostream& os, PanMode panMode) {
 	case PanMode::automatic: return os << "auto";
 	case PanMode::enabled: return os << "enabled";
 	case PanMode::disabled: return os << "disabled";
+	default: return os;
+	}
+}
+
+std::istream& operator>>(std::istream& is, GameType& gameType) {
+	std::string s;
+	is >> s;
+	gameType = gameTypes().at(s);
+
+	return is;
+}
+
+std::ostream& operator<<(std::ostream& os, GameType panMode) {
+	switch (panMode) {
+	case GameType::realtime: return os << "realtime";
+	case GameType::learning: return os << "learning";
+	case GameType::benchmark: return os << "benchmark";
 	default: return os;
 	}
 }
@@ -52,16 +89,22 @@ Parameters parseParameters(int argc, char **argv) {
 
 	std::vector<std::string> configFiles;
 
+	std::string gameTypeDescription = "The type of game to run. Allowed values: " + argumentValues(gameTypes());
+
 	po::options_description commandLineOnlyDescription("Command-line only options");
 	commandLineOnlyDescription.add_options()
 		("help", "produce help message")
-		("ai", "train AI")
+		("game-type", po::value(&parameters.gameType)->default_value(parameters.gameType),
+				gameTypeDescription.c_str())
 		("config", po::value<std::vector<std::string>>(&configFiles),
 				"Reads configuration parameters from the specified file. It can be given multiple times. "
 				"Newer values override older ones.")
 	;
 
 	po::options_description configFileDescription("Command-line and config file options");
+
+	std::string panModeDescription = "Set panning mode. Allowed values: " + argumentValues(panModes());
+
 	configFileDescription.add_options()
 		("seed", po::value<int>(),
 				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
@@ -69,6 +112,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Size of the population used in the genetic algorithm.")
 		("generation-limit", po::value<unsigned>(),
 				"Exit after this many generations. Default is to never exit.")
+		("printout-frequency", po::value(&parameters.printoutFrequency)->default_value(parameters.printoutFrequency),
+				"The number of generations after which output is printed")
 		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount)->default_value(parameters.hiddenLayerCount),
 				"Number of hidden layers in the nerual network.")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
@@ -106,7 +151,7 @@ Parameters parseParameters(int argc, char **argv) {
 		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
 				"Screen height for rendering.")
 		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
-				"Set panning mode. Allowed values: enabled, disabled, auto")
+				panModeDescription.c_str())
 	;
 
 	po::options_description commandLineDescription("Options");
@@ -122,7 +167,6 @@ Parameters parseParameters(int argc, char **argv) {
 		std::exit(0);
 	}
 
-	parameters.isTrainingAI = vm.count("ai");
 	parameters.useRecurrence = vm.count("use-recurrence");
 
 	// Boost only considers the first config value, but we want it the other way around

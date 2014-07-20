@@ -6,6 +6,7 @@
 
 #include "Parameters.hpp"
 #include "Track/Track.hpp"
+#include "Track/TrackCreator.hpp"
 #include "boost/asio/io_service.hpp"
 
 namespace car {
@@ -16,7 +17,7 @@ class Genome;
 class NeuralController {
 public:
 	NeuralController(const Parameters& parameters,
-			std::vector<std::function<track::Track()>> trackCreators,
+			track::TrackCreators trackCreators,
 			boost::asio::io_service& ioService);
 	void run();
 
@@ -26,7 +27,7 @@ private:
 
 	boost::asio::io_service& ioService;
 	Parameters parameters;
-	std::vector<std::function<track::Track()>> trackCreators;
+	track::TrackCreators trackCreators;
 
 	void saveNeuralNetwork(const Genome& genome);
 };

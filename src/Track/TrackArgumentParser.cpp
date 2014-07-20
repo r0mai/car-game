@@ -1,6 +1,8 @@
 #include "TrackArgumentParser.hpp"
 
 #include <map>
+#include <functional>
+#include <memory>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -27,15 +29,18 @@ namespace trackArgumentParser {
 
 namespace {
 
+template <typename T>
+using ArgumentType = std::function<std::shared_ptr<T>()>;
+
 template <typename Type>
-std::pair<std::string, std::shared_ptr<Type>>
+std::pair<std::string, ArgumentType<Type>>
 createTypeElement() {
-	auto element = std::make_shared<Type>();
-	auto argumentName = element->getArgumentName();
+	auto element = std::make_shared<Type>;
+	auto argumentName = element()->getArgumentName();
 	return {std::move(argumentName), std::move(element)};
 }
 
-LAZY_ARGUMENT_MAP(ITrackType, trackTypes) {
+LAZY_ARGUMENT_MAP(ArgumentType<ITrackType>, trackTypes) {
 	return {
 		createTypeElement<CircleTrackType>(),
 		createTypeElement<PolygonTrackType>(),
@@ -43,20 +48,20 @@ LAZY_ARGUMENT_MAP(ITrackType, trackTypes) {
 	};
 }
 
-LAZY_ARGUMENT_MAP(IPolygonType, polygonTypes) {
+LAZY_ARGUMENT_MAP(ArgumentType<IPolygonType>, polygonTypes) {
 	return {
 		createTypeElement<SimplePolygonType>(),
 	};
 }
 
-const std::map<std::string, std::shared_ptr<IRandomPolygonGeneratorType>>
-		randomPolygonGeneratorTypes{
-	createTypeElement<PointAdderRandomPolygonGeneratorType>(),
-	createTypeElement<RandomWalkPolygonGeneratorType>(),
-};
+LAZY_ARGUMENT_MAP(ArgumentType<IRandomPolygonGeneratorType>, randomPolygonGeneratorTypes) {
+	return {
+		createTypeElement<PointAdderRandomPolygonGeneratorType>(),
+		createTypeElement<RandomWalkPolygonGeneratorType>(),
+	};
+}
 
-
-std::function<Track()> parseArgument(const std::string& arg) {
+TrackCreator parseArgument(const std::string& arg) {
 	std::vector<std::string> tokens;
 	algo::split(tokens, arg, [](char ch) { return ch == ':'; });
 
@@ -83,32 +88,32 @@ std::function<Track()> parseArgument(const std::string& arg) {
 	}
 
 	std::vector<std::string> args(++tokens.begin(), tokens.end());
-	auto& trackType = *it->second;
+	auto trackType = it->second();
 
-	if (args.size() < trackType.getMinimumNumberOfArgs()) {
+	if (args.size() < trackType->getMinimumNumberOfArgs()) {
 		throw TrackCreatorError{"Too few tokens for track type " + it->first};
 	}
 
 	po::variables_map variablesMap;
 	do {
-		auto optionsDescription = trackType.getOptions();
+		auto optionsDescription = trackType->getOptions();
 		auto parsedOptions = po::parse_config_file<char>(filename.c_str(), optionsDescription, true);
 		po::store(parsedOptions, variablesMap);
 		po::notify(variablesMap);
-	} while (trackType.needsReparse(variablesMap, args));
+	} while (trackType->needsReparse(variablesMap, args));
 
-	return trackType.getTrackCreator(variablesMap, args);
+	return trackType->getTrackCreator(variablesMap, args);
 }
 
 }
 
-std::vector<std::function<Track()>>
+TrackCreators
 parseArguments(const std::vector<std::string>& args) {
 	if (args.empty()) {
 		throw TrackCreatorError{"No tracks specified."};
 	}
 
-	std::vector<std::function<Track()>> result;
+	TrackCreators result;
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result), parseArgument);
 	return result;
@@ -120,17 +125,17 @@ std::shared_ptr<IPolygonType> getPolygonType(const std::string& name) {
 		throw TrackCreatorError{"Invalid polygon type: " + name};
 	}
 
-	return it->second;
+	return it->second();
 }
 
 std::shared_ptr<IRandomPolygonGeneratorType>
 getRandomPolygonGeneratorType(const std::string& name) {
-	auto it = randomPolygonGeneratorTypes.find(name);
-	if (it == randomPolygonGeneratorTypes.end()) {
+	auto it = randomPolygonGeneratorTypes().find(name);
+	if (it == randomPolygonGeneratorTypes().end()) {
 		throw TrackCreatorError{"Invalid random polygon generator type: " + name};
 	}
 
-	return it->second;
+	return it->second();
 }
 
 std::string getHelpString() {
@@ -140,7 +145,7 @@ std::string getHelpString() {
 
 	for (const auto& trackType: trackTypes()) {
 		ss << "\nFormat of track type " << trackType.first << ":\n" <<
-				trackType.second->getHelpString();
+				trackType.second()->getHelpString();
 	}
 
 	ss << "\nAllowed polygon types: " <<
@@ -148,16 +153,16 @@ std::string getHelpString() {
 
 	for (const auto& polygonType: polygonTypes()) {
 		ss << "\nFormat of polygon type " << polygonType.first << ":\n" <<
-				polygonType.second->getHelpString();
+				polygonType.second()->getHelpString();
 	}
 
 	ss << "\nAllowed random polygon generator types: " <<
-			algo::join(randomPolygonGeneratorTypes | boost::adaptors::map_keys, ", ") << ".\n";
+			algo::join(randomPolygonGeneratorTypes() | boost::adaptors::map_keys, ", ") << ".\n";
 
-	for (const auto& randomPolygonGeneratorType: randomPolygonGeneratorTypes) {
+	for (const auto& randomPolygonGeneratorType: randomPolygonGeneratorTypes()) {
 		ss << "\nFormat of random polygon generator type " <<
 				randomPolygonGeneratorType.first << ":\n" <<
-				randomPolygonGeneratorType.second->getHelpString();
+				randomPolygonGeneratorType.second()->getHelpString();
 	}
 
 

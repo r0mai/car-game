@@ -4,7 +4,9 @@
 #include "Parameters.hpp"
 #include "ThreadPool.hpp"
 #include "Track/Track.hpp"
+#include "Track/TrackCreator.hpp"
 #include "Track/TrackArgumentParser.hpp"
+#include "Benchmark.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -19,16 +21,19 @@ int main(int argc, char **argv) {
 
 	Parameters parameters = parseParameters(argc, argv);
 
-	std::vector<std::function<track::Track()>> trackCreators =
+	track::TrackCreators trackCreators =
 			track::trackArgumentParser::parseArguments(parameters.tracks);
 
-	if (parameters.isTrainingAI) {
+	switch (parameters.gameType) {
+	case GameType::learning: {
 		ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
 		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
 		controller.run();
-	} else {
+		break;
+	 }
+	case GameType::realtime: {
 		RealTimeGameManager manager{parameters, trackCreators[0], parameters.neuralNetworkFile};
 
 		manager.setFPSLimit(parameters.fpsLimit);
@@ -43,6 +48,15 @@ int main(int argc, char **argv) {
 			manager.setNeuralNetwork(network);
 		}
 		manager.run();
+		break;
+	 }
+	case GameType::benchmark: {
+		Benchmark benchmark{parameters, trackCreators};
+
+		benchmark.run();
+		break;
+
+	  }
 	}
 	return 0;
 }

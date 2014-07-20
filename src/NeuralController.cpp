@@ -8,6 +8,9 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "NeuralController.hpp"
 #include "PopulationRunner.hpp"
@@ -15,7 +18,7 @@
 namespace car {
 
 NeuralController::NeuralController(const Parameters& parameters,
-		std::vector<std::function<track::Track()>> trackCreators,
+		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
 	parameters(parameters),
@@ -35,9 +38,8 @@ static void printInfo(unsigned generation, float bestFitness, const std::vector<
 	ss << "Generation: " << generation << ", ";
 	ss << "Current best fitness: " << bestFitness << ", ";
 	ss << "Population averages: ";
-	for (float a : populationAverages) {
-		 ss << a << ", ";
-	}
+	ss << boost::algorithm::join(populationAverages | boost::adaptors::transformed(
+				boost::lexical_cast<std::string, float>), ", ");
 	if (isatty(1)) { //if stdout is a terminal
 		std::cout << "\033[2K\r";
 		std::cout << ss.str() << std::flush;
@@ -80,7 +82,9 @@ void NeuralController::run() {
 			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
 			populations.erase(worstPopulation);
 		}
-		printInfo(generation, bestFitness, populationAverages);
+		if (generation % parameters.printoutFrequency == 0) {
+			printInfo(generation, bestFitness, populationAverages);
+		}
 	}
 }
 

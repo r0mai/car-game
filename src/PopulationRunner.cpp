@@ -8,7 +8,7 @@
 namespace car {
 
 PopulationRunner::PopulationRunner(const Parameters& parameters,
-		std::vector<std::function<track::Track()>> trackCreators,
+		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService):
 			ioService(&ioService),
 			population{parameters.populationSize,

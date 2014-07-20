@@ -15,7 +15,7 @@ PolygonTrackType::PolygonTrackType():PolygonBasedTrackType{"polygon"} {
 			;
 }
 
-std::function<Track()> PolygonTrackType::getTrackCreator(
+TrackCreator PolygonTrackType::getTrackCreator(
 		const boost::program_options::variables_map& variablesMap,
 		const std::vector<std::string>& /*args*/) {
 	assert(getPolygonType());

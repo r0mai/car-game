@@ -14,7 +14,7 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, std::function<track::Track()> trackCreator,
+RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, track::TrackCreator trackCreator,
 			bool startWithAi) :
 	GameManager(parameters, trackCreator),
 	window(sf::VideoMode(parameters.screenWidth, parameters.screenHeight), "car-game")
