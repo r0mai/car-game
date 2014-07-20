@@ -15,7 +15,7 @@
 namespace car {
 
 NeuralController::NeuralController(const Parameters& parameters,
-		std::vector<std::function<track::Track()>> trackCreators,
+		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
 	parameters(parameters),

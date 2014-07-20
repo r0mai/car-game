@@ -18,7 +18,7 @@ RandomTrackType::RandomTrackType():PolygonBasedTrackType{"random"} {
 			;
 }
 
-std::function<Track()> RandomTrackType::getTrackCreator(
+TrackCreator RandomTrackType::getTrackCreator(
 		const boost::program_options::variables_map& variablesMap,
 		const std::vector<std::string>& args) {
 	using std::placeholders::_1;

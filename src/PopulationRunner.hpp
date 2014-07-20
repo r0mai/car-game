@@ -10,6 +10,7 @@
 #include "Track/Track.hpp"
 #include "AIGameManager.hpp"
 #include "NeuralNetwork.hpp"
+#include "Track/TrackCreator.hpp"
 
 namespace car {
 
@@ -18,7 +19,7 @@ class Genome;
 class PopulationRunner {
 public:
 	PopulationRunner(const Parameters& parameters,
-		std::vector<std::function<track::Track()>> trackCreators,
+		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService);
 
 	PopulationRunner(const PopulationRunner&) = delete;

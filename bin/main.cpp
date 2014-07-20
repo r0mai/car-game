@@ -4,6 +4,7 @@
 #include "Parameters.hpp"
 #include "ThreadPool.hpp"
 #include "Track/Track.hpp"
+#include "Track/TrackCreator.hpp"
 #include "Track/TrackArgumentParser.hpp"
 
 #include <cstdlib>
@@ -19,7 +20,7 @@ int main(int argc, char **argv) {
 
 	Parameters parameters = parseParameters(argc, argv);
 
-	std::vector<std::function<track::Track()>> trackCreators =
+	track::TrackCreators trackCreators =
 			track::trackArgumentParser::parseArguments(parameters.tracks);
 
 	switch (parameters.gameType) {

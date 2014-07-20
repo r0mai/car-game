@@ -7,6 +7,7 @@
 
 #include "GameManager.hpp"
 #include "Telemetry.hpp"
+#include "Track/TrackCreator.hpp"
 
 namespace car {
 
@@ -16,7 +17,7 @@ namespace track {
 
 class RealTimeGameManager : public GameManager {
 public:
-	RealTimeGameManager(const Parameters& parameter, std::function<track::Track()> trackCreator,
+	RealTimeGameManager(const Parameters& parameter, track::TrackCreator trackCreator,
 			bool startWithAi);
 
 	void run();

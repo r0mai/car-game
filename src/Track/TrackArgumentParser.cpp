@@ -56,7 +56,7 @@ const std::map<std::string, std::shared_ptr<IRandomPolygonGeneratorType>>
 };
 
 
-std::function<Track()> parseArgument(const std::string& arg) {
+TrackCreator parseArgument(const std::string& arg) {
 	std::vector<std::string> tokens;
 	algo::split(tokens, arg, [](char ch) { return ch == ':'; });
 
@@ -102,13 +102,13 @@ std::function<Track()> parseArgument(const std::string& arg) {
 
 }
 
-std::vector<std::function<Track()>>
+TrackCreators
 parseArguments(const std::vector<std::string>& args) {
 	if (args.empty()) {
 		throw TrackCreatorError{"No tracks specified."};
 	}
 
-	std::vector<std::function<Track()>> result;
+	TrackCreators result;
 	result.reserve(args.size());
 	boost::transform(args, std::back_inserter(result), parseArgument);
 	return result;

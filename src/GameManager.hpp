@@ -8,13 +8,14 @@
 #include "Model.hpp"
 #include "Parameters.hpp"
 #include "NeuralNetwork.hpp"
+#include "Track/TrackCreator.hpp"
 
 namespace car {
 
 class GameManager {
 public:
 
-	GameManager(const Parameters& parameters, std::function<track::Track()> trackCreator);
+	GameManager(const Parameters& parameters, track::TrackCreator trackCreator);
 
 	void advance();
 
