@@ -29,6 +29,7 @@ LAZY_ARGUMENT_PREFIX_MAP(GameType, gameTypes) {
 	return {
 		STRING_ENUM_VALUE(GameType, realtime),
 		STRING_ENUM_VALUE(GameType, learning),
+		STRING_ENUM_VALUE(GameType, benchmark),
 	};
 }
 
@@ -70,6 +71,7 @@ std::ostream& operator<<(std::ostream& os, GameType panMode) {
 	switch (panMode) {
 	case GameType::realtime: return os << "realtime";
 	case GameType::learning: return os << "learning";
+	case GameType::benchmark: return os << "benchmark";
 	default: return os;
 	}
 }

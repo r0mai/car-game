@@ -6,6 +6,7 @@
 #include "Track/Track.hpp"
 #include "Track/TrackCreator.hpp"
 #include "Track/TrackArgumentParser.hpp"
+#include "Benchmark.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -49,6 +50,13 @@ int main(int argc, char **argv) {
 		manager.run();
 		break;
 	 }
+	case GameType::benchmark: {
+		Benchmark benchmark{parameters, trackCreators};
+
+		benchmark.run();
+		break;
+
+	  }
 	}
 	return 0;
 }

@@ -95,7 +95,6 @@ TrackCreator parseArgument(const std::string& arg) {
 	}
 
 	po::variables_map variablesMap;
-	int pass = 0;
 	do {
 		auto optionsDescription = trackType->getOptions();
 		auto parsedOptions = po::parse_config_file<char>(filename.c_str(), optionsDescription, true);

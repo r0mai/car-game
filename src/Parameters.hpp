@@ -16,7 +16,7 @@ enum class PanMode {
 };
 
 enum class GameType {
-	realtime, learning
+	realtime, learning, benchmark
 };
 
 struct Parameters {
