@@ -112,6 +112,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Size of the population used in the genetic algorithm.")
 		("generation-limit", po::value<unsigned>(),
 				"Exit after this many generations. Default is to never exit.")
+		("printout-frequency", po::value(&parameters.printoutFrequency)->default_value(parameters.printoutFrequency),
+				"The number of generations after which output is printed")
 		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount)->default_value(parameters.hiddenLayerCount),
 				"Number of hidden layers in the nerual network.")
 		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),

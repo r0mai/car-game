@@ -30,18 +30,20 @@ void Benchmark::run() {
 		managers.emplace_back(parameters, trackCreator);
 	}
 
-	for (unsigned generation = 0; generation < *parameters.generationLimit; ++generation) {
+	for (unsigned generation = 1; generation <= *parameters.generationLimit; ++generation) {
 		for (auto& manager: managers) {
 			manager.setNeuralNetwork(neuralNetwork);
 			manager.init();
 			manager.run();
 		}
 
-		std::cout << "Fitnesses: ";
-		for (auto& manager: managers) {
-			std::cout << manager.getFitness() << " ";
+		if (generation % parameters.printoutFrequency == 0) {
+			std::cout << "Fitnesses: ";
+			for (auto& manager: managers) {
+				std::cout << manager.getFitness() << " ";
+			}
+			std::cout << std::endl;
 		}
-		std::cout << std::endl;
 	}
 }
 

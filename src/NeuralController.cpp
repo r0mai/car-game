@@ -80,7 +80,9 @@ void NeuralController::run() {
 			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
 			populations.erase(worstPopulation);
 		}
-		printInfo(generation, bestFitness, populationAverages);
+		if (generation % parameters.printoutFrequency == 0) {
+			printInfo(generation, bestFitness, populationAverages);
+		}
 	}
 }
 

@@ -27,6 +27,7 @@ struct Parameters {
 	GameType gameType = GameType::realtime;
 
 	boost::optional<unsigned> generationLimit;
+	unsigned printoutFrequency = 1;
 
 	unsigned physicsTimeStepsPerSecond = 64;
 
