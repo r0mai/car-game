@@ -46,6 +46,7 @@ protected:
 	bool showTrackBoundary = true;
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
+	float pixelsPerMeter = 0.f;
 
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;

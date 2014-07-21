@@ -130,6 +130,8 @@ void RealTimeGameManager::setViewParameters() {
 		viewSize = fitViewSize2;
 	}
 
+	pixelsPerMeter = screenSize.x / viewSize.x;
+
 	gameView.setSize(viewSize.x, viewSize.y);
 
 	auto& carPosition = model.getCar().getPosition();
@@ -251,7 +253,8 @@ void RealTimeGameManager::drawTelemetry() {
 			", Throttle = " << car.getThrottle() <<
 			",\nBrake = " << car.getBrake() <<
 			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")" <<
-			", TravelDistance = " << car.getTravelDistance();
+			", TravelDistance = " << car.getTravelDistance() <<
+			",\nppm = " << pixelsPerMeter;
 		sf::Text text;
 		text.setFont(font);
 		text.setColor(sf::Color::White);
