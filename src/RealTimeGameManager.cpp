@@ -136,6 +136,8 @@ void RealTimeGameManager::setViewParameters() {
 	gameView.setCenter(
 			calculateCenter(viewSize.x, trackDimensions.left, trackDimensions.width, carPosition.x),
 			calculateCenter(viewSize.y, trackDimensions.top, trackDimensions.height, carPosition.y));
+
+	hudView.reset(sf::FloatRect(0.f, 0.f, screenSize.x, screenSize.y));
 }
 
 void RealTimeGameManager::setFPSLimit(float newFPSLimit) {
