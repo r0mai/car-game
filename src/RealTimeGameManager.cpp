@@ -106,8 +106,8 @@ float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, fl
 void RealTimeGameManager::setViewParameters() {
 	auto screenSize = window.getSize();
 	auto trackDimensions = track.getDimensions();
-	auto minViewSize = sf::Vector2f{screenSize.x * parameters.minPixelsPerMeter, screenSize.y * parameters.minPixelsPerMeter};
-	auto maxViewSize = sf::Vector2f{screenSize.x * parameters.maxPixelsPerMeter, screenSize.y * parameters.maxPixelsPerMeter};
+	auto maxViewSize = sf::Vector2f{screenSize.x / parameters.minPixelsPerMeter, screenSize.y / parameters.minPixelsPerMeter};
+	auto minViewSize = sf::Vector2f{screenSize.x / parameters.maxPixelsPerMeter, screenSize.y / parameters.maxPixelsPerMeter};
 
 	auto fitViewSize1 = sf::Vector2f{
 			trackDimensions.width,

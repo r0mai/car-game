@@ -68,8 +68,8 @@ struct Parameters {
 	int fpsLimit = -1;
 	unsigned screenWidth = 800;
 	unsigned screenHeight = 800;
-	float minPixelsPerMeter = 0.05f;
-	float maxPixelsPerMeter = 0.2f;
+	float minPixelsPerMeter = 5.f;
+	float maxPixelsPerMeter = 10.f;
 	PanMode panMode = PanMode::fit;
 };
 
