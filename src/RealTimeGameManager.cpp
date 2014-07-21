@@ -53,12 +53,12 @@ void RealTimeGameManager::run() {
 		physicsTimeStepAccumulator += deltaSeconds;
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			advance();
-			setViewParameters();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
 		updateTelemetry();
 
+		setViewParameters();
 		window.clear(sf::Color::Black);
 
 		window.setView(gameView);
