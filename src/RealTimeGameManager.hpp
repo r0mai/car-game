@@ -37,8 +37,6 @@ protected:
 	sf::View hudView;
 	sf::Font font;
 
-	bool panningEnabled = false;
-
 	float fpsLimit = 64;
 	float fps = -1.f;
 
@@ -48,6 +46,7 @@ protected:
 	bool showTrackBoundary = true;
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
+	float pixelsPerMeter = 0.f;
 
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;
@@ -58,6 +57,10 @@ protected:
 
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 
+private:
+
+	float calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition);
+	void setViewParameters();
 };
 
 }
