@@ -32,20 +32,6 @@ RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, track::Tr
 	turnTelemetry.setAutomaticBoundsDetection(false);
 	turnTelemetry.setBounds(-1.f, 1.f);
 
-	const float minPixelPerMeter = 10;
-	sf::FloatRect staticViewRect = resizeToEnclose(track.getDimensions(), static_cast<float>(parameters.screenWidth)/parameters.screenHeight);
-
-	if (parameters.panMode == PanMode::enabled ||
-		(parameters.panMode == PanMode::automatic && parameters.screenWidth / staticViewRect.width > minPixelPerMeter))
-	{
-		gameView.setSize(parameters.screenWidth / minPixelPerMeter, parameters.screenHeight / minPixelPerMeter);
-		gameView.setCenter(model.getCar().getPosition());
-		panningEnabled = true;
-	} else {
-		gameView.reset(staticViewRect);
-		panningEnabled = false;
-	}
-
 	hudView = window.getDefaultView();
 }
 
@@ -67,9 +53,7 @@ void RealTimeGameManager::run() {
 		physicsTimeStepAccumulator += deltaSeconds;
 		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			advance();
-			if (panningEnabled) {
-				gameView.setCenter(model.getCar().getPosition());
-			}
+			setViewParameters();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -91,6 +75,67 @@ void RealTimeGameManager::run() {
 			}
 		}
 	}
+}
+
+float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition) {
+	switch (parameters.panMode) {
+		case PanMode::center:
+			return carPosition;
+		case PanMode::fit:
+			{
+				if (trackSize < viewSize) {
+					return trackOrigin + trackSize / 2.f;
+				}
+
+				const auto viewHalfSize = viewSize / 2.f;
+
+				if (carPosition - viewHalfSize < trackOrigin) {
+					return trackOrigin + viewHalfSize;
+				}
+
+				auto trackEnd = trackOrigin + trackSize;
+				if (carPosition + viewHalfSize > trackEnd) {
+					return trackEnd - viewHalfSize;
+				}
+
+				return carPosition;
+			}
+	}
+}
+
+void RealTimeGameManager::setViewParameters() {
+	auto screenSize = window.getSize();
+	auto trackDimensions = track.getDimensions();
+	auto minViewSize = sf::Vector2f{screenSize.x * parameters.minPixelsPerMeter, screenSize.y * parameters.minPixelsPerMeter};
+	auto maxViewSize = sf::Vector2f{screenSize.x * parameters.maxPixelsPerMeter, screenSize.y * parameters.maxPixelsPerMeter};
+
+	auto fitViewSize1 = sf::Vector2f{
+			trackDimensions.width,
+			trackDimensions.width * screenSize.y / screenSize.x};
+	auto fitViewSize2 = sf::Vector2f{
+			trackDimensions.height * screenSize.x / screenSize.y,
+			trackDimensions.height};
+
+	if (fitViewSize2.x < fitViewSize1.x) {
+		std::swap(fitViewSize1, fitViewSize2);
+	}
+
+	sf::Vector2f viewSize;
+
+	if (fitViewSize2.x < minViewSize.x) {
+		viewSize = minViewSize;
+	} else if (fitViewSize2.x > maxViewSize.x) {
+		viewSize = maxViewSize;
+	} else {
+		viewSize = fitViewSize2;
+	}
+
+	gameView.setSize(viewSize.x, viewSize.y);
+
+	auto& carPosition = model.getCar().getPosition();
+	gameView.setCenter(
+			calculateCenter(viewSize.x, trackDimensions.left, trackDimensions.width, carPosition.x),
+			calculateCenter(viewSize.y, trackDimensions.top, trackDimensions.height, carPosition.y));
 }
 
 void RealTimeGameManager::setFPSLimit(float newFPSLimit) {

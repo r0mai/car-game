@@ -12,7 +12,7 @@
 namespace car {
 
 enum class PanMode {
-	enabled, disabled, automatic
+	center, fit
 };
 
 enum class GameType {
@@ -68,7 +68,9 @@ struct Parameters {
 	int fpsLimit = -1;
 	unsigned screenWidth = 800;
 	unsigned screenHeight = 800;
-	PanMode panMode = PanMode::disabled;
+	float minPixelsPerMeter = 0.05f;
+	float maxPixelsPerMeter = 0.2f;
+	PanMode panMode = PanMode::fit;
 };
 
 //May throw if something goes wrong with parsing

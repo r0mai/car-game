@@ -19,9 +19,8 @@ namespace car {
 
 LAZY_ARGUMENT_PREFIX_MAP(PanMode, panModes) {
 	return {
-		STRING_ENUM_VALUE(PanMode, automatic),
-		STRING_ENUM_VALUE(PanMode, enabled),
-		STRING_ENUM_VALUE(PanMode, disabled),
+		STRING_ENUM_VALUE(PanMode, center),
+		STRING_ENUM_VALUE(PanMode, fit),
 	};
 }
 
@@ -52,9 +51,8 @@ std::istream& operator>>(std::istream& is, PanMode& panMode) {
 
 std::ostream& operator<<(std::ostream& os, PanMode panMode) {
 	switch (panMode) {
-	case PanMode::automatic: return os << "auto";
-	case PanMode::enabled: return os << "enabled";
-	case PanMode::disabled: return os << "disabled";
+	case PanMode::center: return os << "center";
+	case PanMode::fit: return os << "fit";
 	default: return os;
 	}
 }
@@ -150,6 +148,10 @@ Parameters parseParameters(int argc, char **argv) {
 				"Screen width for rendering,")
 		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
 				"Screen height for rendering.")
+		("min-pixels-per-meter", po::value(&parameters.minPixelsPerMeter)->default_value(parameters.minPixelsPerMeter),
+				"Minimum resolution of the view.")
+		("max-pixels-per-meter", po::value(&parameters.maxPixelsPerMeter)->default_value(parameters.maxPixelsPerMeter),
+				"Maximum resolution of the view.")
 		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
 				panModeDescription.c_str())
 	;
@@ -188,6 +190,16 @@ Parameters parseParameters(int argc, char **argv) {
 	}
 	if (vm.count("input-population")) {
 		parameters.populationInputFile = vm["input-population"].as<std::string>();
+	}
+
+	if (parameters.minPixelsPerMeter < 0.f) {
+		throw std::logic_error{"Pixels per width cannot be negative"};
+	}
+	if (parameters.maxPixelsPerMeter < 0.f) {
+		throw std::logic_error{"Pixels per width cannot be negative"};
+	}
+	if (parameters.minPixelsPerMeter > parameters.maxPixelsPerMeter) {
+		throw std::logic_error{"Minimum pixels per meter cannot be larger than maximum"};
 	}
 
 	if (vm.count("seed")) {

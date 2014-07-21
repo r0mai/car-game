@@ -1,0 +1,9 @@
+type=random
+polygon-type=simple
+algorithm=point-adder
+
+track-width=5.0
+number-of-points=20
+corner1=-60.0, -200.0
+corner2= 60.0,  200.0
+inset=0.2
