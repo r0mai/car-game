@@ -154,6 +154,8 @@ Parameters parseParameters(int argc, char **argv) {
 				"Maximum resolution of the view.")
 		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
 				panModeDescription.c_str())
+		("pan-threshold", po::value<std::string>(),
+				"The maximum amount that the car moves from the screen center before the screen gets panned. The value is in meter (m), pixels (px) or percent (%).")
 	;
 
 	po::options_description commandLineDescription("Options");
@@ -190,6 +192,10 @@ Parameters parseParameters(int argc, char **argv) {
 	}
 	if (vm.count("input-population")) {
 		parameters.populationInputFile = vm["input-population"].as<std::string>();
+	}
+
+	if (vm.count("pan-threshold")) {
+		parameters.panThreshold = parseScreenDimenstion(vm["pan-threshold"].as<std::string>());
 	}
 
 	if (parameters.minPixelsPerMeter < 0.f) {
