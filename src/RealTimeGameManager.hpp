@@ -47,6 +47,7 @@ protected:
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
 	float pixelsPerMeter = 0.f;
+	float panThreshold = 0.f;
 
 	Telemetry speedTelemetry;
 	Telemetry accelerationTelemetry;

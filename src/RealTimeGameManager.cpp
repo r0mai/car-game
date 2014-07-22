@@ -11,6 +11,7 @@
 #include "mathUtil.hpp"
 #include "drawUtil.hpp"
 #include "randomUtil.hpp"
+#include "ScreenDimension.hpp"
 
 namespace car {
 
@@ -135,9 +136,20 @@ void RealTimeGameManager::setViewParameters() {
 	gameView.setSize(viewSize.x, viewSize.y);
 
 	auto& carPosition = model.getCar().getPosition();
-	gameView.setCenter(
-			calculateCenter(viewSize.x, trackDimensions.left, trackDimensions.width, carPosition.x),
-			calculateCenter(viewSize.y, trackDimensions.top, trackDimensions.height, carPosition.y));
+	auto& viewCenter = gameView.getCenter();
+	panThreshold =  boost::apply_visitor(
+				ScreenDimensionConverter{viewSize, pixelsPerMeter},
+				parameters.panThreshold);
+
+	if (getDistance(carPosition, viewCenter) > panThreshold) {
+		auto preferredCenter = carPosition + normalize(viewCenter - carPosition) * panThreshold;
+		gameView.setCenter(
+				calculateCenter(viewSize.x, trackDimensions.left, trackDimensions.width,
+					preferredCenter.x),
+				calculateCenter(viewSize.y, trackDimensions.top, trackDimensions.height,
+					preferredCenter.y));
+	}
+
 
 	hudView.reset(sf::FloatRect(0.f, 0.f, screenSize.x, screenSize.y));
 }
@@ -224,6 +236,16 @@ void RealTimeGameManager::drawGame() {
 	if (showCar) {
 		model.drawCar(window);
 	}
+
+	//auto circle = sf::CircleShape{panThreshold};
+	//auto center = gameView.getCenter();
+	//circle.setOrigin(panThreshold, panThreshold);
+	//circle.setPosition(center);
+	//circle.setFillColor(sf::Color::Transparent);
+	//circle.setOutlineColor(sf::Color::White);
+	//circle.setOutlineThickness(0.1);
+	//window.draw(circle);
+
 }
 
 void RealTimeGameManager::drawRays() {

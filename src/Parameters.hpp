@@ -8,6 +8,7 @@
 #include <boost/optional.hpp>
 
 #include "MathExpression.hpp"
+#include "ScreenDimension.hpp"
 
 namespace car {
 
@@ -71,6 +72,7 @@ struct Parameters {
 	float minPixelsPerMeter = 5.f;
 	float maxPixelsPerMeter = 10.f;
 	PanMode panMode = PanMode::fit;
+	ScreenDimension panThreshold{Meters(0)};
 };
 
 //May throw if something goes wrong with parsing
