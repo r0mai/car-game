@@ -18,9 +18,9 @@ ScreenDimension parseScreenDimenstion(const std::string& s) {
 	auto it = s.begin();
 	bool success = qi::phrase_parse(it, s.end(),
 		(
-		   	( qi::float_[meterSetter] >> "m" ) |
-			( qi::float_[percentSetter] >> "%" ) |
-			( qi::uint_[pixelSetter] >> "p" >> -qi::lit("x") )
+		   	( qi::float_ >> "m" )[meterSetter] |
+			( qi::float_ >> "%" )[percentSetter] |
+			( qi::uint_ >> "p" >> -qi::lit("x") )[pixelSetter]
 		), boost::spirit::ascii::space);
 
 	if (!success || it != s.end()) {
