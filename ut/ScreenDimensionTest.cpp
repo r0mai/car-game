@@ -1,75 +1,45 @@
 #include <boost/test/unit_test.hpp>
 #include "ScreenDimension.hpp"
-#include <turtle/mock.hpp>
 
 using namespace car;
 
-namespace {
+#define CHECK_VARIANT_EXPLICIT_TYPE(variant, Type, expectedValue) do {\
+	auto actualValue = boost::get<Type>(&(variant));\
+	BOOST_REQUIRE(actualValue);\
+	BOOST_CHECK_EQUAL(actualValue->value(), expectedValue);\
+} while (false)
 
-struct MockVisitor {
-	using result_type = void;
-	MOCK_METHOD(operator(), 1, void(Meters), call_meters);
-	MOCK_METHOD(operator(), 1, void(Percent), call_percent);
-	MOCK_METHOD(operator(), 1, void(Pixels), call_pixels);
-};
+#define CHECK_VARIANT_EXPLICIT_TYPE_CLOSE(variant, Type, expectedValue) do {\
+	auto actualValue = boost::get<Type>(&(variant));\
+	BOOST_REQUIRE(actualValue);\
+	BOOST_CHECK_CLOSE(actualValue->value(), expectedValue, 0.0001);\
+} while (false)
 
-template <typename T, typename ToleranceType>
-struct ExplicitTypeValueClose {
-	T value;
-	ToleranceType tolerance;
-	template <typename Tag>
-	bool operator()(const ExplicitType<Tag, T> t) {
-		return boost::test_tools::check_is_close(t.value(), value,
-				boost::test_tools::percent_tolerance(tolerance));
-	}
-
-	ExplicitTypeValueClose(T value, ToleranceType tolerance):
-		value(value), tolerance(tolerance)
-	{}
-};
-
-template <typename T, typename ToleranceType>
-ExplicitTypeValueClose<T, ToleranceType> explicitTypeValueClose(
-		T value, ToleranceType tolerance) {
-	return ExplicitTypeValueClose<T, ToleranceType>{value, tolerance};
-}
-
-struct Fixture {
-	MockVisitor visitor;
-};
-
-}
-
-BOOST_FIXTURE_TEST_SUITE(ScreenDimensionTest, Fixture)
+BOOST_AUTO_TEST_SUITE(ScreenDimensionTest)
 
 BOOST_AUTO_TEST_CASE(pixels) {
-	MOCK_EXPECT(visitor.call_pixels).once().with(Pixels{547});
 	auto result = parseScreenDimenstion("547px");
-	boost::apply_visitor(visitor, result);
+	CHECK_VARIANT_EXPLICIT_TYPE(result, Pixels, 547);
 }
 
 BOOST_AUTO_TEST_CASE(meters_integer) {
-	MOCK_EXPECT(visitor.call_meters).once().with(explicitTypeValueClose(15.f, 0.001f));
 	auto result = parseScreenDimenstion("15m");
-	boost::apply_visitor(visitor, result);
+	CHECK_VARIANT_EXPLICIT_TYPE_CLOSE(result, Meters, 15.f);
 }
 
 BOOST_AUTO_TEST_CASE(meters_float) {
-	MOCK_EXPECT(visitor.call_meters).once().with(explicitTypeValueClose(255.661f, 0.001f));
 	auto result = parseScreenDimenstion("255.661m");
-	boost::apply_visitor(visitor, result);
+	CHECK_VARIANT_EXPLICIT_TYPE_CLOSE(result, Meters, 255.661);
 }
 
 BOOST_AUTO_TEST_CASE(percent_integer) {
-	MOCK_EXPECT(visitor.call_percent).once().with(explicitTypeValueClose(630.f, 0.001f));
 	auto result = parseScreenDimenstion("630%");
-	boost::apply_visitor(visitor, result);
+	CHECK_VARIANT_EXPLICIT_TYPE_CLOSE(result, Percent, 630.f);
 }
 
 BOOST_AUTO_TEST_CASE(percent_float) {
-	MOCK_EXPECT(visitor.call_percent).once().with(explicitTypeValueClose(12.5f, 0.001f));
 	auto result = parseScreenDimenstion("12.5%");
-	boost::apply_visitor(visitor, result);
+	CHECK_VARIANT_EXPLICIT_TYPE_CLOSE(result, Percent, 12.5);
 }
 
 BOOST_AUTO_TEST_CASE(error_no_unit) {
