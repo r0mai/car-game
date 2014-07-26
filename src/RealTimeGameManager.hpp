@@ -8,6 +8,7 @@
 #include "GameManager.hpp"
 #include "Telemetry.hpp"
 #include "Track/TrackCreator.hpp"
+#include "RealTimeParameters.hpp"
 
 namespace car {
 

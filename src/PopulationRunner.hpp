@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <boost/asio/io_service.hpp>
-#include "Parameters.hpp"
+#include "LearningParameters.hpp"
 #include "GeneticPopulation.hpp"
 #include "Track/Track.hpp"
 #include "AIGameManager.hpp"

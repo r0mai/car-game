@@ -2,7 +2,7 @@
 #define BENCHMARK_HPP
 
 #include "NeuralNetwork.hpp"
-#include "Parameters.hpp"
+#include "BenchmarkParameters.hpp"
 #include "Track/TrackCreator.hpp"
 
 namespace car {

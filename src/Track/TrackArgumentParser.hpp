@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include "Parameters.hpp"
 #include "TrackCreatorError.hpp"
 #include "IPolygonType.hpp"
 #include "IRandomPolygonGeneratorType.hpp"

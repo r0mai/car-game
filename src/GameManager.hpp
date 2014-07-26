@@ -6,7 +6,7 @@
 #include <functional>
 
 #include "Model.hpp"
-#include "Parameters.hpp"
+#include "CommonParameters.hpp"
 #include "NeuralNetwork.hpp"
 #include "Track/TrackCreator.hpp"
 

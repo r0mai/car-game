@@ -4,7 +4,7 @@
 
 #include <functional>
 
-#include "Parameters.hpp"
+#include "LearningParameters.hpp"
 #include "Track/Track.hpp"
 #include "Track/TrackCreator.hpp"
 #include "boost/asio/io_service.hpp"
