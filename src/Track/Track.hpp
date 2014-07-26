@@ -26,6 +26,9 @@ struct TrackError: std::logic_error {
 
 class Track {
 public:
+	// Destructor needs to be defined in the .cpp because Line2f is forward
+	// declared and the destructor of vevtor<Line2f> requires the full
+	// definition.
 	~Track();
 
 	void addLine(const Line2f& line);
