@@ -4,8 +4,11 @@
 #include "drawUtil.hpp"
 #include "mathUtil.hpp"
 #include "createPolygonTrack.hpp"
+#include "Line2.hpp"
 
 namespace car { namespace track {
+
+Track::~Track() {}
 
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};

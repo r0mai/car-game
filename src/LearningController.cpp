@@ -12,13 +12,14 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "NeuralController.hpp"
+#include "LearningController.hpp"
 #include "PopulationRunner.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 
-NeuralController::NeuralController(const Parameters& parameters,
-		track::TrackCreators trackCreators,
+LearningController::LearningController(const LearningParameters& parameters,
+		const track::TrackCreators& trackCreators,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
 	parameters(parameters),
@@ -49,7 +50,7 @@ static void printInfo(unsigned generation, float bestFitness, const std::vector<
 }
 
 
-void NeuralController::run() {
+void LearningController::run() {
 
 	std::vector<PopulationRunner> populations;
 	populations.reserve(parameters.startingPopulations);
@@ -61,7 +62,9 @@ void NeuralController::run() {
 
 	float bestFitness = 0.f;
 
-	for (unsigned generation = 1; !parameters.generationLimit || generation <= *parameters.generationLimit;
+	for (unsigned generation = 1;
+			!parameters.iterationParameters.generationLimit ||
+				generation <= *parameters.iterationParameters.generationLimit;
 			++generation) {
 
 		std::vector<float> populationAverages;
@@ -82,16 +85,16 @@ void NeuralController::run() {
 			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
 			populations.erase(worstPopulation);
 		}
-		if (generation % parameters.printoutFrequency == 0) {
+		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
 			printInfo(generation, bestFitness, populationAverages);
 		}
 	}
 }
 
-void NeuralController::saveNeuralNetwork(const Genome& genome) {
+void LearningController::saveNeuralNetwork(const Genome& genome) {
 	//TODO we are reconstucting the same network as above
 	NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-			parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence);
+			parameters.commonParameters.getInputNeuronCount(), parameters.commonParameters.outputNeuronCount, parameters.useRecurrence);
 
 	network.setWeights(genome.weights);
 
@@ -100,7 +103,7 @@ void NeuralController::saveNeuralNetwork(const Genome& genome) {
 	oa << network;
 }
 
-void NeuralController::loadPopulation(GeneticPopulation& population) const {
+void LearningController::loadPopulation(GeneticPopulation& population) const {
 	if (parameters.populationInputFile) {
 		std::ifstream ifs(*parameters.populationInputFile);
 		boost::archive::text_iarchive ia(ifs);
@@ -108,7 +111,7 @@ void NeuralController::loadPopulation(GeneticPopulation& population) const {
 	}
 }
 
-void NeuralController::savePopulation(const GeneticPopulation& population) const {
+void LearningController::savePopulation(const GeneticPopulation& population) const {
 	if (parameters.populationOutputFile) {
 		std::ofstream ofs(*parameters.populationOutputFile);
 		boost::archive::text_oarchive oa(ofs);

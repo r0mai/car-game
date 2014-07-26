@@ -1,9 +1,9 @@
 #ifndef SRC_TRACK_RANDOMWALKPOLYGONGENERATOR_HPP
 #define SRC_TRACK_RANDOMWALKPOLYGONGENERATOR_HPP
 
+#include <SFML/Graphics.hpp>
 #include "RandomGenerator.hpp"
 #include "RandomTrackException.hpp"
-#include "Line2.hpp"
 #include "BaseRandomWalk.hpp"
 
 namespace car { namespace track {

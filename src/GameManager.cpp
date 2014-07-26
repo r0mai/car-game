@@ -3,10 +3,12 @@
 
 #include <cassert>
 #include <boost/math/constants/constants.hpp>
+#include "mathUtil.hpp"
+#include "Line2.hpp"
 
 namespace car {
 
-GameManager::GameManager(const Parameters& parameters, track::TrackCreator trackCreator) :
+GameManager::GameManager(const CommonParameters& parameters, track::TrackCreator trackCreator) :
 	parameters(parameters),
 	track(trackCreator())
 {

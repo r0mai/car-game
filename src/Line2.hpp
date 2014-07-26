@@ -2,8 +2,8 @@
 #define LINE_HPP
 
 #include <SFML/System/Vector2.hpp>
+#include <Line2Fwd.hpp>
 
-#include "mathUtil.hpp"
 
 namespace car {
 
@@ -18,8 +18,6 @@ struct Line2 {
 	sf::Vector2<T> start;
 	sf::Vector2<T> end;
 };
-
-typedef Line2<float> Line2f;
 
 namespace detail {
 bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr);

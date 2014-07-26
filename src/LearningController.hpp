@@ -1,23 +1,27 @@
 
-#ifndef NEURALCONTROLLER_HPP_
-#define NEURALCONTROLLER_HPP_
+#ifndef SRC_LEARNINGCONTROLLER_HPP
+#define SRC_LEARNINGCONTROLLER_HPP
 
 #include <functional>
-
-#include "Parameters.hpp"
-#include "Track/Track.hpp"
 #include "Track/TrackCreator.hpp"
-#include "boost/asio/io_service.hpp"
+#include "LearningParameters.hpp"
+
+namespace boost { namespace asio {
+
+class io_service;
+
+}}
+
 
 namespace car {
 
 class GeneticPopulation;
 class Genome;
 
-class NeuralController {
+class LearningController {
 public:
-	NeuralController(const Parameters& parameters,
-			track::TrackCreators trackCreators,
+	LearningController(const LearningParameters& parameters,
+			const track::TrackCreators& trackCreators,
 			boost::asio::io_service& ioService);
 	void run();
 
@@ -26,7 +30,7 @@ private:
 	void savePopulation(const GeneticPopulation& population) const;
 
 	boost::asio::io_service& ioService;
-	Parameters parameters;
+	LearningParameters parameters;
 	track::TrackCreators trackCreators;
 
 	void saveNeuralNetwork(const Genome& genome);
@@ -34,5 +38,5 @@ private:
 
 }
 
-#endif
+#endif /* SRC_LEARNINGCONTROLLER_HPP */
 

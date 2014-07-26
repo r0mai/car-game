@@ -7,6 +7,7 @@ LD = $(CXX)
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra
 CPP_FLAGS += @(OPTIMALIZATION_FLAG)
+CPP_FLAGS += -ftemplate-backtrace-limit=0
 
 SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track

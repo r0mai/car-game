@@ -6,7 +6,7 @@
 #include <functional>
 
 #include "Model.hpp"
-#include "Parameters.hpp"
+#include "CommonParameters.hpp"
 #include "NeuralNetwork.hpp"
 #include "Track/TrackCreator.hpp"
 
@@ -15,7 +15,7 @@ namespace car {
 class GameManager {
 public:
 
-	GameManager(const Parameters& parameters, track::TrackCreator trackCreator);
+	GameManager(const CommonParameters& parameters, track::TrackCreator trackCreator);
 
 	void advance();
 
@@ -28,7 +28,7 @@ protected:
 
 	Weights callNeuralNetwork();
 
-	Parameters parameters;
+	CommonParameters parameters;
 
 	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
 
@@ -39,8 +39,7 @@ protected:
 	unsigned rayCount = parameters.rayCount;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
-	NeuralNetwork neuralNetwork = NeuralNetwork(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-		   parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence);
+	NeuralNetwork neuralNetwork;
 
 	bool isAIControl = true;
 

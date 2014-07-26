@@ -4,26 +4,31 @@
 #include <condition_variable>
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
+#include "Line2.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 
-PopulationRunner::PopulationRunner(const Parameters& parameters,
-		track::TrackCreators trackCreators,
+PopulationRunner::PopulationRunner(const LearningParameters& parameters,
+		const track::TrackCreators& trackCreators,
 		boost::asio::io_service& ioService):
 			ioService(&ioService),
 			population{parameters.populationSize,
 				NeuralNetwork::getWeightCountForNetwork(
-					parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence)}
+					parameters.hiddenLayerCount,
+					parameters.neuronPerHiddenLayer,
+					parameters.commonParameters.getInputNeuronCount(),
+					parameters.commonParameters.outputNeuronCount,
+					parameters.useRecurrence)}
 {
 	controllerDatas.reserve(parameters.populationSize);
 	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
-		controllerDatas.push_back(NeuralControllerData{
+		controllerDatas.push_back(LearningControllerData{
 			{
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
-				parameters.getInputNeuronCount(),
-				parameters.outputNeuronCount,
+				parameters.commonParameters.getInputNeuronCount(),
+				parameters.commonParameters.outputNeuronCount,
 				parameters.useRecurrence
 			},
 			{}
@@ -32,7 +37,8 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 		auto& controllerData = controllerDatas.back();
 		controllerData.managers.reserve(trackCreators.size());
 		for (const auto& trackCreator: trackCreators) {
-			controllerData.managers.emplace_back(parameters, trackCreator);
+			controllerData.managers.emplace_back(parameters.commonParameters, trackCreator,
+					parameters.iterationParameters.fitnessExpression);
 		}
 	}
 }
@@ -72,7 +78,7 @@ void PopulationRunner::runIteration() {
 	population.evolve();
 }
 
-void PopulationRunner::runSimulation(Genome& genome, NeuralControllerData& data) {
+void PopulationRunner::runSimulation(Genome& genome, LearningControllerData& data) {
 	data.network.setWeights(genome.weights);
 	genome.fitness = 0;
 

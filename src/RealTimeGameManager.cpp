@@ -15,15 +15,19 @@
 
 namespace car {
 
-RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, track::TrackCreator trackCreator,
-			bool startWithAi) :
-	GameManager(parameters, trackCreator),
-	window(sf::VideoMode(parameters.screenWidth, parameters.screenHeight), "car-game")
+RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParameters, track::TrackCreator trackCreator) :
+	GameManager(realTimeParameters.commonParameters, trackCreator),
+	window(sf::VideoMode(
+				realTimeParameters.screenWidth,
+				realTimeParameters.screenHeight), "car-game"),
+	realTimeParameters(realTimeParameters)
 {
 	using namespace boost::math::float_constants;
 
-	isAIControl = startWithAi;
-	font.loadFromFile(parameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
+	setFPSLimit(realTimeParameters.fpsLimit);
+
+	isAIControl = realTimeParameters.carInputParameters.neuralNetworkFile;
+	font.loadFromFile(realTimeParameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
 	brakeTelemetry.setAutomaticBoundsDetection(false);
@@ -34,6 +38,11 @@ RealTimeGameManager::RealTimeGameManager(const Parameters& parameters, track::Tr
 	turnTelemetry.setBounds(-1.f, 1.f);
 
 	hudView = window.getDefaultView();
+
+	if (isAIControl) {
+		setNeuralNetwork(loadNeuralNetworkFromFile(
+					*realTimeParameters.carInputParameters.neuralNetworkFile));
+	}
 }
 
 void RealTimeGameManager::run() {
@@ -79,7 +88,7 @@ void RealTimeGameManager::run() {
 }
 
 float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition) {
-	switch (parameters.panMode) {
+	switch (realTimeParameters.panMode) {
 		case PanMode::center:
 			return carPosition;
 		case PanMode::fit:
@@ -107,8 +116,8 @@ float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, fl
 void RealTimeGameManager::setViewParameters() {
 	auto screenSize = window.getSize();
 	auto trackDimensions = track.getDimensions();
-	auto maxViewSize = sf::Vector2f{screenSize.x / parameters.minPixelsPerMeter, screenSize.y / parameters.minPixelsPerMeter};
-	auto minViewSize = sf::Vector2f{screenSize.x / parameters.maxPixelsPerMeter, screenSize.y / parameters.maxPixelsPerMeter};
+	auto maxViewSize = sf::Vector2f{screenSize.x / realTimeParameters.minPixelsPerMeter, screenSize.y / realTimeParameters.minPixelsPerMeter};
+	auto minViewSize = sf::Vector2f{screenSize.x / realTimeParameters.maxPixelsPerMeter, screenSize.y / realTimeParameters.maxPixelsPerMeter};
 
 	auto fitViewSize1 = sf::Vector2f{
 			trackDimensions.width,
@@ -139,7 +148,7 @@ void RealTimeGameManager::setViewParameters() {
 	auto& viewCenter = gameView.getCenter();
 	panThreshold =  boost::apply_visitor(
 				ScreenDimensionConverter{viewSize, pixelsPerMeter},
-				parameters.panThreshold);
+				realTimeParameters.panThreshold);
 
 	if (getDistance(carPosition, viewCenter) > panThreshold) {
 		auto preferredCenter = carPosition + normalize(viewCenter - carPosition) * panThreshold;

@@ -3,6 +3,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include "optionsUtil.hpp"
 #include "Track.hpp"
+#include "Line2.hpp"
 
 namespace po = boost::program_options;
 

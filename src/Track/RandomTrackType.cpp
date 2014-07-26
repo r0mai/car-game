@@ -1,9 +1,11 @@
+#include "Track.hpp"
 #include "RandomTrackType.hpp"
 #include <sstream>
 #include "RandomTrackGenerator.hpp"
 #include "createPolygonTrack.hpp"
 #include "optionsUtil.hpp"
 #include "TrackArgumentParser.hpp"
+#include "Line2.hpp"
 
 namespace po = boost::program_options;
 

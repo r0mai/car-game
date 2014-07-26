@@ -9,7 +9,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Line2.hpp"
+#include "Line2Fwd.hpp"
+
 
 namespace car {
 
@@ -25,6 +26,8 @@ struct TrackError: std::logic_error {
 
 class Track {
 public:
+	~Track();
+
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
 

@@ -4,6 +4,7 @@
 #include "Track.hpp"
 #include "mathUtil.hpp"
 #include "RandomTrackException.hpp"
+#include "Line2.hpp"
 
 namespace car { namespace track {
 

@@ -1,9 +1,9 @@
 #ifndef CREATECIRCLETRACK_HPP_
 #define CREATECIRCLETRACK_HPP_
 
-#include "Track.hpp"
-
 namespace car { namespace track {
+
+class Track;
 
 struct CircleTrackParams {
 	float innerRadius = 50.f;

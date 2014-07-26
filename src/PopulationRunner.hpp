@@ -5,9 +5,8 @@
 #include <vector>
 #include <string>
 #include <boost/asio/io_service.hpp>
-#include "Parameters.hpp"
+#include "LearningParameters.hpp"
 #include "GeneticPopulation.hpp"
-#include "Track/Track.hpp"
 #include "AIGameManager.hpp"
 #include "NeuralNetwork.hpp"
 #include "Track/TrackCreator.hpp"
@@ -18,8 +17,8 @@ class Genome;
 
 class PopulationRunner {
 public:
-	PopulationRunner(const Parameters& parameters,
-		track::TrackCreators trackCreators,
+	PopulationRunner(const LearningParameters& parameters,
+		const track::TrackCreators& trackCreators,
 		boost::asio::io_service& ioService);
 
 	PopulationRunner(const PopulationRunner&) = delete;
@@ -35,7 +34,7 @@ public:
 	const GeneticPopulation& getPopulation() const { return population; }
 	GeneticPopulation& getPopulation() { return population; }
 private:
-	struct NeuralControllerData {
+	struct LearningControllerData {
 		NeuralNetwork network;
 		std::vector<AIGameManager> managers;
 	};
@@ -43,12 +42,12 @@ private:
 	boost::asio::io_service* ioService;
 
 	GeneticPopulation population;
-	std::vector<NeuralControllerData> controllerDatas;
+	std::vector<LearningControllerData> controllerDatas;
 	float fitnessSum = 0.f; // Updated by updateBestFitness
 	float bestFitness = 0.f; // Updated by updateBestFitness
 	const Genome* bestGenome = nullptr;
 
-	void runSimulation(Genome& genome, NeuralControllerData& data);
+	void runSimulation(Genome& genome, LearningControllerData& data);
 	void updateBestFitness();
 };
 

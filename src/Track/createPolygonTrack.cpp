@@ -3,6 +3,7 @@
 #include "Line2.hpp"
 #include <boost/range/algorithm.hpp>
 #include "TrackArgumentParser.hpp"
+#include "Track.hpp"
 
 namespace car { namespace track {
 

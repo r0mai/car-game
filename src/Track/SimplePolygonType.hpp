@@ -8,7 +8,7 @@ namespace car { namespace track {
 class SimplePolygonType: public BasicPolygonType {
 public:
 	SimplePolygonType();
-	virtual std::function<Track(const std::vector<sf::Vector2f>)> getTrackCreator(
+	virtual std::function<Track(const std::vector<sf::Vector2f>&)> getTrackCreator(
 			const boost::program_options::variables_map& variablesMap) override;
 	virtual std::string getHelpString() override;
 private:
