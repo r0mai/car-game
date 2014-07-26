@@ -3,7 +3,7 @@
 #define SRC_LEARNINGCONTROLLER_HPP
 
 #include <functional>
-#include <Track/TrackCreator.hpp>
+#include "Track/TrackCreator.hpp"
 #include "LearningParameters.hpp"
 
 namespace boost { namespace asio {
