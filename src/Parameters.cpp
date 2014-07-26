@@ -79,11 +79,14 @@ Parameters parseParameters(int argc, char **argv) {
 	namespace po = boost::program_options;
 
 	Parameters parameters;
+	CommonParameters commonParameters;
+	IterationParameters iterationParameters;
+	CarInputParameters carInputParameters;
 
 	std::string binaryLocation = argv[0];
 	boost::trim_right_if(binaryLocation, !boost::is_any_of("/"));
 
-	parameters.projectRootPath = binaryLocation + "../";
+	parameters.realTimeParameters.projectRootPath = binaryLocation + "../";
 
 	std::vector<std::string> configFiles;
 
@@ -100,63 +103,124 @@ Parameters parseParameters(int argc, char **argv) {
 	;
 
 	po::options_description configFileDescription("Command-line and config file options");
+	po::options_description commonDescription("Options for all game types");
+	commonDescription.add_options()
+		("ray-count",
+			po::value(&commonParameters.rayCount)
+				->default_value(commonParameters.rayCount),
+			"Number of rays providing information to the car.")
+		("physics-frequency",
+			po::value(&commonParameters.physicsTimeStepsPerSecond)
+				->default_value(commonParameters.physicsTimeStepsPerSecond),
+			"Specifies how many times per second the physics should be recalculated.")
+		("track",
+			po::value(&parameters.tracks),
+			"The type of track to use. It can be given multiple times. "
+			"For AI learning, use all tracks for learning. "
+			"For real time simulation, use only the first.\n"
+			"Format: filename[:arg1[:arg2[:...]]]")
+		("seed",
+			po::value<int>(),
+			"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
+		;
 
+	po::options_description iterationDescription("Options for learning and benchmark game types");
+	iterationDescription.add_options()
+		("generation-limit",
+			po::value<unsigned>(),
+			"Exit after this many generations. Default is to never exit.")
+		("printout-frequency",
+			po::value(&iterationParameters.printoutFrequency)
+				->default_value(iterationParameters.printoutFrequency),
+			"The number of generations after which output is printed")
+		("fitness-function",
+			po::value(&iterationParameters.fitnessExpression)
+				->default_value(iterationParameters.fitnessExpression),
+			"Fitness function.")
+		;
+
+	po::options_description carInputDescription("Options for realtime and benchmark game types");
+	carInputDescription.add_options()
+		("neural-network",
+			po::value<std::string>(),
+			"Load neural-network from file.")
+		;
+
+	po::options_description realtimeDescription("Options for realtime game type");
 	std::string panModeDescription = "Set panning mode. Allowed values: " + argumentValues(panModes());
-
-	configFileDescription.add_options()
-		("seed", po::value<int>(),
-				"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
-		("population-size", po::value<unsigned>(&parameters.populationSize)->default_value(parameters.populationSize),
-				"Size of the population used in the genetic algorithm.")
-		("generation-limit", po::value<unsigned>(),
-				"Exit after this many generations. Default is to never exit.")
-		("printout-frequency", po::value(&parameters.printoutFrequency)->default_value(parameters.printoutFrequency),
-				"The number of generations after which output is printed")
-		("hidden-layer-count", po::value<unsigned>(&parameters.hiddenLayerCount)->default_value(parameters.hiddenLayerCount),
-				"Number of hidden layers in the nerual network.")
-		("neuron-per-hidden-layer", po::value<unsigned>(&parameters.neuronPerHiddenLayer)->default_value(parameters.neuronPerHiddenLayer),
-				"Number of neurons/hidden layer in the nerual network.")
-		("use-recurrence", "Use recurrence for the neurons")
-		("ray-count", po::value<unsigned>(&parameters.rayCount)->default_value(parameters.rayCount),
-				"Number of rays providing information to the car.")
-		("neural-network", po::value<std::string>(),
-				"Load neural-network from file.")
-		("output-ai,o", po::value<std::string>(&parameters.bestAIFile)->default_value(parameters.bestAIFile),
-				"Specifies where to save the best trained AI.")
-		("output-population", po::value<std::string>(),
-				"Specifies where to save the current population.")
-		("input-population", po::value<std::string>(),
-				"Load population from file.")
-		("track", po::value<std::vector<std::string>>(&parameters.tracks),
-				"The type of track to use. It can be given multiple times. "
-				"For AI learning, use all tracks for learning. "
-				"For real time simulation, use only the first.\n"
-				"Format: filename[:arg1[:arg2[:...]]]")
-		("threads,j", po::value<unsigned>(&parameters.threadCount)->default_value(parameters.threadCount),
-				"Number of threads used for population simulation.")
-		("starting-populations", po::value<unsigned>(&parameters.startingPopulations)->default_value(parameters.startingPopulations),
-				"The number of independent populations to start the learning with.")
-		("population-cutoff", po::value<unsigned>(&parameters.populationCutoff)->default_value(parameters.populationCutoff),
-				"The number of generations after the worst population is dropped (if there are more than one).")
-		("fitness-function", po::value<MathExpression>(&parameters.fitnessExpression)->default_value(parameters.fitnessExpression),
-				"Fitness function.")
-		("physics-frequency", po::value<unsigned>(&parameters.physicsTimeStepsPerSecond)->default_value(parameters.physicsTimeStepsPerSecond),
-				"Specifies how many times per second the physics should be recalculated.")
-		("fps-limit", po::value<int>(&parameters.fpsLimit)->default_value(parameters.fpsLimit),
-				"Set fps limit. Negative value means no limit.")
-		("screen-width", po::value<unsigned>(&parameters.screenWidth)->default_value(parameters.screenWidth),
-				"Screen width for rendering,")
-		("screen-height", po::value<unsigned>(&parameters.screenHeight)->default_value(parameters.screenHeight),
-				"Screen height for rendering.")
-		("min-pixels-per-meter", po::value(&parameters.minPixelsPerMeter)->default_value(parameters.minPixelsPerMeter),
-				"Minimum resolution of the view.")
-		("max-pixels-per-meter", po::value(&parameters.maxPixelsPerMeter)->default_value(parameters.maxPixelsPerMeter),
-				"Maximum resolution of the view.")
-		("pan-mode", po::value<PanMode>(&parameters.panMode)->default_value(parameters.panMode),
+	realtimeDescription.add_options()
+		("fps-limit",
+			po::value(&parameters.realTimeParameters.fpsLimit)
+				->default_value(parameters.realTimeParameters.fpsLimit),
+			"Set fps limit. Negative value means no limit.")
+		("screen-width",
+			po::value(&parameters.realTimeParameters.screenWidth)
+				->default_value(parameters.realTimeParameters.screenWidth),
+			"Screen width for rendering,")
+		("screen-height",
+			po::value(&parameters.realTimeParameters.screenHeight)
+				->default_value(parameters.realTimeParameters.screenHeight),
+			"Screen height for rendering.")
+		("min-pixels-per-meter",
+			po::value(&parameters.realTimeParameters.minPixelsPerMeter)
+				->default_value(parameters.realTimeParameters.minPixelsPerMeter),
+			"Minimum resolution of the view.")
+		("max-pixels-per-meter",
+			po::value(&parameters.realTimeParameters.maxPixelsPerMeter)
+				->default_value(parameters.realTimeParameters.maxPixelsPerMeter),
+			"Maximum resolution of the view.")
+		("pan-mode",
+			po::value(&parameters.realTimeParameters.panMode)
+				->default_value(parameters.realTimeParameters.panMode),
 				panModeDescription.c_str())
-		("pan-threshold", po::value<std::string>(),
-				"The maximum amount that the car moves from the screen center before the screen gets panned. The value is in meter (m), pixels (px) or percent (%).")
-	;
+		("pan-threshold",
+			po::value<std::string>(),
+			"The maximum amount that the car moves from the screen center before the screen gets panned. The value is in meter (m), pixels (px) or percent (%).")
+		;
+
+	po::options_description learningDescription("Options for learning game type");
+	learningDescription.add_options()
+		("hidden-layer-count",
+			po::value(&parameters.learningParameters.hiddenLayerCount)
+				->default_value(parameters.learningParameters.hiddenLayerCount),
+			"Number of hidden layers in the nerual network.")
+		("neuron-per-hidden-layer",
+			po::value(&parameters.learningParameters.neuronPerHiddenLayer)
+				->default_value(parameters.learningParameters.neuronPerHiddenLayer),
+			"Number of neurons/hidden layer in the nerual network.")
+		("use-recurrence",
+			"Use recurrence for the neurons")
+		("population-size",
+			po::value(&parameters.learningParameters.populationSize)
+				->default_value(parameters.learningParameters.populationSize),
+			"Size of the population used in the genetic algorithm.")
+		("output-ai,o", po::value(&parameters.learningParameters.bestAIFile)
+				->default_value(parameters.learningParameters.bestAIFile),
+			"Specifies where to save the best trained AI.")
+		("output-population",
+			po::value<std::string>(),
+			"Specifies where to save the current population.")
+		("input-population",
+			po::value<std::string>(),
+			"Load population from file.")
+		("threads,j", po::value(&parameters.learningParameters.threadCount)
+				->default_value(parameters.learningParameters.threadCount),
+			"Number of threads used for population simulation.")
+		("starting-populations",
+			po::value(&parameters.learningParameters.startingPopulations)
+				->default_value(parameters.learningParameters.startingPopulations),
+			"The number of independent populations to start the learning with.")
+		("population-cutoff",
+			po::value(&parameters.learningParameters.populationCutoff)
+				->default_value(parameters.learningParameters.populationCutoff),
+			"The number of generations after the worst population is dropped (if there are more than one).")
+		;
+
+	configFileDescription.add(commonDescription);
+	configFileDescription.add(iterationDescription);
+	configFileDescription.add(carInputDescription);
+	configFileDescription.add(realtimeDescription);
+	configFileDescription.add(learningDescription);
 
 	po::options_description commandLineDescription("Options");
 	commandLineDescription.add(commandLineOnlyDescription);
@@ -171,7 +235,6 @@ Parameters parseParameters(int argc, char **argv) {
 		std::exit(0);
 	}
 
-	parameters.useRecurrence = vm.count("use-recurrence");
 
 	// Boost only considers the first config value, but we want it the other way around
 	// so the config files are read in reverse order. Now the new values override the
@@ -181,30 +244,32 @@ Parameters parseParameters(int argc, char **argv) {
 		po::notify(vm);
 	}
 
+	parameters.learningParameters.useRecurrence = vm.count("use-recurrence");
+
 	if (vm.count("neural-network")) {
-		parameters.neuralNetworkFile = vm["neural-network"].as<std::string>();
+		carInputParameters.neuralNetworkFile = vm["neural-network"].as<std::string>();
 	}
 	if (vm.count("generation-limit")) {
-		parameters.generationLimit = vm["generation-limit"].as<unsigned>();
+		iterationParameters.generationLimit = vm["generation-limit"].as<unsigned>();
 	}
 	if (vm.count("output-population")) {
-		parameters.populationOutputFile = vm["output-population"].as<std::string>();
+		parameters.learningParameters.populationOutputFile = vm["output-population"].as<std::string>();
 	}
 	if (vm.count("input-population")) {
-		parameters.populationInputFile = vm["input-population"].as<std::string>();
+		parameters.learningParameters.populationInputFile = vm["input-population"].as<std::string>();
 	}
 
 	if (vm.count("pan-threshold")) {
-		parameters.panThreshold = parseScreenDimenstion(vm["pan-threshold"].as<std::string>());
+		parameters.realTimeParameters.panThreshold = parseScreenDimenstion(vm["pan-threshold"].as<std::string>());
 	}
 
-	if (parameters.minPixelsPerMeter < 0.f) {
+	if (parameters.realTimeParameters.minPixelsPerMeter < 0.f) {
 		throw std::logic_error{"Pixels per width cannot be negative"};
 	}
-	if (parameters.maxPixelsPerMeter < 0.f) {
+	if (parameters.realTimeParameters.maxPixelsPerMeter < 0.f) {
 		throw std::logic_error{"Pixels per width cannot be negative"};
 	}
-	if (parameters.minPixelsPerMeter > parameters.maxPixelsPerMeter) {
+	if (parameters.realTimeParameters.minPixelsPerMeter > parameters.realTimeParameters.maxPixelsPerMeter) {
 		throw std::logic_error{"Minimum pixels per meter cannot be larger than maximum"};
 	}
 
@@ -214,6 +279,13 @@ Parameters parseParameters(int argc, char **argv) {
 		std::srand(std::time(0));
 	}
 
+	parameters.realTimeParameters.commonParameters = commonParameters;
+	parameters.realTimeParameters.carInputParameters = carInputParameters;
+	parameters.learningParameters.commonParameters = commonParameters;
+	parameters.learningParameters.iterationParameters = iterationParameters;
+	parameters.benchmarkParameters.commonParameters = commonParameters;
+	parameters.benchmarkParameters.iterationParameters = iterationParameters;
+	parameters.benchmarkParameters.carInputParameters = carInputParameters;
 
 	return parameters;
 }

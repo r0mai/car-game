@@ -17,7 +17,7 @@
 
 namespace car {
 
-NeuralController::NeuralController(const Parameters& parameters,
+NeuralController::NeuralController(const LearningParameters& parameters,
 		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
@@ -61,7 +61,9 @@ void NeuralController::run() {
 
 	float bestFitness = 0.f;
 
-	for (unsigned generation = 1; !parameters.generationLimit || generation <= *parameters.generationLimit;
+	for (unsigned generation = 1;
+			!parameters.iterationParameters.generationLimit ||
+				generation <= *parameters.iterationParameters.generationLimit;
 			++generation) {
 
 		std::vector<float> populationAverages;
@@ -82,7 +84,7 @@ void NeuralController::run() {
 			auto worstPopulation = boost::min_element(populations, compareBestFitnesses);
 			populations.erase(worstPopulation);
 		}
-		if (generation % parameters.printoutFrequency == 0) {
+		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
 			printInfo(generation, bestFitness, populationAverages);
 		}
 	}
@@ -91,7 +93,7 @@ void NeuralController::run() {
 void NeuralController::saveNeuralNetwork(const Genome& genome) {
 	//TODO we are reconstucting the same network as above
 	NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-			parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence);
+			parameters.commonParameters.getInputNeuronCount(), parameters.commonParameters.outputNeuronCount, parameters.useRecurrence);
 
 	network.setWeights(genome.weights);
 

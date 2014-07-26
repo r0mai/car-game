@@ -27,31 +27,21 @@ int main(int argc, char **argv) {
 	switch (parameters.gameType) {
 	case GameType::learning: {
 		ThreadPool threadPool;
-		threadPool.setNumThreads(parameters.threadCount);
+		threadPool.setNumThreads(parameters.learningParameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
-		NeuralController controller{parameters, trackCreators, threadPool.getIoService()};
+		NeuralController controller{parameters.learningParameters, trackCreators, threadPool.getIoService()};
 		controller.run();
 		break;
 	 }
 	case GameType::realtime: {
-		RealTimeGameManager manager{parameters, trackCreators[0], parameters.neuralNetworkFile};
+		RealTimeGameManager manager{parameters.realTimeParameters,
+			trackCreators[0]};
 
-		manager.setFPSLimit(parameters.fpsLimit);
-
-		if (parameters.neuralNetworkFile) {
-			NeuralNetwork network;
-
-			std::ifstream ifs(*parameters.neuralNetworkFile);
-			boost::archive::text_iarchive ia(ifs);
-			ia >> network;
-
-			manager.setNeuralNetwork(network);
-		}
 		manager.run();
 		break;
 	 }
 	case GameType::benchmark: {
-		Benchmark benchmark{parameters, trackCreators};
+		Benchmark benchmark{parameters.benchmarkParameters, trackCreators};
 
 		benchmark.run();
 		break;

@@ -1,43 +1,44 @@
 #include "Benchmark.hpp"
 #include <stdexcept>
-#include <boost/archive/text_iarchive.hpp>
-#include <fstream>
 #include "AIGameManager.hpp"
 #include <iostream>
 
 namespace car {
 
-Benchmark::Benchmark(const Parameters& parameters, track::TrackCreators trackCreators):
+Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators trackCreators):
 		parameters(parameters), trackCreators(trackCreators) {
 
-	if (!parameters.neuralNetworkFile) {
+	if (!parameters.carInputParameters.neuralNetworkFile) {
 		throw std::logic_error{"Neural network file is mandatory for benchmark"};
 	}
 
-	if (!parameters.generationLimit) {
+	if (!parameters.iterationParameters.generationLimit) {
 		throw std::logic_error{"Generation limit is mandatory for benchmark"};
 	}
 
-	std::ifstream ifs(*parameters.neuralNetworkFile);
-	boost::archive::text_iarchive ia(ifs);
-	ia >> neuralNetwork;
+	neuralNetwork = loadNeuralNetworkFromFile(
+			*parameters.carInputParameters.neuralNetworkFile);
+
 }
 
 void Benchmark::run() {
 	std::vector<AIGameManager> managers;
 	managers.reserve(trackCreators.size());
 	for (const auto& trackCreator: trackCreators) {
-		managers.emplace_back(parameters, trackCreator);
+		managers.emplace_back(parameters.commonParameters, trackCreator,
+				parameters.iterationParameters.fitnessExpression);
 	}
 
-	for (unsigned generation = 1; generation <= *parameters.generationLimit; ++generation) {
+	for (unsigned generation = 1;
+			generation <= *parameters.iterationParameters.generationLimit;
+			++generation) {
 		for (auto& manager: managers) {
 			manager.setNeuralNetwork(neuralNetwork);
 			manager.init();
 			manager.run();
 		}
 
-		if (generation % parameters.printoutFrequency == 0) {
+		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
 			std::cout << "Fitnesses: ";
 			for (auto& manager: managers) {
 				std::cout << manager.getFitness() << " ";

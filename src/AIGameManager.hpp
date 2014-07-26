@@ -3,12 +3,14 @@
 
 #include "GameManager.hpp"
 #include "Track/TrackCreator.hpp"
+#include "MathExpression.hpp"
 
 namespace car {
 
 class AIGameManager : public GameManager {
 public:
-	AIGameManager(const Parameters& parameters, track::TrackCreator trackCreator);
+	AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator,
+			const MathExpression& fitnessExpression);
 
 	void run();
 
@@ -19,6 +21,7 @@ private:
 	bool stopCondition() const;
 
 	const float maxTime = 600.f;
+	MathExpression fitnessExpression;
 };
 
 }

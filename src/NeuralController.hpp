@@ -16,7 +16,7 @@ class Genome;
 
 class NeuralController {
 public:
-	NeuralController(const Parameters& parameters,
+	NeuralController(const LearningParameters& parameters,
 			track::TrackCreators trackCreators,
 			boost::asio::io_service& ioService);
 	void run();
@@ -26,7 +26,7 @@ private:
 	void savePopulation(const GeneticPopulation& population) const;
 
 	boost::asio::io_service& ioService;
-	Parameters parameters;
+	LearningParameters parameters;
 	track::TrackCreators trackCreators;
 
 	void saveNeuralNetwork(const Genome& genome);

@@ -7,14 +7,17 @@
 
 namespace car {
 
-PopulationRunner::PopulationRunner(const Parameters& parameters,
+PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService):
 			ioService(&ioService),
 			population{parameters.populationSize,
 				NeuralNetwork::getWeightCountForNetwork(
-					parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
-					parameters.getInputNeuronCount(), parameters.outputNeuronCount, parameters.useRecurrence)}
+					parameters.hiddenLayerCount,
+					parameters.neuronPerHiddenLayer,
+					parameters.commonParameters.getInputNeuronCount(),
+					parameters.commonParameters.outputNeuronCount,
+					parameters.useRecurrence)}
 {
 	controllerDatas.reserve(parameters.populationSize);
 	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
@@ -22,8 +25,8 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 			{
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
-				parameters.getInputNeuronCount(),
-				parameters.outputNeuronCount,
+				parameters.commonParameters.getInputNeuronCount(),
+				parameters.commonParameters.outputNeuronCount,
 				parameters.useRecurrence
 			},
 			{}
@@ -32,7 +35,8 @@ PopulationRunner::PopulationRunner(const Parameters& parameters,
 		auto& controllerData = controllerDatas.back();
 		controllerData.managers.reserve(trackCreators.size());
 		for (const auto& trackCreator: trackCreators) {
-			controllerData.managers.emplace_back(parameters, trackCreator);
+			controllerData.managers.emplace_back(parameters.commonParameters, trackCreator,
+					parameters.iterationParameters.fitnessExpression);
 		}
 	}
 }

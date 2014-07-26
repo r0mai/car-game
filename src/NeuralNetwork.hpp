@@ -55,6 +55,8 @@ void NeuralNetwork::serialize(Archive& ar, const unsigned /*version*/) {
 	ar & layers;
 }
 
+NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName);
+
 }
 
 #endif /* !NEURALNETWORK_HPP */

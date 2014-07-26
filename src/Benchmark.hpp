@@ -11,13 +11,13 @@ class Benchmark {
 
 public:
 
-	Benchmark(const Parameters& parameters, track::TrackCreators trackCreators);
+	Benchmark(const BenchmarkParameters& parameters, track::TrackCreators trackCreators);
 
 	void run();
 
 private:
 
-	Parameters parameters;
+	BenchmarkParameters parameters;
 	track::TrackCreators trackCreators;
 	NeuralNetwork neuralNetwork;
 

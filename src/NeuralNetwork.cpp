@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <cmath>
+#include <fstream>
+#include <boost/archive/text_iarchive.hpp>
 
 #include "mathUtil.hpp"
 
@@ -92,6 +94,16 @@ Weights NeuralNetwork::evaluateInput(const Weights& input) {
 		nextInput = output; //we could move here probably
 	}
 	return output;
+}
+
+NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName) {
+	NeuralNetwork result;
+
+	std::ifstream ifs(fileName);
+	boost::archive::text_iarchive ia(ifs);
+	ia >> result;
+
+	return result;
 }
 
 }

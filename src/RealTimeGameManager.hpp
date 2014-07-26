@@ -17,8 +17,8 @@ namespace track {
 
 class RealTimeGameManager : public GameManager {
 public:
-	RealTimeGameManager(const Parameters& parameter, track::TrackCreator trackCreator,
-			bool startWithAi);
+	RealTimeGameManager(const RealTimeParameters& realTimeParameters,
+			track::TrackCreator trackCreator);
 
 	void run();
 
@@ -62,6 +62,8 @@ private:
 
 	float calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition);
 	void setViewParameters();
+
+	RealTimeParameters realTimeParameters;
 };
 
 }

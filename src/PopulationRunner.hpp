@@ -18,7 +18,7 @@ class Genome;
 
 class PopulationRunner {
 public:
-	PopulationRunner(const Parameters& parameters,
+	PopulationRunner(const LearningParameters& parameters,
 		track::TrackCreators trackCreators,
 		boost::asio::io_service& ioService);
 
