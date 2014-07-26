@@ -1,6 +1,6 @@
 
 #include "RealTimeGameManager.hpp"
-#include "NeuralController.hpp"
+#include "LearningController.hpp"
 #include "Parameters.hpp"
 #include "ThreadPool.hpp"
 #include "Track/Track.hpp"
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 		ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.learningParameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
-		NeuralController controller{parameters.learningParameters, trackCreators, threadPool.getIoService()};
+		LearningController controller{parameters.learningParameters, trackCreators, threadPool.getIoService()};
 		controller.run();
 		break;
 	 }

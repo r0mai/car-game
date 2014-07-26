@@ -35,7 +35,7 @@ public:
 	const GeneticPopulation& getPopulation() const { return population; }
 	GeneticPopulation& getPopulation() { return population; }
 private:
-	struct NeuralControllerData {
+	struct LearningControllerData {
 		NeuralNetwork network;
 		std::vector<AIGameManager> managers;
 	};
@@ -43,12 +43,12 @@ private:
 	boost::asio::io_service* ioService;
 
 	GeneticPopulation population;
-	std::vector<NeuralControllerData> controllerDatas;
+	std::vector<LearningControllerData> controllerDatas;
 	float fitnessSum = 0.f; // Updated by updateBestFitness
 	float bestFitness = 0.f; // Updated by updateBestFitness
 	const Genome* bestGenome = nullptr;
 
-	void runSimulation(Genome& genome, NeuralControllerData& data);
+	void runSimulation(Genome& genome, LearningControllerData& data);
 	void updateBestFitness();
 };
 

@@ -1,6 +1,6 @@
 
-#ifndef NEURALCONTROLLER_HPP_
-#define NEURALCONTROLLER_HPP_
+#ifndef SRC_LEARNINGCONTROLLER_HPP
+#define SRC_LEARNINGCONTROLLER_HPP
 
 #include <functional>
 
@@ -14,9 +14,9 @@ namespace car {
 class GeneticPopulation;
 class Genome;
 
-class NeuralController {
+class LearningController {
 public:
-	NeuralController(const LearningParameters& parameters,
+	LearningController(const LearningParameters& parameters,
 			track::TrackCreators trackCreators,
 			boost::asio::io_service& ioService);
 	void run();
@@ -34,5 +34,5 @@ private:
 
 }
 
-#endif
+#endif /* SRC_LEARNINGCONTROLLER_HPP */
 

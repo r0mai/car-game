@@ -21,7 +21,7 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 {
 	controllerDatas.reserve(parameters.populationSize);
 	for (std::size_t i = 0; i < parameters.populationSize; ++i) {
-		controllerDatas.push_back(NeuralControllerData{
+		controllerDatas.push_back(LearningControllerData{
 			{
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
@@ -76,7 +76,7 @@ void PopulationRunner::runIteration() {
 	population.evolve();
 }
 
-void PopulationRunner::runSimulation(Genome& genome, NeuralControllerData& data) {
+void PopulationRunner::runSimulation(Genome& genome, LearningControllerData& data) {
 	data.network.setWeights(genome.weights);
 	genome.fitness = 0;
 
