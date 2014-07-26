@@ -3,9 +3,10 @@
 
 #include <vector>
 #include <SFML/System/Vector2.hpp>
-#include "Track.hpp"
 
 namespace car { namespace track {
+
+class Track;
 
 Track createPolygonTrack(float checkpointDistance, float trackWidth, const std::vector<sf::Vector2f>& points);
 

@@ -5,11 +5,12 @@
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
 #include "Line2.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 
 PopulationRunner::PopulationRunner(const LearningParameters& parameters,
-		track::TrackCreators trackCreators,
+		const track::TrackCreators& trackCreators,
 		boost::asio::io_service& ioService):
 			ioService(&ioService),
 			population{parameters.populationSize,

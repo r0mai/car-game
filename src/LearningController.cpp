@@ -14,11 +14,12 @@
 
 #include "LearningController.hpp"
 #include "PopulationRunner.hpp"
+#include "Track/Track.hpp"
 
 namespace car {
 
 LearningController::LearningController(const LearningParameters& parameters,
-		track::TrackCreators trackCreators,
+		const track::TrackCreators& trackCreators,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
 	parameters(parameters),

@@ -4,6 +4,7 @@
 #include <boost/program_options.hpp>
 #include "optionsUtil.hpp"
 #include "Line2.hpp"
+#include "Track/Track.hpp"
 
 namespace po = boost::program_options;
 

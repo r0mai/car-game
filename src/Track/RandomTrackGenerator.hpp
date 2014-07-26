@@ -2,10 +2,13 @@
 #define RANDOMTRACKGENERATOR_HPP_
 
 #include <functional>
+#include <vector>
+#include <SFML/Graphics.hpp>
 #include "RandomGenerator.hpp"
-#include "Track.hpp"
 
 namespace car { namespace track {
+
+class Track;
 
 class RandomTrackGenerator {
 public:

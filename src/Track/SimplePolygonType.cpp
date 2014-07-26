@@ -2,6 +2,7 @@
 #include "createPolygonTrack.hpp"
 #include "optionsUtil.hpp"
 #include "Line2.hpp"
+#include "Track.hpp"
 
 namespace car { namespace track {
 
@@ -14,7 +15,7 @@ SimplePolygonType::SimplePolygonType():BasicPolygonType{"simple"} {
 			;
 }
 
-std::function<Track(const std::vector<sf::Vector2f>)> SimplePolygonType::getTrackCreator(
+std::function<Track(const std::vector<sf::Vector2f>&)> SimplePolygonType::getTrackCreator(
 		const boost::program_options::variables_map& /*variablesMap*/) {
 	using std::placeholders::_1;
 	return std::bind(createPolygonTrack, params.checkpointDistance, params.trackWidth, _1);

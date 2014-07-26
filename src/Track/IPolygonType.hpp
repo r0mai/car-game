@@ -15,7 +15,7 @@ class Track;
 
 class IPolygonType {
 public:
-	virtual std::function<Track(const std::vector<sf::Vector2f>)> getTrackCreator(
+	virtual std::function<Track(const std::vector<sf::Vector2f>&)> getTrackCreator(
 			const boost::program_options::variables_map& variablesMap) = 0;
 	virtual std::string getHelpString() = 0;
 	virtual std::string getArgumentName() = 0;

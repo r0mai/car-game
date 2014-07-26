@@ -3,11 +3,15 @@
 #define SRC_LEARNINGCONTROLLER_HPP
 
 #include <functional>
-
+#include <Track/TrackCreator.hpp>
 #include "LearningParameters.hpp"
-#include "Track/Track.hpp"
-#include "Track/TrackCreator.hpp"
-#include "boost/asio/io_service.hpp"
+
+namespace boost { namespace asio {
+
+class io_service;
+
+}}
+
 
 namespace car {
 
@@ -17,7 +21,7 @@ class Genome;
 class LearningController {
 public:
 	LearningController(const LearningParameters& parameters,
-			track::TrackCreators trackCreators,
+			const track::TrackCreators& trackCreators,
 			boost::asio::io_service& ioService);
 	void run();
 

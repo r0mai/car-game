@@ -1,3 +1,4 @@
+#include "Track.hpp"
 #include "RandomTrackType.hpp"
 #include <sstream>
 #include "RandomTrackGenerator.hpp"
