@@ -2,9 +2,9 @@
 #define SRC_TRACK_POINTADDERRANDOMPOLYGONGENERATOR_HPP
 
 #include <vector>
+#include <SFML/Graphics.hpp>
 #include "RandomGenerator.hpp"
 #include "RandomTrackException.hpp"
-#include "Line2.hpp"
 
 namespace car { namespace track {
 

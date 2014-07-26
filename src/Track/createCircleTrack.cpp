@@ -1,5 +1,6 @@
 #include "createCircleTrack.hpp"
 #include <boost/math/constants/constants.hpp>
+#include "Line2.hpp"
 
 namespace car { namespace track {
 

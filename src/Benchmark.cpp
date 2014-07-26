@@ -1,7 +1,8 @@
 #include "Benchmark.hpp"
 #include <stdexcept>
-#include "AIGameManager.hpp"
 #include <iostream>
+#include "AIGameManager.hpp"
+#include "Line2.hpp"
 
 namespace car {
 

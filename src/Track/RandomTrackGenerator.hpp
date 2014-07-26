@@ -3,7 +3,6 @@
 
 #include <functional>
 #include "RandomGenerator.hpp"
-#include "Line2.hpp"
 #include "Track.hpp"
 
 namespace car { namespace track {

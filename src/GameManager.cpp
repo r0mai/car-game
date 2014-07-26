@@ -4,6 +4,7 @@
 #include <cassert>
 #include <boost/math/constants/constants.hpp>
 #include "mathUtil.hpp"
+#include "Line2.hpp"
 
 namespace car {
 

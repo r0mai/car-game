@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
+#include "Line2.hpp"
 
 namespace car {
 

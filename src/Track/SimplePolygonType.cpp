@@ -1,6 +1,7 @@
 #include "SimplePolygonType.hpp"
 #include "createPolygonTrack.hpp"
 #include "optionsUtil.hpp"
+#include "Line2.hpp"
 
 namespace car { namespace track {
 

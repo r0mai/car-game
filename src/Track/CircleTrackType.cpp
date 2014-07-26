@@ -3,6 +3,7 @@
 #include <sstream>
 #include <boost/program_options.hpp>
 #include "optionsUtil.hpp"
+#include "Line2.hpp"
 
 namespace po = boost::program_options;
 
