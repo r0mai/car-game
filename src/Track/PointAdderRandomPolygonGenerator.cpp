@@ -1,5 +1,6 @@
 #include "PointAdderRandomPolygonGenerator.hpp"
 #include <boost/random/uniform_real_distribution.hpp>
+#include "mathUtil.hpp"
 
 
 namespace car { namespace track {

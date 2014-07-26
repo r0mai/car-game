@@ -1,5 +1,7 @@
+#include <algorithm>
 #include "Line2.hpp"
 #include "LineIntersection.hpp"
+#include "mathUtil.hpp"
 
 namespace car {
 

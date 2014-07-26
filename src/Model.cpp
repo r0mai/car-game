@@ -5,6 +5,7 @@
 
 #include "Model.hpp"
 #include "drawUtil.hpp"
+#include "mathUtil.hpp"
 
 namespace car {
 

@@ -1,6 +1,7 @@
 #ifndef SRC_TRACK_POINTADDERRANDOMPOLYGONGENERATOR_HPP
 #define SRC_TRACK_POINTADDERRANDOMPOLYGONGENERATOR_HPP
 
+#include <vector>
 #include "RandomGenerator.hpp"
 #include "RandomTrackException.hpp"
 #include "Line2.hpp"

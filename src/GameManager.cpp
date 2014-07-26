@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <boost/math/constants/constants.hpp>
+#include "mathUtil.hpp"
 
 namespace car {
 

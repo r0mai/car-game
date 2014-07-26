@@ -3,7 +3,6 @@
 
 #include <SFML/System/Vector2.hpp>
 
-#include "mathUtil.hpp"
 
 namespace car {
 
