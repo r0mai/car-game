@@ -94,7 +94,8 @@ Parameters parseParameters(int argc, char **argv) {
 
 	po::options_description commandLineOnlyDescription("Command-line only options");
 	commandLineOnlyDescription.add_options()
-		("help", "produce help message")
+		("help,h", "Print help for command line options")
+		("help-random", "Print help for possible options in random track config files")
 		("game-type", po::value(&parameters.gameType)->default_value(parameters.gameType),
 				gameTypeDescription.c_str())
 		("config", po::value<std::vector<std::string>>(&configFiles),
@@ -231,10 +232,14 @@ Parameters parseParameters(int argc, char **argv) {
 	po::notify(vm);
 
 	if (vm.count("help")) {
-		std::cout << commandLineDescription << "\n\n" << track::trackArgumentParser::getHelpString() << std::endl;
+		std::cout << commandLineDescription << std::endl;
 		std::exit(0);
 	}
 
+	if (vm.count("help-random")) {
+		std::cout << track::trackArgumentParser::getHelpString() << std::endl;
+		std::exit(0);
+	}
 
 	// Boost only considers the first config value, but we want it the other way around
 	// so the config files are read in reverse order. Now the new values override the

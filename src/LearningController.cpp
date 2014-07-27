@@ -11,6 +11,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/filesystem.hpp>
 
 #include "LearningController.hpp"
 #include "PopulationRunner.hpp"
@@ -104,7 +105,8 @@ void LearningController::saveNeuralNetwork(const Genome& genome) {
 }
 
 void LearningController::loadPopulation(GeneticPopulation& population) const {
-	if (parameters.populationInputFile) {
+	if (parameters.populationInputFile && 
+			boost::filesystem::exists(*parameters.populationInputFile)) {
 		std::ifstream ifs(*parameters.populationInputFile);
 		boost::archive::text_iarchive ia(ifs);
 		ia >> population.getPopulation();
