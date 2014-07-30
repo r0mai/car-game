@@ -24,7 +24,9 @@ void GameManager::init() {
 }
 
 void GameManager::advance() {
-	handleInput();
+	if (isAIControl) {
+		controlCar();
+	}
 	model.advanceTime(physicsTimeStep);
 	rayPoints = model.getRayPoints(rayCount);
 }
@@ -37,25 +39,20 @@ void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
 	rayCount = neuralNetwork.getInputNeuronCount() - parameters.extraInputNeuronCount;
 }
 
-void GameManager::handleInput() {
-	handleUserInput();
-	if ( isAIControl ) {
-		Weights outputs = callNeuralNetwork();
-		assert(outputs.size() == 3);
+void GameManager::controlCar() {
+	Weights outputs = callNeuralNetwork();
+	assert(outputs.size() == 3);
 
-		Car& car = model.getCar();
+	Car& car = model.getCar();
 
-		float throttleOutput = clamp((2.f/3.f)*outputs[0] + (2.f/3.f), 0.f, 1.f);
-		float brakeOutput = clamp((2.f/3.f)*outputs[1] + (1.f/3.f), 0.f, 1.f);
-		float turnLevelOutput = outputs[2];
+	float throttleOutput = clamp((2.f/3.f)*outputs[0] + (2.f/3.f), 0.f, 1.f);
+	float brakeOutput = clamp((2.f/3.f)*outputs[1] + (1.f/3.f), 0.f, 1.f);
+	float turnLevelOutput = outputs[2];
 
-		car.setThrottle(throttleOutput);
-		car.setBrake(brakeOutput);
-		car.setTurnLevel(turnLevelOutput);
-	}
+	car.setThrottle(throttleOutput);
+	car.setBrake(brakeOutput);
+	car.setTurnLevel(turnLevelOutput);
 }
-
-void GameManager::handleUserInput() {}
 
 Weights GameManager::callNeuralNetwork() {
 	using namespace boost::math::float_constants;

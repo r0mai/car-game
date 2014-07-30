@@ -7,7 +7,7 @@
 
 namespace car {
 
-class AIGameManager : public GameManager {
+class AIGameManager {
 public:
 	AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator,
 			const MathExpression& fitnessExpression);
@@ -17,9 +17,16 @@ public:
 	//should be called after run()
 	float getFitness() const;
 
+	void setNeuralNetwork(const NeuralNetwork& neuralNetwork) {
+		gameManager.setNeuralNetwork(neuralNetwork);
+	}
+
+	void init();
+
 private:
 	bool stopCondition() const;
 
+	GameManager gameManager;
 	const float maxTime = 600.f;
 	MathExpression fitnessExpression;
 };

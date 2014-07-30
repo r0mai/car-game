@@ -16,7 +16,7 @@ namespace track {
 	class Track;
 }
 
-class RealTimeGameManager : public GameManager {
+class RealTimeGameManager {
 public:
 	RealTimeGameManager(const RealTimeParameters& realTimeParameters,
 			track::TrackCreator trackCreator);
@@ -25,13 +25,15 @@ public:
 
 	void setFPSLimit(float newFPSLimit);
 
-protected:
-	virtual void handleUserInput();
+private:
+	void handleUserInput();
 
 	void drawGame();
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
+
+	GameManager gameManager;
 
 	sf::RenderWindow window;
 	sf::View gameView;
