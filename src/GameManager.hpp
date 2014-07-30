@@ -22,9 +22,18 @@ public:
 	void setNeuralNetwork(const NeuralNetwork& network);
 
 	void init();
-protected:
-	void handleInput();
-	virtual void handleUserInput();
+
+	bool getIsAIControl() const { return isAIControl; }
+	void setIsAIControl(bool value) { isAIControl = value; }
+	Model& getModel() { return model; }
+	const Model& getModel() const { return model; }
+	float getPhysicsTimeStep() const { return physicsTimeStep; }
+	const track::Track& getTrack() const { return track; }
+	std::vector<boost::optional<sf::Vector2f>> getRayPoints() {
+		return rayPoints;
+	}
+private:
+	void controlCar();
 
 	Weights callNeuralNetwork();
 

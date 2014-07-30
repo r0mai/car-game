@@ -16,7 +16,7 @@
 namespace car {
 
 RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParameters, track::TrackCreator trackCreator) :
-	GameManager(realTimeParameters.commonParameters, trackCreator),
+	gameManager(realTimeParameters.commonParameters, trackCreator),
 	window(sf::VideoMode(
 				realTimeParameters.screenWidth,
 				realTimeParameters.screenHeight), "car-game"),
@@ -26,7 +26,7 @@ RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParam
 
 	setFPSLimit(realTimeParameters.fpsLimit);
 
-	isAIControl = realTimeParameters.carInputParameters.neuralNetworkFile;
+	gameManager.setIsAIControl(realTimeParameters.carInputParameters.neuralNetworkFile);
 	font.loadFromFile(realTimeParameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
 	gasTelemetry.setAutomaticBoundsDetection(false);
 	gasTelemetry.setBounds(0.f, 1.f);
@@ -39,8 +39,8 @@ RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParam
 
 	hudView = window.getDefaultView();
 
-	if (isAIControl) {
-		setNeuralNetwork(loadNeuralNetworkFromFile(
+	if (gameManager.getIsAIControl()) {
+		gameManager.setNeuralNetwork(loadNeuralNetworkFromFile(
 					*realTimeParameters.carInputParameters.neuralNetworkFile));
 	}
 }
@@ -61,9 +61,10 @@ void RealTimeGameManager::run() {
 			deltaSeconds = 0.1f;
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
-		while (physicsTimeStepAccumulator >= physicsTimeStep) {
-			advance();
-			physicsTimeStepAccumulator -= physicsTimeStep;
+		while (physicsTimeStepAccumulator >= gameManager.getPhysicsTimeStep()) {
+			handleUserInput();
+			gameManager.advance();
+			physicsTimeStepAccumulator -= gameManager.getPhysicsTimeStep();
 		}
 
 		updateTelemetry();
@@ -115,7 +116,7 @@ float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, fl
 
 void RealTimeGameManager::setViewParameters() {
 	auto screenSize = window.getSize();
-	auto trackDimensions = track.getDimensions();
+	auto trackDimensions = gameManager.getTrack().getDimensions();
 	auto maxViewSize = sf::Vector2f{screenSize.x / realTimeParameters.minPixelsPerMeter, screenSize.y / realTimeParameters.minPixelsPerMeter};
 	auto minViewSize = sf::Vector2f{screenSize.x / realTimeParameters.maxPixelsPerMeter, screenSize.y / realTimeParameters.maxPixelsPerMeter};
 
@@ -144,7 +145,7 @@ void RealTimeGameManager::setViewParameters() {
 
 	gameView.setSize(viewSize.x, viewSize.y);
 
-	auto& carPosition = model.getCar().getPosition();
+	auto& carPosition = gameManager.getModel().getCar().getPosition();
 	auto& viewCenter = gameView.getCenter();
 	panThreshold =  boost::apply_visitor(
 				ScreenDimensionConverter{viewSize, pixelsPerMeter},
@@ -197,7 +198,7 @@ void RealTimeGameManager::handleUserInput() {
 				showTelemetryText = !showTelemetryText;
 				break;
 			case sf::Keyboard::A:
-				isAIControl = !isAIControl;
+				gameManager.setIsAIControl(!gameManager.getIsAIControl());
 				break;
 			default:
 				break;
@@ -215,7 +216,8 @@ void RealTimeGameManager::handleUserInput() {
 		window.close();
 	}
 
-	if (!isAIControl) {
+	if (!gameManager.getIsAIControl()) {
+		auto& model = gameManager.getModel();
 		model.setLeftPressed(pressedKeys[sf::Keyboard::Left]);
 		model.setRightPressed(pressedKeys[sf::Keyboard::Right]);
 		model.setForwardPressed(pressedKeys[sf::Keyboard::Up]);
@@ -224,6 +226,8 @@ void RealTimeGameManager::handleUserInput() {
 }
 
 void RealTimeGameManager::updateTelemetry() {
+	auto& model = gameManager.getModel();
+
 	float currentTime = model.getCurrentTime();
 	const Car& car = model.getCar();
 
@@ -236,6 +240,8 @@ void RealTimeGameManager::updateTelemetry() {
 }
 
 void RealTimeGameManager::drawGame() {
+	auto& model = gameManager.getModel();
+
 	if (showTrackBoundary) {
 		model.drawTrack(window, showCheckPoints);
 	}
@@ -258,9 +264,9 @@ void RealTimeGameManager::drawGame() {
 }
 
 void RealTimeGameManager::drawRays() {
-	const Car& car = model.getCar();
+	const Car& car = gameManager.getModel().getCar();
 
-	for (const auto& ray : rayPoints) {
+	for (const auto& ray : gameManager.getRayPoints()) {
 		if (!ray) {
 			continue;
 		}
@@ -270,6 +276,8 @@ void RealTimeGameManager::drawRays() {
 
 void RealTimeGameManager::drawTelemetry() {
 	using namespace boost::math::float_constants;
+
+	auto& model = gameManager.getModel();
 
 	if (showTelemetryText) {
 		const Car& car = model.getCar();

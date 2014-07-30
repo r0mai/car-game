@@ -11,17 +11,22 @@
 namespace car {
 
 AIGameManager::AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator, const MathExpression& fitnessExpression) :
-	GameManager(parameters, trackCreator),
+	gameManager(parameters, trackCreator),
 	fitnessExpression{fitnessExpression} {}
 
+void AIGameManager::init() {
+	gameManager.init();
+}
 
 void AIGameManager::run() {
 	while (!stopCondition()) {
-		advance();
+		gameManager.advance();
 	}
 }
 
 float AIGameManager::getFitness() const {
+	auto& model = gameManager.getModel();
+
 	SymbolTable symbolTable = {
 		{"td", model.getCar().getTravelDistance()},
 		{"cps", model.getTrack().getNumberOfCheckpoints()},
@@ -32,6 +37,8 @@ float AIGameManager::getFitness() const {
 }
 
 bool AIGameManager::stopCondition() const {
+	auto& model = gameManager.getModel();
+
 	return model.hasCarCollided() || model.getCurrentTime() > maxTime;
 }
 
