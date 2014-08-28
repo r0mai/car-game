@@ -10,6 +10,7 @@ namespace car {
 
 GameManager::GameManager(const CommonParameters& parameters, track::TrackCreator trackCreator) :
 	parameters(parameters),
+	physicsTimeStep(getPhysicsTimeStep(parameters)),
 	track(trackCreator())
 {
 	track.check();

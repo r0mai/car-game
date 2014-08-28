@@ -142,9 +142,8 @@ Parameters parseParameters(int argc, char **argv) {
 
 	po::options_description carInputDescription("Options for realtime and benchmark game types");
 	carInputDescription.add_options()
-		("neural-network",
-			po::value<std::string>(),
-			"Load neural-network from file.")
+		("neural-network", po::value(&carInputParameters.neuralNetworkFile),
+			"Load neural networks from file. For benchmark mode, at least 1 must be given.")
 		;
 
 	po::options_description realtimeDescription("Options for realtime game type");
@@ -251,9 +250,6 @@ Parameters parseParameters(int argc, char **argv) {
 
 	parameters.learningParameters.useRecurrence = vm.count("use-recurrence");
 
-	if (vm.count("neural-network")) {
-		carInputParameters.neuralNetworkFile = vm["neural-network"].as<std::string>();
-	}
 	if (vm.count("generation-limit")) {
 		iterationParameters.generationLimit = vm["generation-limit"].as<unsigned>();
 	}

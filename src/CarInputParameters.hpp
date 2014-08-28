@@ -2,12 +2,12 @@
 #define SRC_CARINPUTPARAMETERS_HPP
 
 #include <string>
-#include <boost/optional.hpp>
+#include <vector>
 
 namespace car {
 
 struct CarInputParameters {
-	boost::optional<std::string> neuralNetworkFile;
+	std::vector<std::string> neuralNetworkFile;
 };
 
 }

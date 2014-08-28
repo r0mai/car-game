@@ -9,7 +9,7 @@ namespace car {
 Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators trackCreators):
 		parameters(parameters), trackCreators(trackCreators) {
 
-	if (!parameters.carInputParameters.neuralNetworkFile) {
+	if (parameters.carInputParameters.neuralNetworkFile.empty()) {
 		throw std::logic_error{"Neural network file is mandatory for benchmark"};
 	}
 
@@ -17,8 +17,9 @@ Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators
 		throw std::logic_error{"Generation limit is mandatory for benchmark"};
 	}
 
-	neuralNetwork = loadNeuralNetworkFromFile(
-			*parameters.carInputParameters.neuralNetworkFile);
+	for (const auto& filename: parameters.carInputParameters.neuralNetworkFile) {
+		neuralNetworks.push_back(loadNeuralNetworkFromFile(filename));
+	}
 
 }
 
@@ -33,18 +34,20 @@ void Benchmark::run() {
 	for (unsigned generation = 1;
 			generation <= *parameters.iterationParameters.generationLimit;
 			++generation) {
-		for (auto& manager: managers) {
-			manager.setNeuralNetwork(neuralNetwork);
-			manager.init();
-			manager.run();
-		}
-
-		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
-			std::cout << "Fitnesses: ";
+		for (const auto& neuralNetwork: neuralNetworks) {
 			for (auto& manager: managers) {
-				std::cout << manager.getFitness() << " ";
+				manager.setNeuralNetwork(neuralNetwork);
+				manager.init();
+				manager.run();
 			}
-			std::cout << std::endl;
+
+			if (generation % parameters.iterationParameters.printoutFrequency == 0) {
+				std::cout << "Fitnesses: ";
+				for (auto& manager: managers) {
+					std::cout << manager.getFitness() << " ";
+				}
+				std::cout << std::endl;
+			}
 		}
 	}
 }

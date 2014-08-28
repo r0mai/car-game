@@ -19,7 +19,7 @@ private:
 
 	BenchmarkParameters parameters;
 	track::TrackCreators trackCreators;
-	NeuralNetwork neuralNetwork;
+	std::vector<NeuralNetwork> neuralNetworks;
 
 };
 
