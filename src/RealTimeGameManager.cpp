@@ -15,33 +15,49 @@
 
 namespace car {
 
+auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
+	using namespace boost::math::float_constants;
+
+	CarData result{parameters, trackCreator};
+
+	result.gasTelemetry.setAutomaticBoundsDetection(false);
+	result.gasTelemetry.setBounds(0.f, 1.f);
+	result.brakeTelemetry.setAutomaticBoundsDetection(false);
+	result.brakeTelemetry.setBounds(0.f, 1.f);
+	result.angleTelemetry.setAutomaticBoundsDetection(false);
+	result.angleTelemetry.setBounds(-pi, pi);
+	result.turnTelemetry.setAutomaticBoundsDetection(false);
+	result.turnTelemetry.setBounds(-1.f, 1.f);
+
+	return result;
+}
+
 RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParameters, track::TrackCreator trackCreator) :
-	gameManager(realTimeParameters.commonParameters, trackCreator),
 	window(sf::VideoMode(
 				realTimeParameters.screenWidth,
 				realTimeParameters.screenHeight), "car-game"),
-	realTimeParameters(realTimeParameters)
+	realTimeParameters(realTimeParameters),
+	physicsTimeStep(getPhysicsTimeStep(realTimeParameters.commonParameters))
 {
-	using namespace boost::math::float_constants;
 
 	setFPSLimit(realTimeParameters.fpsLimit);
 
-	gameManager.setIsAIControl(realTimeParameters.carInputParameters.neuralNetworkFile);
 	font.loadFromFile(realTimeParameters.projectRootPath + "/resources/DejaVuSansMono.ttf");
-	gasTelemetry.setAutomaticBoundsDetection(false);
-	gasTelemetry.setBounds(0.f, 1.f);
-	brakeTelemetry.setAutomaticBoundsDetection(false);
-	brakeTelemetry.setBounds(0.f, 1.f);
-	angleTelemetry.setAutomaticBoundsDetection(false);
-	angleTelemetry.setBounds(-pi, pi);
-	turnTelemetry.setAutomaticBoundsDetection(false);
-	turnTelemetry.setBounds(-1.f, 1.f);
 
 	hudView = window.getDefaultView();
 
-	if (gameManager.getIsAIControl()) {
-		gameManager.setNeuralNetwork(loadNeuralNetworkFromFile(
-					*realTimeParameters.carInputParameters.neuralNetworkFile));
+	if (realTimeParameters.carInputParameters.neuralNetworkFile.empty()) {
+		carDatas.push_back(createCarData(realTimeParameters.commonParameters, trackCreator));
+		carDatas.back().gameManager.setIsAIControl(false);
+	} else {
+		for (const auto& neuralNetworkFile: realTimeParameters.carInputParameters.neuralNetworkFile) {
+			carDatas.push_back(createCarData(realTimeParameters.commonParameters, trackCreator));
+			auto& carData = carDatas.back();
+			auto& gameManager = carData.gameManager;
+			gameManager.setIsAIControl(true);
+			gameManager.setNeuralNetwork(loadNeuralNetworkFromFile(neuralNetworkFile));
+			carData.name = neuralNetworkFile;
+		}
 	}
 }
 
@@ -61,10 +77,12 @@ void RealTimeGameManager::run() {
 			deltaSeconds = 0.1f;
 		}
 		physicsTimeStepAccumulator += deltaSeconds;
-		while (physicsTimeStepAccumulator >= gameManager.getPhysicsTimeStep()) {
+		while (physicsTimeStepAccumulator >= physicsTimeStep) {
 			handleUserInput();
-			gameManager.advance();
-			physicsTimeStepAccumulator -= gameManager.getPhysicsTimeStep();
+			for (auto& carData: carDatas) {
+				carData.gameManager.advance();
+			}
+			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
 		updateTelemetry();
@@ -115,6 +133,7 @@ float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, fl
 }
 
 void RealTimeGameManager::setViewParameters() {
+	auto& gameManager = carDatas[currentCarId].gameManager;
 	auto screenSize = window.getSize();
 	auto trackDimensions = gameManager.getTrack().getDimensions();
 	auto maxViewSize = sf::Vector2f{screenSize.x / realTimeParameters.minPixelsPerMeter, screenSize.y / realTimeParameters.minPixelsPerMeter};
@@ -169,8 +188,9 @@ void RealTimeGameManager::setFPSLimit(float newFPSLimit) {
 }
 
 void RealTimeGameManager::handleUserInput() {
-
+	auto& gameManager = carDatas[currentCarId].gameManager;
 	sf::Event event;
+
 	while (window.pollEvent(event)) {
 		switch(event.type) {
 		case sf::Event::Closed:
@@ -200,6 +220,17 @@ void RealTimeGameManager::handleUserInput() {
 			case sf::Keyboard::A:
 				gameManager.setIsAIControl(!gameManager.getIsAIControl());
 				break;
+			case sf::Keyboard::PageDown:
+				++currentCarId;
+				currentCarId %= carDatas.size();
+				break;
+			case sf::Keyboard::PageUp:
+				if (currentCarId == 0) {
+					currentCarId = carDatas.size() - 1;
+				} else {
+					--currentCarId;
+				}
+				break;
 			default:
 				break;
 			}
@@ -226,30 +257,33 @@ void RealTimeGameManager::handleUserInput() {
 }
 
 void RealTimeGameManager::updateTelemetry() {
-	auto& model = gameManager.getModel();
+	for (auto& carData: carDatas) {
+		auto& gameManager = carData.gameManager;
+		auto& model = gameManager.getModel();
 
-	float currentTime = model.getCurrentTime();
-	const Car& car = model.getCar();
+		float currentTime = model.getCurrentTime();
+		const Car& car = model.getCar();
 
-	speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
-	accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, getLength(car.getAcceleration())));
-	angleTelemetry.addDataPoint(sf::Vector2f(currentTime, std::atan2(car.getOrientation().x, car.getOrientation().y)));
-	gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
-	brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
-	turnTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getTurnLevel()));
+		carData.speedTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getSpeed()));
+		carData.accelerationTelemetry.addDataPoint(sf::Vector2f(currentTime, getLength(car.getAcceleration())));
+		carData.angleTelemetry.addDataPoint(sf::Vector2f(currentTime, std::atan2(car.getOrientation().x, car.getOrientation().y)));
+		carData.gasTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getThrottle()));
+		carData.brakeTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getBrake()));
+		carData.turnTelemetry.addDataPoint(sf::Vector2f(currentTime, car.getTurnLevel()));
+	}
 }
 
 void RealTimeGameManager::drawGame() {
-	auto& model = gameManager.getModel();
-
 	if (showTrackBoundary) {
-		model.drawTrack(window, showCheckPoints);
+		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
 	}
 	if (showRays) {
 		drawRays();
 	}
 	if (showCar) {
-		model.drawCar(window);
+		for (const auto& carData: carDatas) {
+			carData.gameManager.getModel().drawCar(window);
+		}
 	}
 
 	//auto circle = sf::CircleShape{panThreshold};
@@ -264,6 +298,7 @@ void RealTimeGameManager::drawGame() {
 }
 
 void RealTimeGameManager::drawRays() {
+	auto& gameManager = carDatas[currentCarId].gameManager;
 	const Car& car = gameManager.getModel().getCar();
 
 	for (const auto& ray : gameManager.getRayPoints()) {
@@ -275,6 +310,8 @@ void RealTimeGameManager::drawRays() {
 }
 
 void RealTimeGameManager::drawTelemetry() {
+	auto& carData = carDatas[currentCarId];
+	auto& gameManager = carData.gameManager;
 	using namespace boost::math::float_constants;
 
 	auto& model = gameManager.getModel();
@@ -294,6 +331,9 @@ void RealTimeGameManager::drawTelemetry() {
 			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")" <<
 			", TravelDistance = " << car.getTravelDistance() <<
 			",\nppm = " << pixelsPerMeter;
+		if (!carData.name.empty()) {
+			ss << ",AI = " << carData.name;
+		}
 		sf::Text text;
 		text.setFont(font);
 		text.setColor(sf::Color::White);
@@ -306,12 +346,12 @@ void RealTimeGameManager::drawTelemetry() {
 	}
 
 	if (showTelemetryGraphs) {
-		speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Green);
-		accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Yellow);
-		angleTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::White);
-		gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Red);
-		brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Magenta);
-		turnTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Cyan);
+		carData.speedTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Green);
+		carData.accelerationTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::Yellow);
+		carData.angleTelemetry.drawAsGraph(window, sf::FloatRect(10, 20, 600, 200), sf::Color::White);
+		carData.gasTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Red);
+		carData.brakeTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Magenta);
+		carData.turnTelemetry.drawAsGraph(window, sf::FloatRect(10, 230, 600, 200), sf::Color::Cyan);
 	}
 }
 

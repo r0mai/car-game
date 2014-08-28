@@ -33,7 +33,22 @@ private:
 	void drawRays();
 	void updateTelemetry();
 
-	GameManager gameManager;
+	struct CarData {
+		GameManager gameManager;
+		Telemetry speedTelemetry;
+		Telemetry accelerationTelemetry;
+		Telemetry angleTelemetry;
+		Telemetry gasTelemetry;
+		Telemetry brakeTelemetry;
+		Telemetry turnTelemetry;
+		std::string name;
+
+		CarData(const CommonParameters& parameters, track::TrackCreator trackCreator):
+			gameManager{parameters, trackCreator} {}
+	};
+
+	std::vector<CarData> carDatas;
+	std::size_t currentCarId = 0;
 
 	sf::RenderWindow window;
 	sf::View gameView;
@@ -52,21 +67,15 @@ private:
 	float pixelsPerMeter = 0.f;
 	float panThreshold = 0.f;
 
-	Telemetry speedTelemetry;
-	Telemetry accelerationTelemetry;
-	Telemetry angleTelemetry;
-	Telemetry gasTelemetry;
-	Telemetry brakeTelemetry;
-	Telemetry turnTelemetry;
-
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
-
-private:
 
 	float calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition);
 	void setViewParameters();
 
 	RealTimeParameters realTimeParameters;
+	float physicsTimeStep;
+
+	static CarData createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator);
 };
 
 }

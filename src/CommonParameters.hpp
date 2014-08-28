@@ -36,6 +36,11 @@ struct CommonParameters {
 
 };
 
+inline
+float getPhysicsTimeStep(const CommonParameters& parameters) {
+	return 1.f/parameters.physicsTimeStepsPerSecond;
+}
+
 }
 
 

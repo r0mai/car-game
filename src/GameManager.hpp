@@ -27,7 +27,6 @@ public:
 	void setIsAIControl(bool value) { isAIControl = value; }
 	Model& getModel() { return model; }
 	const Model& getModel() const { return model; }
-	float getPhysicsTimeStep() const { return physicsTimeStep; }
 	const track::Track& getTrack() const { return track; }
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints() {
 		return rayPoints;
@@ -39,7 +38,7 @@ private:
 
 	CommonParameters parameters;
 
-	float physicsTimeStep = 1.f/parameters.physicsTimeStepsPerSecond;
+	float physicsTimeStep;
 
 	// We have to store rayCount here as well, because with setNeuralNetwork it
 	// is possible to set a neuralNetwork which is not consistent with what is
