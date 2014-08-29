@@ -37,10 +37,11 @@ public:
 
 	void advanceTime(float deltaSeconds);
 
-	void drawCar(sf::RenderWindow& window) const;
 	void drawTrack(sf::RenderWindow& window, bool drawCheckpoints = true) const;
 
 	sf::Vector2f getCheckpointDirection() const;
+
+	float getOutTime() { return outTime; }
 
 private:
 	void collideCar();
@@ -51,6 +52,7 @@ private:
 
 	Car car;
 	track::Track track;
+	float outTime = 0.0;
 
 	bool isCarCollided = false;
 	float currentTime = 0.f;

@@ -281,8 +281,8 @@ void RealTimeGameManager::drawGame() {
 		drawRays();
 	}
 	if (showCar) {
-		for (const auto& carData: carDatas) {
-			carData.gameManager.getModel().drawCar(window);
+		for (auto& carData: carDatas) {
+			drawCar(carData.gameManager);
 		}
 	}
 
@@ -295,6 +295,19 @@ void RealTimeGameManager::drawGame() {
 	//circle.setOutlineThickness(0.1);
 	//window.draw(circle);
 
+}
+
+void RealTimeGameManager::drawCar(GameManager& gameManager) {
+	auto& model = gameManager.getModel();
+	auto& car = model.getCar();
+
+	if (model.hasCarCollided()) {
+		car.setColor(sf::Color::Red);
+	} else {
+		car.setColor(sf::Color::White);
+	}
+
+	car.draw(window);
 }
 
 void RealTimeGameManager::drawRays() {
@@ -332,7 +345,9 @@ void RealTimeGameManager::drawTelemetry() {
 			", TravelDistance = " << car.getTravelDistance() <<
 			",\nppm = " << pixelsPerMeter;
 		if (!carData.name.empty()) {
-			ss << ",AI = " << carData.name;
+			ss <<
+				", AI = " << carData.name <<
+				", out = " << model.getOutTime() << " s";
 		}
 		sf::Text text;
 		text.setFont(font);

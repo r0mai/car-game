@@ -32,6 +32,7 @@ private:
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
+	void drawCar(GameManager& gameManager);
 
 	struct CarData {
 		GameManager gameManager;
