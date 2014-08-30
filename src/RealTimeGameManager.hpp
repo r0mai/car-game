@@ -34,6 +34,7 @@ private:
 		Telemetry gasTelemetry;
 		Telemetry brakeTelemetry;
 		Telemetry turnTelemetry;
+		std::vector<sf::Vector2f> trace;
 		std::string name;
 		bool isOut = false;
 		float outTime = 0.0;
@@ -48,8 +49,10 @@ private:
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
+	void updateTrace();
 	void drawCar(CarData& carData, bool isActive);
 	void drawTrackArea();
+	void drawTrace();
 
 	std::vector<CarData> carDatas;
 	std::size_t currentCarId = 0;
@@ -69,6 +72,7 @@ private:
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
 	bool showTrackArea = false;
+	bool showTrace = false;
 	float pixelsPerMeter = 0.f;
 	float panThreshold = 0.f;
 
@@ -89,7 +93,7 @@ private:
 	static const sf::Color carActiveColor;
 	static const sf::Color carOutColor;
 	static const sf::Color carOutTimeColor;
-	static const float carOutTimeout;
+	static const sf::Color traceColor;
 };
 
 }

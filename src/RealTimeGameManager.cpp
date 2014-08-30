@@ -21,6 +21,7 @@ const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
 const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
+const sf::Color RealTimeGameManager::traceColor = sf::Color::Magenta;
 
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
@@ -90,6 +91,7 @@ void RealTimeGameManager::run() {
 				carData.gameManager.advance();
 				checkForCollisions(carData);
 			}
+			updateTrace();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -238,6 +240,9 @@ void RealTimeGameManager::handleUserInput() {
 			case sf::Keyboard::G:
 				showTrackArea = !showTrackArea;
 				break;
+			case sf::Keyboard::E:
+				showTrace = !showTrace;
+				break;
 			case sf::Keyboard::A:
 				gameManager.setIsAIControl(!gameManager.getIsAIControl());
 				break;
@@ -294,6 +299,16 @@ void RealTimeGameManager::updateTelemetry() {
 	}
 }
 
+void RealTimeGameManager::updateTrace() {
+	for (auto& carData: carDatas) {
+		const auto& gameManager = carData.gameManager;
+		const auto& model = gameManager.getModel();
+		const Car& car = model.getCar();
+
+		carData.trace.push_back(car.getPosition());
+	}
+}
+
 void RealTimeGameManager::drawGame() {
 	if (showTrackBoundary) {
 		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
@@ -311,6 +326,10 @@ void RealTimeGameManager::drawGame() {
 		drawTrackArea();
 	}
 
+	if (showTrace) {
+		drawTrace();
+	}
+
 	//auto circle = sf::CircleShape{panThreshold};
 	//auto center = gameView.getCenter();
 	//circle.setOrigin(panThreshold, panThreshold);
@@ -320,6 +339,13 @@ void RealTimeGameManager::drawGame() {
 	//circle.setOutlineThickness(0.1);
 	//window.draw(circle);
 
+}
+
+void RealTimeGameManager::drawTrace() {
+	const auto& carData = carDatas[currentCarId];
+	for (std::size_t i = 1; i < carData.trace.size(); ++i) {
+		drawLine(window, carData.trace[i-1], carData.trace[i], traceColor);
+	}
 }
 
 void RealTimeGameManager::drawTrackArea() {
