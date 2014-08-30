@@ -75,6 +75,7 @@ private:
 	bool showTrace = false;
 	float pixelsPerMeter = 0.f;
 	float panThreshold = 0.f;
+	float traceTime = 0.f;
 
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 
@@ -93,6 +94,7 @@ private:
 	static const sf::Color carActiveColor;
 	static const sf::Color carOutColor;
 	static const sf::Color carOutTimeColor;
+	static const float carOutTimeout;
 	static const sf::Color traceColor;
 };
 

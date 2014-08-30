@@ -25,6 +25,7 @@ struct RealTimeParameters {
 	PanMode panMode = PanMode::fit;
 	ScreenDimension panThreshold{Meters(0)};
 	float carOutTimeout = 10.f;
+	float traceOutputInterval = 0.2;
 };
 
 }

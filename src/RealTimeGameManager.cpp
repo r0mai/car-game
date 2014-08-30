@@ -91,7 +91,11 @@ void RealTimeGameManager::run() {
 				carData.gameManager.advance();
 				checkForCollisions(carData);
 			}
-			updateTrace();
+			traceTime += physicsTimeStep;
+			if (traceTime > realTimeParameters.traceOutputInterval) {
+				updateTrace();
+				traceTime = 0.f;
+			}
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
