@@ -17,6 +17,10 @@ namespace car {
 
 const float RealTimeGameManager::areaGridDistance = 2.f;
 const float RealTimeGameManager::areaGridPointSize = 0.1f;
+const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
+const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
+const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
+const float RealTimeGameManager::carOutTimeout = 10.f;
 
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
@@ -339,14 +343,34 @@ void RealTimeGameManager::drawTrackArea() {
 	}
 }
 
+namespace {
+
+template <typename Integer>
+inline Integer averageColorComponent(Integer first, Integer second, float ratio) {
+	ratio = std::max(0.f, std::min(1.f, ratio));
+	float result = first * (1.f - ratio) + second * ratio;
+	return std::max(std::numeric_limits<Integer>::min(),
+			std::min(std::numeric_limits<Integer>::max(),
+				static_cast<Integer>(result)
+			));
+}
+
+}
+
 void RealTimeGameManager::drawCar(CarData& carData) {
 	auto& model = carData.gameManager.getModel();
 	auto& car = model.getCar();
 
 	if (carData.isOut) {
-		car.setColor(sf::Color::Red);
+		car.setColor(carOutColor);
 	} else {
-		car.setColor(sf::Color::White);
+		float ratio = carData.outTime / carOutTimeout;
+		sf::Color color{
+				averageColorComponent(carNormalColor.r, carOutTimeColor.r, ratio),
+				averageColorComponent(carNormalColor.g, carOutTimeColor.g, ratio),
+				averageColorComponent(carNormalColor.b, carOutTimeColor.b, ratio),
+				averageColorComponent(carNormalColor.a, carOutTimeColor.a, ratio)};
+		car.setColor(color);
 	}
 
 	car.draw(window);

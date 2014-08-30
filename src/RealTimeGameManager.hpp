@@ -85,6 +85,10 @@ private:
 
 	static const float areaGridDistance;
 	static const float areaGridPointSize;
+	static const sf::Color carNormalColor;
+	static const sf::Color carOutColor;
+	static const sf::Color carOutTimeColor;
+	static const float carOutTimeout;
 };
 
 }
