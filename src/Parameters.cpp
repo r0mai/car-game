@@ -176,6 +176,10 @@ Parameters parseParameters(int argc, char **argv) {
 		("pan-threshold",
 			po::value<std::string>(),
 			"The maximum amount that the car moves from the screen center before the screen gets panned. The value is in meter (m), pixels (px) or percent (%).")
+		("car-out-timeout",
+			po::value(&parameters.realTimeParameters.carOutTimeout)
+				->default_value(parameters.realTimeParameters.carOutTimeout),
+			"The amount of time spent outside the track after the car turns completely red")
 		;
 
 	po::options_description learningDescription("Options for learning game type");

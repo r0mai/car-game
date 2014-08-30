@@ -24,6 +24,7 @@ struct RealTimeParameters {
 	float maxPixelsPerMeter = 10.f;
 	PanMode panMode = PanMode::fit;
 	ScreenDimension panThreshold{Meters(0)};
+	float carOutTimeout = 10.f;
 };
 
 }

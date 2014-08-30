@@ -21,7 +21,6 @@ const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
 const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
-const float RealTimeGameManager::carOutTimeout = 10.f;
 
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
@@ -365,7 +364,7 @@ void RealTimeGameManager::drawCar(CarData& carData, bool isActive) {
 	if (carData.isOut) {
 		car.setColor(carOutColor);
 	} else {
-		float ratio = carData.outTime / carOutTimeout;
+		float ratio = carData.outTime / realTimeParameters.carOutTimeout;
 		sf::Color baseColor = isActive ? carActiveColor : carNormalColor;
 		sf::Color color{
 				averageColorComponent(baseColor.r, carOutTimeColor.r, ratio),
