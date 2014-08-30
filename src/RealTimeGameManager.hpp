@@ -26,15 +26,6 @@ public:
 	void setFPSLimit(float newFPSLimit);
 
 private:
-	void handleUserInput();
-
-	void drawGame();
-	void drawTelemetry();
-	void drawRays();
-	void updateTelemetry();
-	void drawCar(GameManager& gameManager);
-	void drawTrackArea();
-
 	struct CarData {
 		GameManager gameManager;
 		Telemetry speedTelemetry;
@@ -44,10 +35,21 @@ private:
 		Telemetry brakeTelemetry;
 		Telemetry turnTelemetry;
 		std::string name;
+		bool isOut = false;
+		float outTime = 0.0;
 
 		CarData(const CommonParameters& parameters, track::TrackCreator trackCreator):
 			gameManager{parameters, trackCreator} {}
 	};
+
+	void handleUserInput();
+
+	void drawGame();
+	void drawTelemetry();
+	void drawRays();
+	void updateTelemetry();
+	void drawCar(CarData& carData);
+	void drawTrackArea();
 
 	std::vector<CarData> carDatas;
 	std::size_t currentCarId = 0;
@@ -74,6 +76,7 @@ private:
 
 	float calculateCenter(float viewSize, float trackOrigin, float trackSize, float carPosition);
 	void setViewParameters();
+	void checkForCollisions(CarData& carData);
 
 	RealTimeParameters realTimeParameters;
 	float physicsTimeStep;

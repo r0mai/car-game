@@ -84,6 +84,7 @@ void RealTimeGameManager::run() {
 			handleUserInput();
 			for (auto& carData: carDatas) {
 				carData.gameManager.advance();
+				checkForCollisions(carData);
 			}
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
@@ -106,6 +107,16 @@ void RealTimeGameManager::run() {
 				sf::sleep( sf::seconds(1.f/fpsLimit - renderTime.asSeconds()) );
 			}
 		}
+	}
+}
+
+void RealTimeGameManager::checkForCollisions(CarData& carData) {
+	auto& model = carData.gameManager.getModel();
+	auto& car = model.getCar();
+	auto& track = model.getTrack();
+	carData.isOut = model.hasCarCollided() || !track.isInsideTrack(car.getPosition());
+	if (carData.isOut) {
+		carData.outTime += physicsTimeStep;
 	}
 }
 
@@ -288,7 +299,7 @@ void RealTimeGameManager::drawGame() {
 	}
 	if (showCar) {
 		for (auto& carData: carDatas) {
-			drawCar(carData.gameManager);
+			drawCar(carData);
 		}
 	}
 
@@ -328,11 +339,11 @@ void RealTimeGameManager::drawTrackArea() {
 	}
 }
 
-void RealTimeGameManager::drawCar(GameManager& gameManager) {
-	auto& model = gameManager.getModel();
+void RealTimeGameManager::drawCar(CarData& carData) {
+	auto& model = carData.gameManager.getModel();
 	auto& car = model.getCar();
 
-	if (model.hasCarCollided()) {
+	if (carData.isOut) {
 		car.setColor(sf::Color::Red);
 	} else {
 		car.setColor(sf::Color::White);
@@ -378,7 +389,7 @@ void RealTimeGameManager::drawTelemetry() {
 		if (!carData.name.empty()) {
 			ss <<
 				", AI = " << carData.name <<
-				", out = " << model.getOutTime() << " s";
+				", out = " << carData.outTime << " s";
 		}
 		sf::Text text;
 		text.setFont(font);

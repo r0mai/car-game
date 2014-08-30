@@ -41,8 +41,6 @@ public:
 
 	sf::Vector2f getCheckpointDirection() const;
 
-	float getOutTime() { return outTime; }
-
 private:
 	void collideCar();
 	void handleCheckpoints();
@@ -52,7 +50,6 @@ private:
 
 	Car car;
 	track::Track track;
-	float outTime = 0.0;
 
 	bool isCarCollided = false;
 	float currentTime = 0.f;

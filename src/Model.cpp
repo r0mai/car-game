@@ -103,10 +103,6 @@ void Model::advanceTime(float deltaSeconds) {
 	car.move(deltaSeconds);
 	collideCar();
 
-	if (isCarCollided) {
-		outTime += deltaSeconds;
-	}
-
 	handleCheckpoints();
 }
 
