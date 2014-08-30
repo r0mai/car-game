@@ -37,7 +37,6 @@ public:
 
 	void advanceTime(float deltaSeconds);
 
-	void drawCar(sf::RenderWindow& window) const;
 	void drawTrack(sf::RenderWindow& window, bool drawCheckpoints = true) const;
 
 	sf::Vector2f getCheckpointDirection() const;

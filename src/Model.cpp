@@ -102,6 +102,7 @@ void Model::advanceTime(float deltaSeconds) {
 
 	car.move(deltaSeconds);
 	collideCar();
+
 	handleCheckpoints();
 }
 
@@ -111,12 +112,6 @@ void Model::collideCar() {
 		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
 		track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
 		track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
-
-	if (isCarCollided) {
-		car.setColor(sf::Color::Red);
-	} else {
-		car.setColor(sf::Color::White);
-	}
 }
 
 bool Model::collidesWithCheckpoint(std::size_t checkpointId) {
@@ -189,10 +184,6 @@ void Model::handleInput(float deltaSeconds) {
 		}
 	}
 
-}
-
-void Model::drawCar(sf::RenderWindow& window) const {
-	car.draw(window);
 }
 
 void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {

@@ -15,6 +15,14 @@
 
 namespace car {
 
+const float RealTimeGameManager::areaGridDistance = 2.f;
+const float RealTimeGameManager::areaGridPointSize = 0.1f;
+const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
+const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
+const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
+const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
+const sf::Color RealTimeGameManager::traceColor = sf::Color::Magenta;
+
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
 
@@ -81,6 +89,12 @@ void RealTimeGameManager::run() {
 			handleUserInput();
 			for (auto& carData: carDatas) {
 				carData.gameManager.advance();
+				checkForCollisions(carData);
+			}
+			traceTime += physicsTimeStep;
+			if (traceTime > realTimeParameters.traceOutputInterval) {
+				updateTrace();
+				traceTime = 0.f;
 			}
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
@@ -103,6 +117,16 @@ void RealTimeGameManager::run() {
 				sf::sleep( sf::seconds(1.f/fpsLimit - renderTime.asSeconds()) );
 			}
 		}
+	}
+}
+
+void RealTimeGameManager::checkForCollisions(CarData& carData) {
+	auto& model = carData.gameManager.getModel();
+	auto& car = model.getCar();
+	auto& track = model.getTrack();
+	carData.isOut = model.hasCarCollided() || !track.isInsideTrack(car.getPosition());
+	if (carData.isOut) {
+		carData.outTime += physicsTimeStep;
 	}
 }
 
@@ -217,6 +241,12 @@ void RealTimeGameManager::handleUserInput() {
 			case sf::Keyboard::X:
 				showTelemetryText = !showTelemetryText;
 				break;
+			case sf::Keyboard::G:
+				showTrackArea = !showTrackArea;
+				break;
+			case sf::Keyboard::E:
+				showTrace = !showTrace;
+				break;
 			case sf::Keyboard::A:
 				gameManager.setIsAIControl(!gameManager.getIsAIControl());
 				break;
@@ -273,6 +303,16 @@ void RealTimeGameManager::updateTelemetry() {
 	}
 }
 
+void RealTimeGameManager::updateTrace() {
+	for (auto& carData: carDatas) {
+		const auto& gameManager = carData.gameManager;
+		const auto& model = gameManager.getModel();
+		const Car& car = model.getCar();
+
+		carData.trace.push_back(car.getPosition());
+	}
+}
+
 void RealTimeGameManager::drawGame() {
 	if (showTrackBoundary) {
 		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
@@ -281,9 +321,17 @@ void RealTimeGameManager::drawGame() {
 		drawRays();
 	}
 	if (showCar) {
-		for (const auto& carData: carDatas) {
-			carData.gameManager.getModel().drawCar(window);
+		for (std::size_t i = 0; i < carDatas.size(); ++i) {
+			drawCar(carDatas[i], i == currentCarId);
 		}
+	}
+
+	if (showTrackArea) {
+		drawTrackArea();
+	}
+
+	if (showTrace) {
+		drawTrace();
 	}
 
 	//auto circle = sf::CircleShape{panThreshold};
@@ -295,6 +343,68 @@ void RealTimeGameManager::drawGame() {
 	//circle.setOutlineThickness(0.1);
 	//window.draw(circle);
 
+}
+
+void RealTimeGameManager::drawTrace() {
+	const auto& carData = carDatas[currentCarId];
+	for (std::size_t i = 1; i < carData.trace.size(); ++i) {
+		drawLine(window, carData.trace[i-1], carData.trace[i], traceColor);
+	}
+}
+
+void RealTimeGameManager::drawTrackArea() {
+	auto& gameManager = carDatas[currentCarId].gameManager;
+	auto& model = gameManager.getModel();
+	auto& track = model.getTrack();
+
+	auto sizeHalf = window.getView().getSize() / 2.f;
+	auto center = window.getView().getCenter();
+	sf::Vector2f min = center - sizeHalf;
+	sf::Vector2f max = center + sizeHalf;
+	sf::Vector2f pointSize1{areaGridPointSize, areaGridPointSize};
+	sf::Vector2f pointSize2{areaGridPointSize, -areaGridPointSize};
+	sf::Vector2f p;
+	for (p.y = min.y; p.y < max.y; p.y += areaGridDistance) {
+		for (p.x = min.x; p.x < max.x; p.x += areaGridDistance) {
+			sf::Color color = track.isInsideTrack(p) ? sf::Color::Green : sf::Color::Red;
+			drawLine(window, p - pointSize1, p + pointSize1, color);
+			drawLine(window, p - pointSize2, p + pointSize2, color);
+		}
+	}
+}
+
+namespace {
+
+template <typename Integer>
+inline Integer averageColorComponent(Integer first, Integer second, float ratio) {
+	ratio = std::max(0.f, std::min(1.f, ratio));
+	float result = first * (1.f - ratio) + second * ratio;
+	return std::max(std::numeric_limits<Integer>::min(),
+			std::min(std::numeric_limits<Integer>::max(),
+				static_cast<Integer>(result)
+			));
+}
+
+}
+
+void RealTimeGameManager::drawCar(CarData& carData, bool isActive) {
+	auto& model = carData.gameManager.getModel();
+	auto& car = model.getCar();
+
+	if (carData.isOut) {
+		car.setColor(carOutColor);
+	} else {
+		float ratio = carData.outTime / realTimeParameters.carOutTimeout;
+		sf::Color baseColor = isActive ? carActiveColor : carNormalColor;
+		sf::Color color{
+				averageColorComponent(baseColor.r, carOutTimeColor.r, ratio),
+				averageColorComponent(baseColor.g, carOutTimeColor.g, ratio),
+				averageColorComponent(baseColor.b, carOutTimeColor.b, ratio),
+				averageColorComponent(baseColor.a, carOutTimeColor.a, ratio)};
+		car.setColor(color);
+	}
+
+	car.draw(window);
 }
 
 void RealTimeGameManager::drawRays() {
@@ -332,7 +442,9 @@ void RealTimeGameManager::drawTelemetry() {
 			", TravelDistance = " << car.getTravelDistance() <<
 			",\nppm = " << pixelsPerMeter;
 		if (!carData.name.empty()) {
-			ss << ",AI = " << carData.name;
+			ss <<
+				", AI = " << carData.name <<
+				", out = " << carData.outTime << " s";
 		}
 		sf::Text text;
 		text.setFont(font);

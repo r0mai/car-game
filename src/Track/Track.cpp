@@ -14,6 +14,13 @@ Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
 }
 
+bool Track::isInsideTrack(const sf::Vector2f& p) {
+	Line2f line{startingPoint, p};
+	return std::count_if(lines.begin(), lines.end(),
+			[&](const Line2f& trackLine) { return intersects(trackLine, line); }
+		) % 2 == 0;
+}
+
 void Track::setOrigin(const sf::Vector2f& point, float direction) {
 	startingPoint = point;
 	startingDirection = direction;
