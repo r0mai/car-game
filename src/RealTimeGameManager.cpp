@@ -18,6 +18,7 @@ namespace car {
 const float RealTimeGameManager::areaGridDistance = 2.f;
 const float RealTimeGameManager::areaGridPointSize = 0.1f;
 const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
+const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
 const float RealTimeGameManager::carOutTimeout = 10.f;
@@ -302,8 +303,8 @@ void RealTimeGameManager::drawGame() {
 		drawRays();
 	}
 	if (showCar) {
-		for (auto& carData: carDatas) {
-			drawCar(carData);
+		for (std::size_t i = 0; i < carDatas.size(); ++i) {
+			drawCar(carDatas[i], i == currentCarId);
 		}
 	}
 
@@ -357,7 +358,7 @@ inline Integer averageColorComponent(Integer first, Integer second, float ratio)
 
 }
 
-void RealTimeGameManager::drawCar(CarData& carData) {
+void RealTimeGameManager::drawCar(CarData& carData, bool isActive) {
 	auto& model = carData.gameManager.getModel();
 	auto& car = model.getCar();
 
@@ -365,11 +366,12 @@ void RealTimeGameManager::drawCar(CarData& carData) {
 		car.setColor(carOutColor);
 	} else {
 		float ratio = carData.outTime / carOutTimeout;
+		sf::Color baseColor = isActive ? carActiveColor : carNormalColor;
 		sf::Color color{
-				averageColorComponent(carNormalColor.r, carOutTimeColor.r, ratio),
-				averageColorComponent(carNormalColor.g, carOutTimeColor.g, ratio),
-				averageColorComponent(carNormalColor.b, carOutTimeColor.b, ratio),
-				averageColorComponent(carNormalColor.a, carOutTimeColor.a, ratio)};
+				averageColorComponent(baseColor.r, carOutTimeColor.r, ratio),
+				averageColorComponent(baseColor.g, carOutTimeColor.g, ratio),
+				averageColorComponent(baseColor.b, carOutTimeColor.b, ratio),
+				averageColorComponent(baseColor.a, carOutTimeColor.a, ratio)};
 		car.setColor(color);
 	}
 

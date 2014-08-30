@@ -48,7 +48,7 @@ private:
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
-	void drawCar(CarData& carData);
+	void drawCar(CarData& carData, bool isActive);
 	void drawTrackArea();
 
 	std::vector<CarData> carDatas;
@@ -86,6 +86,7 @@ private:
 	static const float areaGridDistance;
 	static const float areaGridPointSize;
 	static const sf::Color carNormalColor;
+	static const sf::Color carActiveColor;
 	static const sf::Color carOutColor;
 	static const sf::Color carOutTimeColor;
 	static const float carOutTimeout;
