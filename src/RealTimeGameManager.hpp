@@ -33,6 +33,7 @@ private:
 	void drawRays();
 	void updateTelemetry();
 	void drawCar(GameManager& gameManager);
+	void drawTrackArea();
 
 	struct CarData {
 		GameManager gameManager;
@@ -65,6 +66,7 @@ private:
 	bool showTrackBoundary = true;
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
+	bool showTrackArea = false;
 	float pixelsPerMeter = 0.f;
 	float panThreshold = 0.f;
 
@@ -77,6 +79,9 @@ private:
 	float physicsTimeStep;
 
 	static CarData createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator);
+
+	static const float areaGridDistance;
+	static const float areaGridPointSize;
 };
 
 }

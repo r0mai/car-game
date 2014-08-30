@@ -15,6 +15,9 @@
 
 namespace car {
 
+const float RealTimeGameManager::areaGridDistance = 2.f;
+const float RealTimeGameManager::areaGridPointSize = 0.1f;
+
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
 
@@ -217,6 +220,9 @@ void RealTimeGameManager::handleUserInput() {
 			case sf::Keyboard::X:
 				showTelemetryText = !showTelemetryText;
 				break;
+			case sf::Keyboard::G:
+				showTrackArea = !showTrackArea;
+				break;
 			case sf::Keyboard::A:
 				gameManager.setIsAIControl(!gameManager.getIsAIControl());
 				break;
@@ -286,6 +292,10 @@ void RealTimeGameManager::drawGame() {
 		}
 	}
 
+	if (showTrackArea) {
+		drawTrackArea();
+	}
+
 	//auto circle = sf::CircleShape{panThreshold};
 	//auto center = gameView.getCenter();
 	//circle.setOrigin(panThreshold, panThreshold);
@@ -295,6 +305,27 @@ void RealTimeGameManager::drawGame() {
 	//circle.setOutlineThickness(0.1);
 	//window.draw(circle);
 
+}
+
+void RealTimeGameManager::drawTrackArea() {
+	auto& gameManager = carDatas[currentCarId].gameManager;
+	auto& model = gameManager.getModel();
+	auto& track = model.getTrack();
+
+	auto sizeHalf = window.getView().getSize() / 2.f;
+	auto center = window.getView().getCenter();
+	sf::Vector2f min = center - sizeHalf;
+	sf::Vector2f max = center + sizeHalf;
+	sf::Vector2f pointSize1{areaGridPointSize, areaGridPointSize};
+	sf::Vector2f pointSize2{areaGridPointSize, -areaGridPointSize};
+	sf::Vector2f p;
+	for (p.y = min.y; p.y < max.y; p.y += areaGridDistance) {
+		for (p.x = min.x; p.x < max.x; p.x += areaGridDistance) {
+			sf::Color color = track.isInsideTrack(p) ? sf::Color::Green : sf::Color::Red;
+			drawLine(window, p - pointSize1, p + pointSize1, color);
+			drawLine(window, p - pointSize2, p + pointSize2, color);
+		}
+	}
 }
 
 void RealTimeGameManager::drawCar(GameManager& gameManager) {
