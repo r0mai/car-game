@@ -201,7 +201,7 @@ sf::Vector2f Model::getCheckpointDirection() const {
 	const auto& position = car.getPosition();
 	const auto& orientation = car.getOrientation();
 	auto angle = std::atan2(orientation.y, orientation.x);
-	auto nearestPointToCheckpoint = nearestPoint(position, track.getCheckpoint(currentCheckpoint));
+	auto nearestPointToCheckpoint = nearestPoint(position, track.getCheckpoint(currentCheckpoint), false);
 	auto absoluteDirection = nearestPointToCheckpoint - position;
 	sf::Transform rotateTransform;
 	rotateTransform.rotate(-angle * 180.f/pi);

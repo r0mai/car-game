@@ -105,7 +105,7 @@ bool isParallel(const Line2<T>& line1, const Line2<T>& line2) {
 }
 
 template <typename T>
-sf::Vector2<T> nearestPoint(const sf::Vector2<T>& point, const Line2<T>& line) {
+sf::Vector2<T> nearestPoint(const sf::Vector2<T>& point, const Line2<T>& line, bool infinite) {
 	if (equals(line.start.x, line.end.x) && equals(line.start.y, line.end.y)) {
 		return line.start;
 	}
@@ -116,12 +116,14 @@ sf::Vector2<T> nearestPoint(const sf::Vector2<T>& point, const Line2<T>& line) {
 	assert(intersectionPoint);
 	auto ratio = intersection.getIntersectionPointRatioLine1();
 
-	if (ratio < 0.f) {
-		return line.start;
-	}
+	if (!infinite) {
+		if (ratio < 0.f) {
+			return line.start;
+		}
 
-	if (ratio > 1.f) {
-		return line.end;
+		if (ratio > 1.f) {
+			return line.end;
+		}
 	}
 
 	return *intersectionPoint;
@@ -148,8 +150,8 @@ bool isParallel(const Line2f& line1, const Line2f& line2) {
 	return detail::isParallel<float>(line1, line2);
 }
 
-sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line) {
-	return detail::nearestPoint<float>(point, line);
+sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line, bool infinite) {
+	return detail::nearestPoint<float>(point, line, infinite);
 }
 
 } // namespace car

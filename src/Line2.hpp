@@ -42,7 +42,7 @@ inline bool isOutsideRange(float origin1, float origin2, float start, float end)
 
 bool intersectsInfinite(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0);
 bool isParallel(const Line2f& line1, const Line2f& line2);
-sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line);
+sf::Vector2f nearestPoint(const sf::Vector2f& point, const Line2f& line, bool infinite);
 
 inline
 bool intersects(const Line2f& line1, const Line2f& line2, sf::Vector2f *outPtr = 0) {

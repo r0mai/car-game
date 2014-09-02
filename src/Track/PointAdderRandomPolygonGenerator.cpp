@@ -16,7 +16,7 @@ std::size_t findNearestLine(const std::vector<sf::Vector2f>& points, const sf::V
 	for (std::size_t i = 0; i < n; ++i) {
 		std::size_t j = (i + 1) % n;
 
-		auto nearest = nearestPoint(referencePoint, {points[i], points[j]});
+		auto nearest = nearestPoint(referencePoint, {points[i], points[j]}, false);
 		distanceSquares[i] = getDistanceSQ(referencePoint, nearest);
 	}
 
