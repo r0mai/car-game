@@ -8,8 +8,6 @@
 
 namespace car { namespace track {
 
-Track::~Track() {}
-
 Car Track::createCar() const {
 	return Car{startingPoint, startingDirection};
 }
@@ -32,7 +30,8 @@ void Track::addLine(const Line2f& line) {
 }
 
 void Track::addCheckpoint(const Line2f& line) {
-	checkpoints.push_back(line);
+	auto direction = rotateClockwise(line.end - line.start);
+	checkpoints.push_back({line, std::atan2(direction.y, direction.x)});
 }
 
 
@@ -59,15 +58,19 @@ sf::Vector2f Track::collideWithRay(const sf::Vector2f& origin, const sf::Vector2
 }
 
 bool Track::collidesWithCheckpoint(const Line2f& line, std::size_t checkpointId) const {
-	return intersects(line, checkpoints[checkpointId]);
+	return intersects(line, checkpoints[checkpointId].line);
 }
 
 std::size_t Track::getNumberOfCheckpoints() const {
 	return checkpoints.size();
 }
 
-const Line2f& Track::getCheckpoint(std::size_t n) const {
-	return checkpoints[n];
+const Line2f& Track::getCheckpointLine(std::size_t n) const {
+	return checkpoints[n].line;
+}
+
+float Track::getCheckpointAngle(std::size_t n) const {
+	return checkpoints[n].angle;
 }
 
 void Track::drawBoundary(sf::RenderWindow& window) const {
@@ -82,9 +85,13 @@ void Track::drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint) c
 
 	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
 
-		drawLine(window, checkpoints[i],
-				((static_cast<int>(i) == highlightCheckpoint) ?
-						checkpointColor : highlightedCheckpointColor));
+		auto color = (static_cast<int>(i) == highlightCheckpoint) ?
+						checkpointColor : highlightedCheckpointColor;
+		drawLine(window, checkpoints[i].line, color);
+		auto centerPoint = (checkpoints[i].line.start + checkpoints[i].line.end) / 2.f;
+		drawLine(window, centerPoint,
+				centerPoint + sf::Vector2f(cos(checkpoints[i].angle), sin(checkpoints[i].angle)),
+				color);
 	}
 }
 
@@ -107,6 +114,7 @@ struct CheckedLine {
 	bool start = false;
 	bool end = false;
 };
+
 
 bool checkLineEndpoint(const sf::Vector2f& endpoint,
 		const sf::Vector2f& intersection, float toleranceSquare,

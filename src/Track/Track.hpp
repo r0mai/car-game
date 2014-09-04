@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Line2Fwd.hpp"
+#include "Line2.hpp"
 
 
 namespace car {
@@ -26,10 +26,6 @@ struct TrackError: std::logic_error {
 
 class Track {
 public:
-	// Destructor needs to be defined in the .cpp because Line2f is forward
-	// declared and the destructor of vevtor<Line2f> requires the full
-	// definition.
-	~Track();
 
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
@@ -41,7 +37,8 @@ public:
 	bool collidesWithCheckpoint(const Line2f& line, std::size_t checkpointId) const;
 
 	std::size_t getNumberOfCheckpoints() const;
-	const Line2f& getCheckpoint(std::size_t n) const;
+	const Line2f& getCheckpointLine(std::size_t n) const;
+	float getCheckpointAngle(std::size_t n) const;
 	void check() const;
 
 	sf::FloatRect getDimensions() const;
@@ -56,7 +53,13 @@ public:
 private:
 	typedef std::vector<Line2f> Lines;
 	Lines lines;
-	Lines checkpoints;
+
+	struct Checkpoint {
+		Line2f line;
+		float angle;
+	};
+	std::vector<Checkpoint> checkpoints;
+
 	sf::Vector2f startingPoint;
 	float startingDirection = 0.f;
 };

@@ -106,5 +106,16 @@ NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName) {
 	return result;
 }
 
+std::string NeuralNetwork::getExternalParameter(const std::string& key) const {
+	auto it = externalParameters.find(key);
+	//std::cerr << "get " << key << " -> " << (it == externalParameters.end() ? "" : it->second) << std::endl;
+	return it == externalParameters.end() ? "" : it->second;
+}
+
+void NeuralNetwork::setExternalParameter(std::string key, std::string value) {
+	//std::cerr << "set " << key << " -> " << value << std::endl;
+	externalParameters[std::move(key)] = std::move(value);
+}
+
 }
 

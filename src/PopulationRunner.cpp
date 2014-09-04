@@ -35,6 +35,7 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 		});
 
 		auto& controllerData = controllerDatas.back();
+		setNeuralNetworkExternalParameters(parameters.commonParameters, controllerData.network);
 		controllerData.managers.reserve(trackCreators.size());
 		for (const auto& trackCreator: trackCreators) {
 			controllerData.managers.emplace_back(parameters.commonParameters, trackCreator,

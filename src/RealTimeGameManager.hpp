@@ -96,6 +96,7 @@ private:
 	static const sf::Color carOutTimeColor;
 	static const float carOutTimeout;
 	static const sf::Color traceColor;
+	static const sf::Color rayColor;
 };
 
 }

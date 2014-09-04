@@ -110,6 +110,10 @@ Parameters parseParameters(int argc, char **argv) {
 			po::value(&commonParameters.rayCount)
 				->default_value(commonParameters.rayCount),
 			"Number of rays providing information to the car.")
+		("checkpoint-look-ahead",
+			po::value(&commonParameters.checkpointLookAhead)
+				->default_value(commonParameters.checkpointLookAhead),
+			"The number of checkpoints to give as an input to the neural network.")
 		("physics-frequency",
 			po::value(&commonParameters.physicsTimeStepsPerSecond)
 				->default_value(commonParameters.physicsTimeStepsPerSecond),

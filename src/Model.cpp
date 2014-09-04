@@ -193,21 +193,41 @@ void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
 	}
 }
 
-sf::Vector2f Model::getCheckpointDirection() const {
+auto Model::getCheckpointInformation(unsigned count) const -> std::vector<CheckpointInformation> {
 	using namespace boost::math::float_constants;
+
 	if (currentCheckpoint < 0) {
 		return {};
 	}
+
+	std::vector<CheckpointInformation> result;
+
 	const auto& position = car.getPosition();
 	const auto& orientation = car.getOrientation();
 	auto angle = std::atan2(orientation.y, orientation.x);
-	auto nearestPointToCheckpoint = nearestPoint(position, track.getCheckpoint(currentCheckpoint));
-	auto absoluteDirection = nearestPointToCheckpoint - position;
 	sf::Transform rotateTransform;
 	rotateTransform.rotate(-angle * 180.f/pi);
-	auto relativeDirection = rotateTransform.transformPoint(absoluteDirection);
 
-	return normalize(relativeDirection);
+	for (unsigned i = 0; i < count; ++i) {
+		auto checkpointId = currentCheckpoint + i;
+		const auto& checkpointLine = track.getCheckpointLine(checkpointId);
+		auto checkpointAngle = track.getCheckpointAngle(checkpointId);
+		auto relativeAngle = checkpointAngle - angle;
+
+		result.emplace_back();
+		auto& information = result.back();
+		information.orientation = {std::cos(relativeAngle), std::sin(relativeAngle)};
+
+		auto rightEdge = checkpointLine.start - position;
+		information.rightEdgeDistance = getLength(rightEdge);
+		information.rightEdgeOrientation = rotateTransform.transformPoint(normalize(rightEdge));
+
+		auto leftEdge = checkpointLine.end - position;
+		information.leftEdgeDistance = getLength(leftEdge);
+		information.leftEdgeOrientation = rotateTransform.transformPoint(normalize(leftEdge));
+	}
+
+	return result;
 }
 
 

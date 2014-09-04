@@ -18,6 +18,24 @@ void drawLine(sf::RenderWindow& window, const Line2f& line, const sf::Color& col
 	drawLine(window, line.start, line.end, color);
 }
 
+template <typename Integer>
+inline Integer averageColorComponent(Integer first, Integer second, float ratio) {
+	ratio = std::max(0.f, std::min(1.f, ratio));
+	float result = first * (1.f - ratio) + second * ratio;
+	return std::max(std::numeric_limits<Integer>::min(),
+			std::min(std::numeric_limits<Integer>::max(),
+				static_cast<Integer>(result)
+			));
+}
+
+inline
+sf::Color averageColor(const sf::Color& color1, const sf::Color& color2, float ratio) {
+	return sf::Color{
+		averageColorComponent(color1.r, color2.r, ratio),
+		averageColorComponent(color1.g, color2.g, ratio),
+		averageColorComponent(color1.b, color2.b, ratio),
+		averageColorComponent(color1.a, color2.a, ratio)};
+}
 
 }
 
