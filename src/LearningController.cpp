@@ -96,6 +96,7 @@ void LearningController::saveNeuralNetwork(const Genome& genome) {
 	//TODO we are reconstucting the same network as above
 	NeuralNetwork network(parameters.hiddenLayerCount, parameters.neuronPerHiddenLayer,
 			parameters.commonParameters.getInputNeuronCount(), parameters.commonParameters.outputNeuronCount, parameters.useRecurrence);
+	setNeuralNetworkExternalParameters(parameters.commonParameters, network);
 
 	network.setWeights(genome.weights);
 
@@ -105,7 +106,7 @@ void LearningController::saveNeuralNetwork(const Genome& genome) {
 }
 
 void LearningController::loadPopulation(GeneticPopulation& population) const {
-	if (parameters.populationInputFile && 
+	if (parameters.populationInputFile &&
 			boost::filesystem::exists(*parameters.populationInputFile)) {
 		std::ifstream ifs(*parameters.populationInputFile);
 		boost::archive::text_iarchive ia(ifs);

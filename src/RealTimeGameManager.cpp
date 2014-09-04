@@ -375,20 +375,6 @@ void RealTimeGameManager::drawTrackArea() {
 	}
 }
 
-namespace {
-
-template <typename Integer>
-inline Integer averageColorComponent(Integer first, Integer second, float ratio) {
-	ratio = std::max(0.f, std::min(1.f, ratio));
-	float result = first * (1.f - ratio) + second * ratio;
-	return std::max(std::numeric_limits<Integer>::min(),
-			std::min(std::numeric_limits<Integer>::max(),
-				static_cast<Integer>(result)
-			));
-}
-
-}
-
 void RealTimeGameManager::drawCar(CarData& carData, bool isActive) {
 	auto& model = carData.gameManager.getModel();
 	auto& car = model.getCar();
@@ -398,11 +384,7 @@ void RealTimeGameManager::drawCar(CarData& carData, bool isActive) {
 	} else {
 		float ratio = carData.outTime / realTimeParameters.carOutTimeout;
 		sf::Color baseColor = isActive ? carActiveColor : carNormalColor;
-		sf::Color color{
-				averageColorComponent(baseColor.r, carOutTimeColor.r, ratio),
-				averageColorComponent(baseColor.g, carOutTimeColor.g, ratio),
-				averageColorComponent(baseColor.b, carOutTimeColor.b, ratio),
-				averageColorComponent(baseColor.a, carOutTimeColor.a, ratio)};
+		sf::Color color = averageColor(baseColor, carOutTimeColor, ratio);
 		car.setColor(color);
 	}
 

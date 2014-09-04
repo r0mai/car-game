@@ -44,7 +44,6 @@ private:
 	// is possible to set a neuralNetwork which is not consistent with what is
 	// specified in parameters TODO something has to be done about who stores
 	// the variables concerning the number of inputs/outputs
-	unsigned rayCount = parameters.rayCount;
 	std::vector<boost::optional<sf::Vector2f>> rayPoints;
 
 	NeuralNetwork neuralNetwork;

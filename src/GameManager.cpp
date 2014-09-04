@@ -21,7 +21,7 @@ void GameManager::init() {
 	model = Model{};
 	model.setTrack(track);
 	model.setCar(model.getTrack().createCar());
-	rayPoints = model.getRayPoints(rayCount);
+	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 
 void GameManager::advance() {
@@ -29,7 +29,7 @@ void GameManager::advance() {
 		controlCar();
 	}
 	model.advanceTime(physicsTimeStep);
-	rayPoints = model.getRayPoints(rayCount);
+	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 
 void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
@@ -37,7 +37,7 @@ void GameManager::setNeuralNetwork(const NeuralNetwork& network) {
 	assert(network.getInputNeuronCount() > 0);
 
 	neuralNetwork = network;
-	rayCount = neuralNetwork.getInputNeuronCount() - parameters.extraInputNeuronCount;
+	getNeuralNetworkExternalParameters(parameters, neuralNetwork);
 }
 
 void GameManager::controlCar() {
@@ -58,6 +58,7 @@ void GameManager::controlCar() {
 Weights GameManager::callNeuralNetwork() {
 	using namespace boost::math::float_constants;
 
+//	std::cerr << "neu " << neuralNetwork.getInputNeuronCount() << " param " << parameters.getInputNeuronCount() << " (" << parameters.checkpointLookAhead << ")" << std::endl;
 	Weights inputs(neuralNetwork.getInputNeuronCount());
 
 	const float wallDistanceDamping = 5.f;
@@ -65,7 +66,7 @@ Weights GameManager::callNeuralNetwork() {
 	const float checkpointDirectionDamping = 0.2f;
 
 	const sf::Vector2f& carPosition = model.getCar().getPosition();
-	for (unsigned i = 0; i < rayCount; ++i) {
+	for (unsigned i = 0; i < parameters.rayCount; ++i) {
 		auto rayPoint = rayPoints[i];
 		if (rayPoint) {
 			float distance = getDistance(carPosition, *rayPoint);
@@ -74,11 +75,11 @@ Weights GameManager::callNeuralNetwork() {
 			inputs[i] = 1.f;
 		}
 	}
-	inputs[rayCount] = sigmoidApproximation(model.getCar().getSpeed()/speedDamping);
+	inputs[parameters.rayCount] = sigmoidApproximation(model.getCar().getSpeed()/speedDamping);
 
-	int inputId = rayCount;
+	int inputId = parameters.rayCount;
 
-	auto checkpointInformations = model.getCheckpointInformation();
+	auto checkpointInformations = model.getCheckpointInformation(parameters.checkpointLookAhead);
 	for (const auto& checkpointInformation: checkpointInformations) {
 		inputs[++inputId] = sigmoidApproximation(checkpointInformation.orientation.x/checkpointDirectionDamping);
 		inputs[++inputId] = sigmoidApproximation(checkpointInformation.orientation.y/checkpointDirectionDamping);

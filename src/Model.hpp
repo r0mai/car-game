@@ -47,7 +47,7 @@ public:
 		sf::Vector2f rightEdgeOrientation;
 	};
 
-	auto getCheckpointInformation() const -> std::vector<CheckpointInformation>;
+	auto getCheckpointInformation(unsigned count) const -> std::vector<CheckpointInformation>;
 
 private:
 	void collideCar();

@@ -193,7 +193,7 @@ void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
 	}
 }
 
-auto Model::getCheckpointInformation() const -> std::vector<CheckpointInformation> {
+auto Model::getCheckpointInformation(unsigned count) const -> std::vector<CheckpointInformation> {
 	using namespace boost::math::float_constants;
 
 	if (currentCheckpoint < 0) {
@@ -208,22 +208,24 @@ auto Model::getCheckpointInformation() const -> std::vector<CheckpointInformatio
 	sf::Transform rotateTransform;
 	rotateTransform.rotate(-angle * 180.f/pi);
 
-	auto checkpointId = currentCheckpoint;
-	const auto& checkpointLine = track.getCheckpointLine(checkpointId);
-	auto checkpointAngle = track.getCheckpointAngle(checkpointId);
-	auto relativeAngle = checkpointAngle - angle;
+	for (unsigned i = 0; i < count; ++i) {
+		auto checkpointId = currentCheckpoint + i;
+		const auto& checkpointLine = track.getCheckpointLine(checkpointId);
+		auto checkpointAngle = track.getCheckpointAngle(checkpointId);
+		auto relativeAngle = checkpointAngle - angle;
 
-	result.emplace_back();
-	auto& information = result.back();
-	information.orientation = {std::cos(relativeAngle), std::sin(relativeAngle)};
+		result.emplace_back();
+		auto& information = result.back();
+		information.orientation = {std::cos(relativeAngle), std::sin(relativeAngle)};
 
-	auto rightEdge = checkpointLine.start - position;
-	information.rightEdgeDistance = getLength(rightEdge);
-	information.rightEdgeOrientation = rotateTransform.transformPoint(normalize(rightEdge));
+		auto rightEdge = checkpointLine.start - position;
+		information.rightEdgeDistance = getLength(rightEdge);
+		information.rightEdgeOrientation = rotateTransform.transformPoint(normalize(rightEdge));
 
-	auto leftEdge = checkpointLine.end - position;
-	information.leftEdgeDistance = getLength(leftEdge);
-	information.leftEdgeOrientation = rotateTransform.transformPoint(normalize(leftEdge));
+		auto leftEdge = checkpointLine.end - position;
+		information.leftEdgeDistance = getLength(leftEdge);
+		information.leftEdgeOrientation = rotateTransform.transformPoint(normalize(leftEdge));
+	}
 
 	return result;
 }
