@@ -11,8 +11,11 @@ struct CommonParameters {
 	unsigned rayCount = 14;
 	unsigned physicsTimeStepsPerSecond = 64;
 
-	//1 for speed input and 2 for the direction of the next CP
-	const unsigned extraInputNeuronCount = 3;
+	// for speed
+	const unsigned extraGlobalInputNeuronCount = 1;
+	// 2 for orientation, 2*(2+1) for left/right edge orientation/distance
+	const unsigned inputNeuronCountPerCheckpoint = 8;
+	const unsigned extraInputNeuronCount = extraGlobalInputNeuronCount + inputNeuronCountPerCheckpoint;
 	const unsigned outputNeuronCount = 3;
 
 	unsigned getInputNeuronCount() const {

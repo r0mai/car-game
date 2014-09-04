@@ -58,7 +58,7 @@ void GameManager::controlCar() {
 Weights GameManager::callNeuralNetwork() {
 	using namespace boost::math::float_constants;
 
-	Weights inputs(rayCount + parameters.extraInputNeuronCount);
+	Weights inputs(neuralNetwork.getInputNeuronCount());
 
 	const float wallDistanceDamping = 5.f;
 	const float speedDamping = 5.f;
@@ -76,9 +76,19 @@ Weights GameManager::callNeuralNetwork() {
 	}
 	inputs[rayCount] = sigmoidApproximation(model.getCar().getSpeed()/speedDamping);
 
-	auto checkpointDirection = model.getCheckpointDirection();
-	inputs[rayCount+1] = sigmoidApproximation(checkpointDirection.x/checkpointDirectionDamping);
-	inputs[rayCount+2] = sigmoidApproximation(checkpointDirection.y/checkpointDirectionDamping);
+	int inputId = rayCount;
+
+	auto checkpointInformations = model.getCheckpointInformation();
+	for (const auto& checkpointInformation: checkpointInformations) {
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.orientation.x/checkpointDirectionDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.orientation.y/checkpointDirectionDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.leftEdgeDistance/wallDistanceDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.leftEdgeOrientation.x/checkpointDirectionDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.leftEdgeOrientation.y/checkpointDirectionDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.rightEdgeDistance/wallDistanceDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.rightEdgeOrientation.x/checkpointDirectionDamping);
+		inputs[++inputId] = sigmoidApproximation(checkpointInformation.rightEdgeOrientation.y/checkpointDirectionDamping);
+	}
 	return neuralNetwork.evaluateInput(inputs);
 }
 

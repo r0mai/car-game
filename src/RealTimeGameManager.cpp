@@ -22,6 +22,10 @@ const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
 const sf::Color RealTimeGameManager::traceColor = sf::Color::Magenta;
+const sf::Color RealTimeGameManager::checkpointLeftEdgeColor{64, 255, 64};
+const sf::Color RealTimeGameManager::checkpointRightEdgeColor{255, 64, 64};
+const sf::Color RealTimeGameManager::checkpointDirectionColor{100, 100, 255};
+const float RealTimeGameManager::checkpointDiractionLength = 2.f;
 
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
@@ -317,9 +321,11 @@ void RealTimeGameManager::drawGame() {
 	if (showTrackBoundary) {
 		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
 	}
+
 	if (showRays) {
 		drawRays();
 	}
+
 	if (showCar) {
 		for (std::size_t i = 0; i < carDatas.size(); ++i) {
 			drawCar(carDatas[i], i == currentCarId);
@@ -429,7 +435,7 @@ void RealTimeGameManager::drawTelemetry() {
 	if (showTelemetryText) {
 		const Car& car = model.getCar();
 
-		auto checkpointDirection = model.getCheckpointDirection();
+		//auto checkpointDirection = model.getCheckpointDirection();
 
 		std::stringstream ss;
 		ss << std::fixed <<
@@ -438,7 +444,7 @@ void RealTimeGameManager::drawTelemetry() {
 			", Acceleration = " << getLength(car.getAcceleration()) <<
 			", Throttle = " << car.getThrottle() <<
 			",\nBrake = " << car.getBrake() <<
-			", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")" <<
+			//", Checkpoint = (" << checkpointDirection.x << ", " << checkpointDirection.y << ")" <<
 			", TravelDistance = " << car.getTravelDistance() <<
 			",\nppm = " << pixelsPerMeter;
 		if (!carData.name.empty()) {

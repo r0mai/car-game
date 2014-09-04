@@ -39,7 +39,15 @@ public:
 
 	void drawTrack(sf::RenderWindow& window, bool drawCheckpoints = true) const;
 
-	sf::Vector2f getCheckpointDirection() const;
+	struct CheckpointInformation {
+		sf::Vector2f orientation;
+		float leftEdgeDistance;
+		sf::Vector2f leftEdgeOrientation;
+		float rightEdgeDistance;
+		sf::Vector2f rightEdgeOrientation;
+	};
+
+	auto getCheckpointInformation() const -> std::vector<CheckpointInformation>;
 
 private:
 	void collideCar();
