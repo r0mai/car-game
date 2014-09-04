@@ -97,10 +97,6 @@ private:
 	static const float carOutTimeout;
 	static const sf::Color traceColor;
 	static const sf::Color rayColor;
-	static const sf::Color checkpointLeftEdgeColor;
-	static const sf::Color checkpointRightEdgeColor;
-	static const sf::Color checkpointDirectionColor;
-	static const float checkpointDiractionLength;
 };
 
 }

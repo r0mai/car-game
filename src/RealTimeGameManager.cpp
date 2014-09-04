@@ -22,10 +22,6 @@ const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
 const sf::Color RealTimeGameManager::traceColor = sf::Color::Magenta;
-const sf::Color RealTimeGameManager::checkpointLeftEdgeColor{64, 255, 64};
-const sf::Color RealTimeGameManager::checkpointRightEdgeColor{255, 64, 64};
-const sf::Color RealTimeGameManager::checkpointDirectionColor{100, 100, 255};
-const float RealTimeGameManager::checkpointDiractionLength = 2.f;
 
 auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
 	using namespace boost::math::float_constants;
