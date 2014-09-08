@@ -101,7 +101,7 @@ void Car::move(float deltaSeconds) {
 }
 
 void Car::setThrottle(float value) {
-	assert(value >= 0.0 && value <= 1.0);
+	//assert(value >= 0.0 && value <= 1.0);
 	throttleLevel = value;
 }
 
@@ -124,7 +124,7 @@ void Car::decreaseThrottle(float deltaSeconds) {
 }
 
 void Car::setBrake(float value) {
-	assert(value >= 0.0 && value <= 1.0);
+	//assert(value >= 0.0 && value <= 1.0);
 	brakeLevel = value;
 }
 
@@ -147,7 +147,7 @@ void Car::decreaseBrake(float deltaSeconds) {
 }
 
 void Car::setTurnLevel(float value) {
-	assert(value >= -1.0 && value <= 1.0);
+	//assert(value >= -1.0 && value <= 1.0);
 	turnLevel = value;
 }
 
