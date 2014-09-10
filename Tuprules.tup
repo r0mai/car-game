@@ -30,3 +30,4 @@ LIBS += @(PROFILER_LIBS)
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>
 !download = |> ^ DOWNLOAD %o^ wget --quiet https://dl.dropboxusercontent.com/u/12272246/car-game/%o |>
 !unitTest = |> ^ UT %f^ ./%f && touch %o |> %b.output
+!integrationTest = |> ^ IT %f^ ./%f && touch %o |> %b.output

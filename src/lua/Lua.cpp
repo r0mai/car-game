@@ -15,5 +15,18 @@ Lua::~Lua() {
 	lua_close(handle);
 }
 
+void Lua::loadFile(const char* name) {
+	if (luaL_dofile(handle, name)) {
+		throw Exception{lua_tostring(handle, -1)};
+	}
+}
+
+void Lua::loadString(const char* str) {
+	if (luaL_dostring(handle, str)) {
+		throw Exception{lua_tostring(handle, -1)};
+	}
+}
+
+
 }
 

@@ -1,0 +1,34 @@
+#include <boost/test/unit_test.hpp>
+#include "lua/Lua.hpp"
+
+using namespace lua;
+
+BOOST_AUTO_TEST_SUITE(LuaTest)
+
+BOOST_AUTO_TEST_CASE(loadString) {
+	Lua l;
+	l.loadString("a=1");
+}
+
+BOOST_AUTO_TEST_CASE(loadString_invalid_expression) {
+	Lua l;
+	BOOST_CHECK_THROW(l.loadString("this is not a valid lua expression"),
+			Exception);
+}
+
+BOOST_AUTO_TEST_CASE(loadFile) {
+	Lua l;
+	l.loadFile("test.lua");
+}
+
+BOOST_AUTO_TEST_CASE(loadFile_not_exists) {
+	Lua l;
+	BOOST_CHECK_THROW(l.loadFile("invalid_file_name.lua"), Exception);
+}
+
+BOOST_AUTO_TEST_CASE(loadFile_invalid_expression) {
+	Lua l;
+	BOOST_CHECK_THROW(l.loadFile("bad.lua"), Exception);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
