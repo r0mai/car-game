@@ -11,6 +11,7 @@ CPP_FLAGS += -ftemplate-backtrace-limit=0
 
 SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track
+LUA_DIR = $(SOURCE_DIR)/lua
 SCRIPTS_DIR = $(TUP_CWD)/scripts
 
 INCLUDE_DIRS += -I$(SOURCE_DIR)
@@ -22,6 +23,7 @@ LIBS += -lboost_program_options
 LIBS += -lboost_serialization
 LIBS += -lboost_system
 LIBS += -lboost_filesystem
+LIBS += -llua5.1
 LIBS += @(PROFILER_LIBS)
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
