@@ -31,4 +31,10 @@ BOOST_AUTO_TEST_CASE(loadFile_invalid_expression) {
 	BOOST_CHECK_THROW(l.loadFile("bad.lua"), SyntaxError);
 }
 
+BOOST_AUTO_TEST_CASE(runtimeError) {
+	Lua l;
+	std::string message = "some message";
+	BOOST_CHECK_THROW(l.loadString("error(\"" + message + "\")"), RuntimeError);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
