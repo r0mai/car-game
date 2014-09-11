@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_CASE(loadString) {
 BOOST_AUTO_TEST_CASE(loadString_invalid_expression) {
 	Lua l;
 	BOOST_CHECK_THROW(l.loadString("this is not a valid lua expression"),
-			Exception);
+			SyntaxError);
 }
 
 BOOST_AUTO_TEST_CASE(loadFile) {
@@ -23,12 +23,12 @@ BOOST_AUTO_TEST_CASE(loadFile) {
 
 BOOST_AUTO_TEST_CASE(loadFile_not_exists) {
 	Lua l;
-	BOOST_CHECK_THROW(l.loadFile("invalid_file_name.lua"), Exception);
+	BOOST_CHECK_THROW(l.loadFile("invalid_file_name.lua"), FileError);
 }
 
 BOOST_AUTO_TEST_CASE(loadFile_invalid_expression) {
 	Lua l;
-	BOOST_CHECK_THROW(l.loadFile("bad.lua"), Exception);
+	BOOST_CHECK_THROW(l.loadFile("bad.lua"), SyntaxError);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
