@@ -61,7 +61,7 @@ Data Lua::getValue(int index) {
 	case LUA_TNUMBER:
 		return lua_tonumber(handle, index);
 	case LUA_TSTRING:
-		return lua_tostring(handle, index);
+		return std::string{lua_tostring(handle, index)};
 	default:
 		throw UnsupportedType{};
 	}
@@ -69,6 +69,27 @@ Data Lua::getValue(int index) {
 
 void Lua::pop(int num) {
 	lua_pop(handle, num);
+}
+
+void Lua::callFunction(const char* name, const std::vector<Data>& args, std::vector<Data>* result) {
+	pushGlobalVariable(name);
+	for (const auto& arg: args) {
+		pushValue(arg);
+	}
+
+	std::size_t numReturn = result ? result->size() : 0;
+	handleError(lua_pcall(handle, args.size(), numReturn, 0));
+
+	if (result) {
+		std::size_t stackSize = lua_gettop(handle);
+		assert(stackSize >= numReturn);
+
+		for (std::size_t i = 0; i < numReturn; ++i) {
+			(*result)[i] = getValue(stackSize - numReturn + i + 1);
+		}
+
+		pop(numReturn);
+	}
 }
 
 void Lua::handleError(int returnValue) {
@@ -87,6 +108,27 @@ void Lua::handleError(int returnValue) {
 	default:
 		assert(false && "Invalid return type");
 	}
+}
+
+namespace {
+
+class PrintVisitor {
+public:
+	using result_type = std::ostream&;
+
+	PrintVisitor(std::ostream& os): os(os) {}
+
+	result_type operator()(Nil) const { return os << "Nil"; }
+	template <typename T>
+	result_type operator()(T value) const { return os << value; }
+private:
+	std::ostream& os;
+};
+
+}
+
+std::ostream& operator<<(std::ostream& os, const Data& data) {
+	return boost::apply_visitor(PrintVisitor{os}, data);
 }
 
 }

@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <ostream>
 #include <boost/lexical_cast.hpp>
 #include <boost/variant.hpp>
 
@@ -42,6 +43,8 @@ struct Nil {};
 
 using Data = boost::variant<Nil, bool, double, std::string>;
 
+std::ostream& operator<<(std::ostream& os, const Data& data);
+
 class Lua {
 public:
 	Lua();
@@ -58,6 +61,10 @@ public:
 	void loadString(const char* str);
 	void loadString(const std::string& str) { loadString(str.c_str()); }
 
+	void callFunction(const char* name, const std::vector<Data>& args, std::vector<Data>* result = nullptr);
+	void callFunction(const std::string& name, const std::vector<Data>& args, std::vector<Data>* result = nullptr) {
+		return callFunction(name.c_str(), args, result);
+	}
 
 private:
 	lua_State* handle;
