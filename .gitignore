@@ -12,6 +12,7 @@ tup.config
 build-*
 *.out
 *.out.*
+/custom
 
 #the extension used for storing serialized neural networks
 *.car
