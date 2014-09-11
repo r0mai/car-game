@@ -41,6 +41,8 @@ struct UnsupportedType : Exception {
 
 struct Nil {};
 
+inline bool operator==(Nil, Nil) { return true; }
+
 using Data = boost::variant<Nil, bool, double, std::string>;
 
 std::ostream& operator<<(std::ostream& os, const Data& data);
