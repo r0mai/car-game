@@ -63,4 +63,41 @@ BOOST_AUTO_TEST_CASE(callFunction_returnNumber) {
 	BOOST_CHECK_CLOSE(boost::get<double>(result[0]), returnValue, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(callFunction_arg_number) {
+	Lua l;
+	double arg1 = 11.3;
+	double arg2 = 35.44;
+	l.loadString("function add(arg1, arg2) return arg1 + arg2 end");
+	std::vector<Data> result = {{}};
+	l.callFunction("add", {arg1, arg2}, &result);
+	BOOST_CHECK_CLOSE(boost::get<double>(result[0]), arg1 + arg2, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_arg_string) {
+	Lua l;
+	std::string arg1 = "first";
+	std::string arg2 = "second";
+	l.loadString("function cat(arg1, arg2) return arg1 .. arg2 end");
+	std::vector<Data> result = {{}};
+	l.callFunction("cat", {arg1, arg2}, &result);
+	BOOST_CHECK_EQUAL(boost::get<std::string>(result[0]), arg1 + arg2);
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_arg_bool) {
+	Lua l;
+	bool arg = true;
+	l.loadString("function _not(arg) return not arg end");
+	std::vector<Data> result = {{}};
+	l.callFunction("_not", {arg}, &result);
+	BOOST_CHECK_EQUAL(boost::get<bool>(result[0]), false);
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_arg_nil) {
+	Lua l;
+	l.loadString("function _isnil(arg) return arg == Nil end");
+	std::vector<Data> result = {{}};
+	l.callFunction("_isnil", {Nil{}}, &result);
+	BOOST_CHECK_EQUAL(boost::get<bool>(result[0]), true);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
