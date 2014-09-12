@@ -63,6 +63,25 @@ BOOST_AUTO_TEST_CASE(callFunction_returnNumber) {
 	BOOST_CHECK_CLOSE(boost::get<double>(result[0]), returnValue, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(callFunction_returnTable) {
+	Lua l;
+	l.loadString(R"phi(
+		function f()
+			result = {}
+			result[2] = "a"
+			result["foo"] = "b"
+			result[true] = "c"
+			return result
+		end
+		)phi");
+	std::vector<Data> result = {{}};
+	l.callFunction("f", {}, &result);
+	Table table = boost::get<Table>(result[0]);
+	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(2.0)), "a");
+	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(std::string("foo"))), "b");
+	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(true)), "c");
+}
+
 BOOST_AUTO_TEST_CASE(callFunction_arg_number) {
 	Lua l;
 	double arg1 = 11.3;
@@ -98,6 +117,22 @@ BOOST_AUTO_TEST_CASE(callFunction_arg_nil) {
 	std::vector<Data> result = {{}};
 	l.callFunction("_isnil", {Nil{}}, &result);
 	BOOST_CHECK_EQUAL(boost::get<bool>(result[0]), true);
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_arg_table) {
+	Lua l;
+	l.loadString("function add(arg) return arg[1] + arg[\"foo\"] + arg[false] end");
+	std::vector<Data> result = {{}};
+	Table table;
+	table.emplace(std::string{"foo"}, 10.0);
+	table.emplace(1.0, 45.0);
+	table.emplace(false, 5.0);
+	table.emplace(std::string{"bar"}, 1231.0);
+	l.callFunction("add", {table}, &result);
+	BOOST_CHECK_CLOSE(boost::get<double>(result[0]),
+			boost::get<double>(table.at(1.0)) +
+			boost::get<double>(table.at(std::string{"foo"})) +
+			boost::get<double>(table.at(false)), 0.001);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
