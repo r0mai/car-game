@@ -40,7 +40,18 @@ public:
 	result_type operator()(Nil) const { lua_pushnil(handle); }
 	result_type operator()(bool value) const { lua_pushboolean(handle, value); }
 	result_type operator()(double value) const { lua_pushnumber(handle, value); }
-	result_type operator()(const std::string& value) const { lua_pushstring(handle, value.c_str()); }
+	result_type operator()(const std::string& value) const {
+		lua_pushstring(handle, value.c_str());
+	}
+	result_type operator()(const Table& value) const {
+		lua_newtable(handle);
+		int index = lua_gettop(handle);
+		for (const auto& element: value) {
+			boost::apply_visitor(PushVisitor(handle), element.first);
+			boost::apply_visitor(PushVisitor(handle), element.second);
+			lua_settable(handle, index);
+		}
+	}
 private:
 	lua_State* handle;
 };
@@ -62,6 +73,18 @@ Data Lua::getValue(int index) {
 		return lua_tonumber(handle, index);
 	case LUA_TSTRING:
 		return std::string{lua_tostring(handle, index)};
+	case LUA_TTABLE: {
+		Table result;
+		if (index < 0) {
+			--index;
+		}
+		lua_pushnil(handle);
+		while (lua_next(handle, index) != 0) {
+			result.emplace(getValue(-2), getValue(-1));
+			lua_pop(handle, 1);
+		}
+		return result;
+	}
 	default:
 		throw UnsupportedType{};
 	}
@@ -110,25 +133,24 @@ void Lua::handleError(int returnValue) {
 	}
 }
 
-namespace {
-
-class PrintVisitor {
-public:
-	using result_type = std::ostream&;
-
-	PrintVisitor(std::ostream& os): os(os) {}
-
-	result_type operator()(Nil) const { return os << "Nil"; }
-	template <typename T>
-	result_type operator()(T value) const { return os << value; }
-private:
-	std::ostream& os;
-};
-
+std::ostream& operator<<(std::ostream& os, Nil) {
+	return os << "Nil" << std::endl;
 }
 
-std::ostream& operator<<(std::ostream& os, const Data& data) {
-	return boost::apply_visitor(PrintVisitor{os}, data);
+std::ostream& operator<<(std::ostream& os, const Table& table) {
+	os << "{";
+	bool first = true;
+	for (const auto& element: table) {
+		if (first) {
+			os << "";
+			first = false;
+		} else {
+			os << ", ";
+		}
+
+		os << element.first << " -> " << element.second;
+	}
+	return os << "}";
 }
 
 }

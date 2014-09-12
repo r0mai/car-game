@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <ostream>
+#include <map>
 #include <boost/lexical_cast.hpp>
 #include <boost/variant.hpp>
 
@@ -42,10 +43,18 @@ struct UnsupportedType : Exception {
 struct Nil {};
 
 inline bool operator==(Nil, Nil) { return true; }
+inline bool operator<(Nil, Nil) { return false; }
+inline bool operator<=(Nil, Nil) { return true; }
+inline bool operator>(Nil, Nil) { return false; }
+inline bool operator>=(Nil, Nil) { return true; }
 
-using Data = boost::variant<Nil, bool, double, std::string>;
+using Data = boost::make_recursive_variant<Nil, bool, double, std::string,
+		std::map<boost::recursive_variant_, boost::recursive_variant_>>::type;
 
-std::ostream& operator<<(std::ostream& os, const Data& data);
+using Table = std::map<Data, Data>;
+
+std::ostream& operator<<(std::ostream& os, Nil);
+std::ostream& operator<<(std::ostream& os, const Table& table);
 
 class Lua {
 public:
