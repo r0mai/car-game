@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(runtimeError) {
 	BOOST_CHECK_THROW(l.loadString("error(\"" + message + "\")"), RuntimeError);
 }
 
-BOOST_AUTO_TEST_CASE(callFunction_returnString) {
+BOOST_AUTO_TEST_CASE(callFunction_return_string) {
 	Lua l;
 	std::string returnValue = "some return value";
 	l.loadString("function f() return \"" + returnValue + "\" end");
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(callFunction_returnString) {
 	BOOST_CHECK_EQUAL(boost::get<std::string>(result[0]), returnValue);
 }
 
-BOOST_AUTO_TEST_CASE(callFunction_returnBool) {
+BOOST_AUTO_TEST_CASE(callFunction_return_bool) {
 	Lua l;
 	l.loadString("function f() return true end");
 	std::vector<Data> result = {{}};
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(callFunction_returnBool) {
 	BOOST_CHECK_EQUAL(boost::get<bool>(result[0]), true);
 }
 
-BOOST_AUTO_TEST_CASE(callFunction_returnNumber) {
+BOOST_AUTO_TEST_CASE(callFunction_return_number) {
 	Lua l;
 	double returnValue = 43.1;
 	l.loadString("function f() return 43.1 end");
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(callFunction_returnNumber) {
 	BOOST_CHECK_CLOSE(boost::get<double>(result[0]), returnValue, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(callFunction_returnTable) {
+BOOST_AUTO_TEST_CASE(callFunction_return_table) {
 	Lua l;
 	l.loadString(R"phi(
 		function f()
@@ -80,6 +80,24 @@ BOOST_AUTO_TEST_CASE(callFunction_returnTable) {
 	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(2.0)), "a");
 	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(std::string("foo"))), "b");
 	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(true)), "c");
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_return_table_recursive) {
+	Lua l;
+	l.loadString(R"phi(
+		function f()
+			result = {}
+			result.foo = {}
+			result.foo[1] = "a"
+			result.foo["bar"] = "b"
+			return result
+		end
+		)phi");
+	std::vector<Data> result = {{}};
+	l.callFunction("f", {}, &result);
+	Table table = boost::get<Table>(boost::get<Table>(result[0]).at(std::string("foo")));
+	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(1.0)), "a");
+	BOOST_CHECK_EQUAL(boost::get<std::string>(table.at(std::string("bar"))), "b");
 }
 
 BOOST_AUTO_TEST_CASE(callFunction_arg_number) {
@@ -133,6 +151,19 @@ BOOST_AUTO_TEST_CASE(callFunction_arg_table) {
 			boost::get<double>(table.at(1.0)) +
 			boost::get<double>(table.at(std::string{"foo"})) +
 			boost::get<double>(table.at(false)), 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(callFunction_arg_table_recursive) {
+	Lua l;
+	double value = 123.0;
+	l.loadString("function double(arg) return arg.foo.bar * 2 end");
+	std::vector<Data> result = {{}};
+	Table outerTable;
+	Table innerTable;
+	innerTable.emplace(std::string("bar"), value);
+	outerTable.emplace(std::string("foo"), innerTable);
+	l.callFunction("double", {outerTable}, &result);
+	BOOST_CHECK_CLOSE(boost::get<double>(result[0]), 2 * value, 0.001);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
