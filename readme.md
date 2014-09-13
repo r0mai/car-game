@@ -18,16 +18,16 @@ Usage
 After building:
 
 `./bin/car-game` will start GUI with no neural network.
-Press T to turn telemetry graphs on/off.
-Press X to turn telemetry text on/off.
-Press A to turn AI on/off, you can drive the car yourself.
-Press C to show/hide the car.
-Press Y to show/hide rays.
-Press P to show/hide checkpoints.
-Press R to show/hide track boundary.
-Press G to show/hide track area.
-Press E to show/hide the trace of the current car.
-Press PgUp/PgDown to select different cars.
+- Press T to turn telemetry graphs on/off.
+- Press X to turn telemetry text on/off.
+- Press A to turn AI on/off, you can drive the car yourself.
+- Press C to show/hide the car.
+- Press Y to show/hide rays.
+- Press P to show/hide checkpoints.
+- Press R to show/hide track boundary.
+- Press G to show/hide track area.
+- Press E to show/hide the trace of the current car.
+- Press PgUp/PgDown to select different cars.
 
 `./bin/car-game --game-type=learn` will start crunching a population of neural networks. The best one will be stored in best.car
 
