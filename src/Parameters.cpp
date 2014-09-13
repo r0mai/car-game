@@ -138,10 +138,10 @@ Parameters parseParameters(int argc, char **argv) {
 			po::value(&iterationParameters.printoutFrequency)
 				->default_value(iterationParameters.printoutFrequency),
 			"The number of generations after which output is printed")
-		("fitness-function",
-			po::value(&iterationParameters.fitnessExpression)
-				->default_value(iterationParameters.fitnessExpression),
-			"Fitness function.")
+		("fitness-script",
+			po::value(&iterationParameters.fitnessScript)
+				->default_value(iterationParameters.fitnessScript),
+			"Lua script used for calculating fitness.")
 		;
 
 	po::options_description carInputDescription("Options for realtime and benchmark game types");
