@@ -11,7 +11,7 @@ public:
 	FitnessCalculator(lua::Lua& lua): lua(lua) {}
 
 	template <typename Iterator>
-	float calculateFitness(Iterator begin, Iterator end) {
+	float calculateFitness(Iterator begin, Iterator end, std::string* debugInfo) {
 		lua::Table args;
 		int i = 1;
 		for (const auto& model: boost::make_iterator_range(begin, end)) {
@@ -24,8 +24,11 @@ public:
 
 			args.emplace(static_cast<double>(i++), arg);
 		}
-		std::vector<lua::Data> results{{}};
+		std::vector<lua::Data> results{{}, {}};
 		lua.callFunction("getFitness", {args}, &results);
+		if (debugInfo && results[1].type() != lua::Data{lua::Nil{}}.type()) {
+			*debugInfo = boost::get<std::string>(results[1]);
+		}
 		return boost::get<double>(results[0]);
 	}
 private:

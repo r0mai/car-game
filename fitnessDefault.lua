@@ -1,15 +1,19 @@
 function getFitness(tracks)
 	local result = 0
 	local multiplier = 1
+	local debug = "Fitnesses = "
 	for track, data in ipairs(tracks) do
-		result = result + 0.5 * data.travelDistance;
+		local fitness = 0.5 * data.travelDistance;
 		if data.crossedCheckpoints > data.checkpoints then
-			result = result + 100 * data.checkpoints + 
+			fitness = fitness + 100 * data.checkpoints + 
 					2 * (data.crossedCheckpoints - data.checkpoints)
 			multiplier = multiplier + 1
 		else
-			result = result + 100 * data.crossedCheckpoints
+			fitness = fitness + 100 * data.crossedCheckpoints
 		end
+		result = result + fitness
+		debug = debug .. fitness .. " "
 	end
-	return result * multiplier
+	debug = debug .. " Multiplier = " .. multiplier
+	return result * multiplier, debug
 end

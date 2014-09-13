@@ -17,6 +17,7 @@ public:
 
 	Weights weights;
 	float fitness = 0.f;
+	std::string debugInfo;
 
 private:
 	friend class boost::serialization::access;

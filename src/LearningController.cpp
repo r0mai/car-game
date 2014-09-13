@@ -35,15 +35,16 @@ bool compareBestFitnesses(const PopulationRunner& lhs, const PopulationRunner& r
 	return lhs.getBestFitness() < rhs.getBestFitness();
 }
 
-}
-
-static void printInfo(unsigned generation, float bestFitness, const std::vector<float>& populationAverages) {
+void printInfo(unsigned generation, float bestFitness,
+		const std::vector<float>& populationAverages,
+		const std::string& debugInfo) {
 	std::stringstream ss;
 	ss << "Generation: " << generation << ", ";
 	ss << "Current best fitness: " << bestFitness << ", ";
 	ss << "Population averages: ";
 	ss << boost::algorithm::join(populationAverages | boost::adaptors::transformed(
-				boost::lexical_cast<std::string, float>), ", ");
+				boost::lexical_cast<std::string, float>), ", ") << ", ";
+	ss << debugInfo;
 	if (isatty(1)) { //if stdout is a terminal
 		std::cout << "\033[2K\r";
 		std::cout << ss.str() << std::flush;
@@ -52,6 +53,7 @@ static void printInfo(unsigned generation, float bestFitness, const std::vector<
 	}
 }
 
+}
 
 void LearningController::run() {
 
@@ -93,7 +95,8 @@ void LearningController::run() {
 			populations.erase(worstPopulation);
 		}
 		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
-			printInfo(generation, bestFitness, populationAverages);
+			printInfo(generation, bestFitness, populationAverages,
+					bestPopulation.getBestGenome()->debugInfo);
 		}
 	}
 }
