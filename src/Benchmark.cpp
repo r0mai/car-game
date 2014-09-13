@@ -53,8 +53,10 @@ void Benchmark::run() {
 					boost::adaptors::transformed([](const AIGameManager& manager) {
 						return manager.getGameManager().getModel();
 					});
+					std::string debugInfo;
 					std::cout << fitnessCalculator.calculateFitness(
-							range.begin(), range.end()) << std::endl;
+							range.begin(), range.end(), &debugInfo);
+					std::cout << " " << debugInfo << std::endl;
 			}
 		}
 	}

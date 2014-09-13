@@ -2,7 +2,6 @@
 
 #include <mutex>
 #include <condition_variable>
-#include <functional>
 #include <boost/range/adaptor/transformed.hpp>
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
@@ -95,7 +94,8 @@ void PopulationRunner::runSimulation(Genome& genome, LearningControllerData& dat
 	auto range = data.managers | boost::adaptors::transformed([](const AIGameManager& manager) {
 			return manager.getGameManager().getModel();
 		});
-	genome.fitness = fitnessCalculator->calculateFitness(range.begin(), range.end());
+	genome.fitness = fitnessCalculator->calculateFitness(range.begin(), range.end(),
+			&genome.debugInfo);
 }
 
 void PopulationRunner::updateBestFitness() {
