@@ -2,16 +2,21 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <functional>
+#include <boost/range/adaptor/transformed.hpp>
 #include "Genome.hpp"
 #include "AsyncHelper.hpp"
 #include "Line2.hpp"
 #include "Track/Track.hpp"
+#include "FitnessCalculator.hpp"
 
 namespace car {
 
 PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 		const track::TrackCreators& trackCreators,
+		FitnessCalculator& fitnessCalculator,
 		boost::asio::io_service& ioService):
+			fitnessCalculator(&fitnessCalculator),
 			ioService(&ioService),
 			population{parameters.populationSize,
 				NeuralNetwork::getWeightCountForNetwork(
@@ -38,8 +43,7 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 		setNeuralNetworkExternalParameters(parameters.commonParameters, controllerData.network);
 		controllerData.managers.reserve(trackCreators.size());
 		for (const auto& trackCreator: trackCreators) {
-			controllerData.managers.emplace_back(parameters.commonParameters, trackCreator,
-					parameters.iterationParameters.fitnessExpression);
+			controllerData.managers.emplace_back(parameters.commonParameters, trackCreator);
 		}
 	}
 }
@@ -81,14 +85,17 @@ void PopulationRunner::runIteration() {
 
 void PopulationRunner::runSimulation(Genome& genome, LearningControllerData& data) {
 	data.network.setWeights(genome.weights);
-	genome.fitness = 0;
 
 	for (auto& manager: data.managers) {
 		manager.setNeuralNetwork(data.network);
 		manager.init();
 		manager.run();
-		genome.fitness += manager.getFitness();
 	}
+
+	auto range = data.managers | boost::adaptors::transformed([](const AIGameManager& manager) {
+			return manager.getGameManager().getModel();
+		});
+	genome.fitness = fitnessCalculator->calculateFitness(range.begin(), range.end());
 }
 
 void PopulationRunner::updateBestFitness() {

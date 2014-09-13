@@ -1,8 +1,11 @@
 #include "Benchmark.hpp"
 #include <stdexcept>
 #include <iostream>
+#include <boost/range/adaptor/transformed.hpp>
 #include "AIGameManager.hpp"
 #include "Line2.hpp"
+#include "lua/Lua.hpp"
+#include "FitnessCalculator.hpp"
 
 namespace car {
 
@@ -24,11 +27,14 @@ Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators
 }
 
 void Benchmark::run() {
+	lua::Lua lua;
+	lua.loadFile(parameters.iterationParameters.fitnessScript);
+	FitnessCalculator fitnessCalculator(lua);
+
 	std::vector<AIGameManager> managers;
 	managers.reserve(trackCreators.size());
 	for (const auto& trackCreator: trackCreators) {
-		managers.emplace_back(parameters.commonParameters, trackCreator,
-				parameters.iterationParameters.fitnessExpression);
+		managers.emplace_back(parameters.commonParameters, trackCreator);
 	}
 
 	for (unsigned generation = 1;
@@ -42,11 +48,13 @@ void Benchmark::run() {
 			}
 
 			if (generation % parameters.iterationParameters.printoutFrequency == 0) {
-				std::cout << "Fitnesses: ";
-				for (auto& manager: managers) {
-					std::cout << manager.getFitness() << " ";
-				}
-				std::cout << std::endl;
+				std::cout << "Fitness: ";
+				auto range = managers |
+					boost::adaptors::transformed([](const AIGameManager& manager) {
+						return manager.getGameManager().getModel();
+					});
+					std::cout << fitnessCalculator.calculateFitness(
+							range.begin(), range.end()) << std::endl;
 			}
 		}
 	}

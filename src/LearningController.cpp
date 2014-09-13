@@ -16,6 +16,8 @@
 #include "LearningController.hpp"
 #include "PopulationRunner.hpp"
 #include "Track/Track.hpp"
+#include "lua/Lua.hpp"
+#include "FitnessCalculator.hpp"
 
 namespace car {
 
@@ -56,8 +58,12 @@ void LearningController::run() {
 	std::vector<PopulationRunner> populations;
 	populations.reserve(parameters.startingPopulations);
 
+	lua::Lua lua;
+	lua.loadFile(parameters.iterationParameters.fitnessScript);
+	FitnessCalculator fitnessCalculator(lua);
+
 	for (std::size_t i = 0; i < parameters.startingPopulations; ++i) {
-		populations.emplace_back(parameters, trackCreators, ioService);
+		populations.emplace_back(parameters, trackCreators, fitnessCalculator, ioService);
 		loadPopulation(populations.back().getPopulation());
 	}
 

@@ -3,32 +3,27 @@
 
 #include "GameManager.hpp"
 #include "Track/TrackCreator.hpp"
-#include "MathExpression.hpp"
 
 namespace car {
 
 class AIGameManager {
 public:
-	AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator,
-			const MathExpression& fitnessExpression);
+	AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator);
 
 	void run();
-
-	//should be called after run()
-	float getFitness() const;
 
 	void setNeuralNetwork(const NeuralNetwork& neuralNetwork) {
 		gameManager.setNeuralNetwork(neuralNetwork);
 	}
 
 	void init();
+	const GameManager& getGameManager() const { return gameManager; }
 
 private:
 	bool stopCondition() const;
 
 	GameManager gameManager;
 	const float maxTime = 600.f;
-	MathExpression fitnessExpression;
 };
 
 }

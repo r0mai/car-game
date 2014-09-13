@@ -10,9 +10,10 @@
 
 namespace car {
 
-AIGameManager::AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator, const MathExpression& fitnessExpression) :
-	gameManager(parameters, trackCreator),
-	fitnessExpression{fitnessExpression} {}
+AIGameManager::AIGameManager(const CommonParameters& parameters,
+		track::TrackCreator trackCreator) :
+	gameManager(parameters, trackCreator)
+{}
 
 void AIGameManager::init() {
 	gameManager.init();
@@ -22,18 +23,6 @@ void AIGameManager::run() {
 	while (!stopCondition()) {
 		gameManager.advance();
 	}
-}
-
-float AIGameManager::getFitness() const {
-	auto& model = gameManager.getModel();
-
-	SymbolTable symbolTable = {
-		{"td", model.getCar().getTravelDistance()},
-		{"cps", model.getTrack().getNumberOfCheckpoints()},
-		{"ccps", model.getNumberOfCrossedCheckpoints()}
-	};
-
-	return evaluateMathExpression(fitnessExpression, symbolTable);
 }
 
 bool AIGameManager::stopCondition() const {

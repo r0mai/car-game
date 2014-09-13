@@ -14,11 +14,13 @@
 namespace car {
 
 class Genome;
+class FitnessCalculator;
 
 class PopulationRunner {
 public:
 	PopulationRunner(const LearningParameters& parameters,
 		const track::TrackCreators& trackCreators,
+		FitnessCalculator& fitnessCalculator,
 		boost::asio::io_service& ioService);
 
 	PopulationRunner(const PopulationRunner&) = delete;
@@ -39,6 +41,7 @@ private:
 		std::vector<AIGameManager> managers;
 	};
 
+	FitnessCalculator* fitnessCalculator;
 	boost::asio::io_service* ioService;
 
 	GeneticPopulation population;
