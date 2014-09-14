@@ -104,7 +104,7 @@ void PopulationRunner::updateBestFitness() {
 		fitnessSum += genome.fitness;
 		if (genome.fitness > bestFitness) {
 			bestFitness = genome.fitness;
-			bestGenome = &genome;
+			bestGenome = genome;
 		}
 	}
 }
