@@ -76,4 +76,6 @@ NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName);
 
 }
 
+BOOST_CLASS_VERSION(car::NeuralNetwork, 0)
+
 #endif /* !NEURALNETWORK_HPP */
