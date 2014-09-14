@@ -86,8 +86,7 @@ void LearningController::run() {
 		savePopulation(bestPopulation.getPopulation());
 		if (bestPopulation.getBestFitness() > bestFitness) {
 			bestFitness = bestPopulation.getBestFitness();
-			assert(bestPopulation.getBestGenome() != nullptr);
-			saveNeuralNetwork(*bestPopulation.getBestGenome());
+			saveNeuralNetwork(bestPopulation.getBestGenome());
 		}
 
 		if (populations.size() > 1 && generation % parameters.populationCutoff == 0) {
@@ -96,7 +95,7 @@ void LearningController::run() {
 		}
 		if (generation % parameters.iterationParameters.printoutFrequency == 0) {
 			printInfo(generation, bestFitness, populationAverages,
-					bestPopulation.getBestGenome()->debugInfo);
+					bestPopulation.getBestGenome().debugInfo);
 		}
 	}
 }
