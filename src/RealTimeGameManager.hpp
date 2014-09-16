@@ -75,7 +75,6 @@ private:
 	bool showTrace = false;
 	float pixelsPerMeter = 0.f;
 	float panThreshold = 0.f;
-	float traceTime = 0.f;
 
 	bool pressedKeys[sf::Keyboard::KeyCount] = {false};
 

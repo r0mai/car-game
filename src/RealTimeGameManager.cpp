@@ -91,11 +91,7 @@ void RealTimeGameManager::run() {
 				carData.gameManager.advance();
 				checkForCollisions(carData);
 			}
-			traceTime += physicsTimeStep;
-			if (traceTime > realTimeParameters.traceOutputInterval) {
-				updateTrace();
-				traceTime = 0.f;
-			}
+			updateTrace();
 			physicsTimeStepAccumulator -= physicsTimeStep;
 		}
 
@@ -309,7 +305,10 @@ void RealTimeGameManager::updateTrace() {
 		const auto& model = gameManager.getModel();
 		const Car& car = model.getCar();
 
-		carData.trace.push_back(car.getPosition());
+		if (carData.trace.empty() || getDistanceSQ(car.getPosition(), carData.trace.back()) >
+				realTimeParameters.traceOutputInterval * realTimeParameters.traceOutputInterval) {
+			carData.trace.push_back(car.getPosition());
+		}
 	}
 }
 

@@ -187,8 +187,7 @@ Parameters parseParameters(int argc, char **argv) {
 		("trace-output-interval",
 			po::value(&parameters.realTimeParameters.traceOutputInterval)
 				->default_value(parameters.realTimeParameters.traceOutputInterval),
-			"The time interval in seconds after a new point in the trace line is printed. It is rounded up to physics time step.")
-		;
+			"The interval in meters after a new point in the trace line is printed.");
 
 	po::options_description learningDescription("Options for learning game type");
 	learningDescription.add_options()
