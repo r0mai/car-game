@@ -57,15 +57,10 @@ Weights NeuralNetwork::evaluateInput(Weights input) {
 		unsigned neuronCount = (layer == hiddenLayerCount) ?
 				outputNeuronCount :
 				hiddenLayerNeuronCount;
-		unsigned weightCountPerNeuron = (layer == 0) ?
-				inputNeuronCount :
-				hiddenLayerNeuronCount;
 
 		output.clear();
 		output.reserve(neuronCount);
 		for (unsigned neuron = 0; neuron < neuronCount; ++neuron) {
-			assert(weightCountPerNeuron == input.size());
-
 			Weight netInput = 0;
 
 			for (auto value: input) {
