@@ -352,6 +352,8 @@ void RealTimeGameManager::drawTrace() {
 	for (std::size_t i = 1; i < carData.trace.size(); ++i) {
 		drawLine(window, carData.trace[i-1], carData.trace[i], traceColor);
 	}
+
+	drawLine(window, carData.trace.back(), carData.gameManager.getModel().getCar().getPosition(), traceColor);
 }
 
 void RealTimeGameManager::drawTrackArea() {
