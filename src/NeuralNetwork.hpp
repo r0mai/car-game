@@ -9,7 +9,8 @@
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/string.hpp>
 
-#include "NeuronLayer.hpp"
+#include "NeuronWeights.hpp"
+#include "Legacy/LayeredNeuralNetwork.hpp"
 
 namespace car {
 
@@ -31,22 +32,27 @@ public:
 			unsigned outputNeuronCount,
 			bool useRecurrence);
 
-	Weights getWeights() const;
-	void setWeights(const Weights& weights);
-	unsigned getWeightCount() const;
+	const Weights& getWeights() const { return weights; }
+	void setWeights(Weights weights) { this->weights = std::move(weights); }
+	unsigned getWeightCount() const { return weights.size(); }
 
-	unsigned getInputNeuronCount() const;
-	unsigned getOutputNeuronCount() const;
+	unsigned getInputNeuronCount() const { return inputNeuronCount; }
+	unsigned getOutputNeuronCount() const { return outputNeuronCount; }
 
-	Weights evaluateInput(const Weights& input);
+	Weights evaluateInput(Weights input);
 
 	std::string getExternalParameter(const std::string& key) const;
 	void setExternalParameter(std::string key, std::string value);
 
 private:
+	unsigned hiddenLayerCount;
+	unsigned hiddenLayerNeuronCount;
 	unsigned inputNeuronCount;
+	unsigned outputNeuronCount;
+	bool useRecurrence;
 
-	std::vector<NeuronLayer> layers;
+	Weights weights;
+	std::vector<float> recurrence;
 
 	/*
 	 * We want to achive the maximum flexibility here. Since this is only read
@@ -62,20 +68,52 @@ private:
 	friend class boost::serialization::access;
 
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned version);
-};
+	void load(Archive& ar, const unsigned version) {
+		if (version < 1) {
+			LayeredNeuralNetwork network;
+			ar >> network.inputNeuronCount;
+			ar >> network.layers;
+			ar >> network.externalParameters;
 
-template<class Archive>
-void NeuralNetwork::serialize(Archive& ar, const unsigned /*version*/) {
-	ar & inputNeuronCount;
-	ar & layers;
-	ar & externalParameters;
-}
+			hiddenLayerCount = network.getHiddenLayerCount();
+			hiddenLayerNeuronCount = network.getHiddenLayerNeuronCount();
+			inputNeuronCount = network.getInputNeuronCount();
+			outputNeuronCount = network.getOutputNeuronCount();
+			useRecurrence = network.isRecurrent();
+			weights = network.getWeights();
+			externalParameters = network.getExternalParameters();
+		} else {
+			ar >> hiddenLayerCount;
+			ar >> hiddenLayerNeuronCount;
+			ar >> inputNeuronCount;
+			ar >> outputNeuronCount;
+			ar >> useRecurrence;
+			ar >> recurrence;
+			ar >> weights;
+			ar >> externalParameters;
+		}
+	}
+
+	template<class Archive>
+	void save(Archive& ar, const unsigned /*version*/) const {
+		ar << hiddenLayerCount;
+		ar << hiddenLayerNeuronCount;
+		ar << inputNeuronCount;
+		ar << outputNeuronCount;
+		ar << useRecurrence;
+		ar << recurrence;
+		ar << weights;
+		ar << externalParameters;
+	}
+
+	BOOST_SERIALIZATION_SPLIT_MEMBER();
+
+};
 
 NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName);
 
 }
 
-BOOST_CLASS_VERSION(car::NeuralNetwork, 0)
+BOOST_CLASS_VERSION(car::NeuralNetwork, 1)
 
 #endif /* !NEURALNETWORK_HPP */

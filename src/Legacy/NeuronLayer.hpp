@@ -12,8 +12,6 @@ namespace car {
 
 struct NeuronLayer {
 	NeuronLayer() = default;
-	NeuronLayer(unsigned neuronCount, unsigned inputCount, bool hasRecurrence);
-
 	std::vector<Neuron> neurons;
 
 private:

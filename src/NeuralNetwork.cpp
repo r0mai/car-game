@@ -7,6 +7,7 @@
 #include <boost/archive/text_iarchive.hpp>
 
 #include "mathUtil.hpp"
+#include "randomUtil.hpp"
 
 namespace car {
 
@@ -15,16 +16,23 @@ NeuralNetwork::NeuralNetwork(
 		unsigned hiddenLayerNeuronCount,
 		unsigned inputNeuronCount,
 		unsigned outputNeuronCount,
-		bool useRecurrence) : inputNeuronCount(inputNeuronCount)
+		bool useRecurrence) :
+			hiddenLayerCount(hiddenLayerCount),
+			hiddenLayerNeuronCount(hiddenLayerNeuronCount),
+			inputNeuronCount(inputNeuronCount),
+			outputNeuronCount(outputNeuronCount),
+			useRecurrence(useRecurrence),
+			weights((hiddenLayerCount == 0) ?
+				(outputNeuronCount * (inputNeuronCount + 1 + useRecurrence)) :
+				(hiddenLayerNeuronCount * (inputNeuronCount + outputNeuronCount +
+						(hiddenLayerCount - 1) * hiddenLayerNeuronCount) +
+					(hiddenLayerCount * hiddenLayerNeuronCount + outputNeuronCount) * (
+						1 + useRecurrence))
+				),
+			recurrence(outputNeuronCount + hiddenLayerCount * hiddenLayerNeuronCount)
 {
-	if (hiddenLayerCount > 0) {
-		layers.push_back(NeuronLayer(hiddenLayerNeuronCount, inputNeuronCount, useRecurrence));
-		for (unsigned i = 0; i < hiddenLayerCount - 1; ++i) {
-			layers.push_back(NeuronLayer(hiddenLayerNeuronCount, hiddenLayerNeuronCount, useRecurrence));
-		}
-		layers.push_back(NeuronLayer(outputNeuronCount, hiddenLayerNeuronCount, useRecurrence));
-	} else {
-		layers.push_back(NeuronLayer(outputNeuronCount, inputNeuronCount, useRecurrence));
+	for (Weight& weight : weights) {
+		weight = randomReal(-1, 1);
 	}
 }
 
@@ -39,59 +47,44 @@ unsigned NeuralNetwork::getWeightCountForNetwork(
 	return NeuralNetwork(hiddenLayerCount, hiddenLayerNeuronCount, inputNeuronCount, outputNeuronCount, useRecurrence).getWeightCount();
 }
 
-Weights NeuralNetwork::getWeights() const {
-	Weights result;
-	for (const NeuronLayer& layer : layers) {
-		for (const Neuron& neuron : layer.neurons) {
-			for (Weight weight : neuron.weights) {
-				result.push_back(weight);
-			}
-		}
-	}
-	return result;
-}
-
-void NeuralNetwork::setWeights(const Weights& weights) {
-	assert(weights.size() == getWeightCount());
-	unsigned weightIndex = 0;
-	for (NeuronLayer& layer : layers) {
-		for (Neuron& neuron : layer.neurons) {
-			for (Weight& weight : neuron.weights) {
-				weight = weights[weightIndex++];
-			}
-		}
-	}
-}
-
-unsigned NeuralNetwork::getWeightCount() const {
-	unsigned count = 0;
-	for (const NeuronLayer& layer : layers) {
-		for (const Neuron& neuron : layer.neurons) {
-			count += neuron.weights.size();
-		}
-	}
-	return count;
-}
-
-unsigned NeuralNetwork::getInputNeuronCount() const {
-	return inputNeuronCount;
-}
-
-unsigned NeuralNetwork::getOutputNeuronCount() const {
-	return layers.back().neurons.size();
-}
-
-Weights NeuralNetwork::evaluateInput(const Weights& input) {
+Weights NeuralNetwork::evaluateInput(Weights input) {
 	assert(input.size() == inputNeuronCount);
 
-	Weights nextInput = input;
 	Weights output;
-	for (NeuronLayer& layer : layers) {
+
+	unsigned weightIndex = 0;
+	for (unsigned layer = 0; layer <= hiddenLayerCount; ++layer) {
+		unsigned neuronCount = (layer == hiddenLayerCount) ?
+				outputNeuronCount :
+				hiddenLayerNeuronCount;
+		unsigned weightCountPerNeuron = (layer == 0) ?
+				inputNeuronCount :
+				hiddenLayerNeuronCount;
+
 		output.clear();
-		for (Neuron& neuron : layer.neurons) {
-			output.push_back(neuron.run(nextInput));
+		output.reserve(neuronCount);
+		for (unsigned neuron = 0; neuron < neuronCount; ++neuron) {
+			assert(weightCountPerNeuron == input.size());
+
+			Weight netInput = 0;
+
+			for (auto value: input) {
+				netInput += weights[weightIndex++]*value;
+			}
+			int recurrenceIndex = layer * hiddenLayerNeuronCount + inputNeuronCount;
+			if (useRecurrence) {
+				netInput += recurrence[recurrenceIndex] * weights[weightIndex++];
+			}
+			netInput += -1.f * weights[weightIndex++];
+
+			Weight sigmoid = sigmoidApproximation(netInput);
+			if (useRecurrence) {
+				recurrence[recurrenceIndex] = sigmoid;
+			}
+			output.push_back(sigmoid);
+
 		}
-		nextInput = output; //we could move here probably
+		input = output; //we could move here probably
 	}
 	return output;
 }
@@ -108,12 +101,10 @@ NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName) {
 
 std::string NeuralNetwork::getExternalParameter(const std::string& key) const {
 	auto it = externalParameters.find(key);
-	//std::cerr << "get " << key << " -> " << (it == externalParameters.end() ? "" : it->second) << std::endl;
 	return it == externalParameters.end() ? "" : it->second;
 }
 
 void NeuralNetwork::setExternalParameter(std::string key, std::string value) {
-	//std::cerr << "set " << key << " -> " << value << std::endl;
 	externalParameters[std::move(key)] = std::move(value);
 }
 
