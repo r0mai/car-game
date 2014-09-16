@@ -9,7 +9,7 @@ namespace car {
 struct CommonParameters {
 
 	unsigned rayCount = 14;
-	unsigned checkpointLookAhead = 4;
+	unsigned checkpointLookAhead = 1;
 	unsigned physicsTimeStepsPerSecond = 64;
 
 	// for speed
