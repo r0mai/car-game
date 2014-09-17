@@ -7,6 +7,7 @@ namespace car {
 
 struct IterationParameters {
 	boost::optional<unsigned> generationLimit;
+	float timeLimit = 300.f;
 	unsigned printoutFrequency = 1;
 	std::string fitnessScript = "fitnessDefault.lua";
 };

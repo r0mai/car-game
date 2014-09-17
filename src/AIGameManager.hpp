@@ -3,12 +3,14 @@
 
 #include "GameManager.hpp"
 #include "Track/TrackCreator.hpp"
+#include "IterationParameters.hpp"
 
 namespace car {
 
 class AIGameManager {
 public:
-	AIGameManager(const CommonParameters& parameters, track::TrackCreator trackCreator);
+	AIGameManager(const CommonParameters& commonParameters,
+			const IterationParameters& iterationParameters, track::TrackCreator trackCreator);
 
 	void run();
 
@@ -23,7 +25,7 @@ private:
 	bool stopCondition() const;
 
 	GameManager gameManager;
-	const float maxTime = 600.f;
+	IterationParameters iterationParameters;
 };
 
 }

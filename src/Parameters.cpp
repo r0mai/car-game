@@ -134,6 +134,9 @@ Parameters parseParameters(int argc, char **argv) {
 		("generation-limit",
 			po::value<unsigned>(),
 			"Exit after this many generations. Default is to never exit.")
+		("time-limit",
+			po::value(&iterationParameters.timeLimit)->default_value(iterationParameters.timeLimit),
+			"Time limit for the iteration in seconds. Iteration ends if car does not leave track until this time")
 		("printout-frequency",
 			po::value(&iterationParameters.printoutFrequency)
 				->default_value(iterationParameters.printoutFrequency),
