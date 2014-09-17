@@ -10,9 +10,11 @@
 
 namespace car {
 
-AIGameManager::AIGameManager(const CommonParameters& parameters,
+AIGameManager::AIGameManager(const CommonParameters& commonParameters,
+		const IterationParameters& iterationParameters,
 		track::TrackCreator trackCreator) :
-	gameManager(parameters, trackCreator)
+	gameManager(commonParameters, trackCreator),
+	iterationParameters(iterationParameters)
 {}
 
 void AIGameManager::init() {
@@ -28,7 +30,7 @@ void AIGameManager::run() {
 bool AIGameManager::stopCondition() const {
 	auto& model = gameManager.getModel();
 
-	return model.hasCarCollided() || model.getCurrentTime() > maxTime;
+	return model.hasCarCollided() || model.getCurrentTime() > iterationParameters.timeLimit;
 }
 
 }

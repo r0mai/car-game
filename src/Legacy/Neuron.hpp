@@ -13,9 +13,6 @@ namespace car {
 class Neuron {
 public:
 	Neuron() = default;
-	Neuron(unsigned inputCount, bool isRecurrent = false);
-
-	Weight run(const Weights& input);
 
 	//size is 1+inputCount (bias)
 	Weights weights;

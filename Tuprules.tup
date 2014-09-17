@@ -12,6 +12,7 @@ CPP_FLAGS += -ftemplate-backtrace-limit=0
 SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track
 LUA_DIR = $(SOURCE_DIR)/lua
+LEGACY_DIR = $(SOURCE_DIR)/Legacy
 SCRIPTS_DIR = $(TUP_CWD)/scripts
 
 INCLUDE_DIRS += -I$(SOURCE_DIR)

@@ -34,7 +34,9 @@ void Benchmark::run() {
 	std::vector<AIGameManager> managers;
 	managers.reserve(trackCreators.size());
 	for (const auto& trackCreator: trackCreators) {
-		managers.emplace_back(parameters.commonParameters, trackCreator);
+		managers.emplace_back(parameters.commonParameters, 
+				parameters.iterationParameters,
+				trackCreator);
 	}
 
 	for (unsigned generation = 1;

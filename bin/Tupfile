@@ -2,5 +2,5 @@
 include_rules
 
 : foreach *.cpp |> !cxx |>
-: ./*.o $(SOURCE_DIR)/*.o $(TRACK_DIR)/*.o $(LUA_DIR)/*.o |> !linker |> car-game
+: ./*.o $(SOURCE_DIR)/*.o $(TRACK_DIR)/*.o $(LUA_DIR)/*.o $(LEGACY_DIR)/*.o |> !linker |> car-game
 : foreach $(SCRIPTS_DIR)/*.sh |> cp %f . |> %b

@@ -13,11 +13,11 @@ struct LearningParameters {
 	IterationParameters iterationParameters;
 
 	//Neural network parameters
-	unsigned hiddenLayerCount = 2;
-	unsigned neuronPerHiddenLayer = 16;
+	unsigned hiddenLayerCount = 1;
+	unsigned neuronPerHiddenLayer = 60;
 	bool useRecurrence = false;
 
-	unsigned populationSize = 60;
+	unsigned populationSize = 80;
 
 	//number of threads used for training
 	unsigned threadCount = [] { auto j = std::thread::hardware_concurrency(); return j > 0 ? j : 1; }();
