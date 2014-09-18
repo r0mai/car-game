@@ -209,7 +209,7 @@ auto Model::getCheckpointInformation(unsigned count) const -> std::vector<Checkp
 	rotateTransform.rotate(-angle * 180.f/pi);
 
 	for (unsigned i = 0; i < count; ++i) {
-		auto checkpointId = currentCheckpoint + i;
+		auto checkpointId = (currentCheckpoint + i) % track.getNumberOfCheckpoints();
 		const auto& checkpointLine = track.getCheckpointLine(checkpointId);
 		auto checkpointAngle = track.getCheckpointAngle(checkpointId);
 		auto relativeAngle = checkpointAngle - angle;
