@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
@@ -32,9 +33,20 @@ public:
 			unsigned outputNeuronCount,
 			bool useRecurrence);
 
-	const Weights& getWeights() const { return weights; }
-	void setWeights(Weights weights) { this->weights = std::move(weights); }
-	unsigned getWeightCount() const { return weights.size(); }
+	NeuralNetwork(const NeuralNetwork&) = default;
+	NeuralNetwork& operator=(const NeuralNetwork&) = default;
+	NeuralNetwork(NeuralNetwork&&) = default;
+	NeuralNetwork& operator=(NeuralNetwork&&) = default;
+
+	const std::shared_ptr<const Weights>& getWeights() const { return weights; }
+	void setWeights(std::shared_ptr<const Weights> weights) {
+		assert(weights);
+		this->weights = std::move(weights);
+	}
+	unsigned getWeightCount() const {
+		assert(weights);
+		return weights->size();
+	}
 
 	unsigned getInputNeuronCount() const { return inputNeuronCount; }
 	unsigned getOutputNeuronCount() const { return outputNeuronCount; }
@@ -51,7 +63,7 @@ private:
 	unsigned outputNeuronCount;
 	bool useRecurrence;
 
-	Weights weights;
+	std::shared_ptr<const Weights> weights;
 	std::vector<float> recurrence;
 
 	/*
@@ -80,7 +92,7 @@ private:
 			inputNeuronCount = network.getInputNeuronCount();
 			outputNeuronCount = network.getOutputNeuronCount();
 			useRecurrence = network.isRecurrent();
-			weights = network.getWeights();
+			weights = std::make_shared<Weights>(network.getWeights());
 			externalParameters = network.getExternalParameters();
 		} else {
 			ar >> hiddenLayerCount;
@@ -89,20 +101,21 @@ private:
 			ar >> outputNeuronCount;
 			ar >> useRecurrence;
 			ar >> recurrence;
-			ar >> weights;
+			weights = loadWeights(ar);
 			ar >> externalParameters;
 		}
 	}
 
 	template<class Archive>
 	void save(Archive& ar, const unsigned /*version*/) const {
+		assert(weights);
 		ar << hiddenLayerCount;
 		ar << hiddenLayerNeuronCount;
 		ar << inputNeuronCount;
 		ar << outputNeuronCount;
 		ar << useRecurrence;
 		ar << recurrence;
-		ar << weights;
+		ar << *weights;
 		ar << externalParameters;
 	}
 
@@ -114,6 +127,6 @@ NeuralNetwork loadNeuralNetworkFromFile(const std::string& fileName);
 
 }
 
-BOOST_CLASS_VERSION(car::NeuralNetwork, 1)
+BOOST_CLASS_VERSION(car::NeuralNetwork, 2)
 
 #endif /* !NEURALNETWORK_HPP */

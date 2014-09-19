@@ -14,7 +14,7 @@ GeneticPopulation::GeneticPopulation(unsigned populationSize, unsigned numberOfW
 		for (Weight& weight : weights) {
 			weight = randomReal(-1, 1);
 		}
-		population.push_back(Genome(weights));
+		population.push_back(Genome(std::make_shared<Weights>(std::move(weights))));
 	}
 }
 
@@ -44,13 +44,13 @@ void GeneticPopulation::evolve() {
 
 		Weights child1, child2;
 
-		crossover(parent1.weights, parent2.weights, child1, child2);
+		crossover(*parent1.weights, *parent2.weights, child1, child2);
 
 		mutate(child1);
 		mutate(child2);
 
-		newPopulation.push_back(Genome(child1, 0));
-		newPopulation.push_back(Genome(child2, 0));
+		newPopulation.push_back(Genome(std::make_shared<Weights>(std::move(child1)), 0));
+		newPopulation.push_back(Genome(std::make_shared<Weights>(std::move(child2)), 0));
 	}
 
 	population = newPopulation;
