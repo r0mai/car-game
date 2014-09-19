@@ -2,6 +2,7 @@
 #define GENOME_HPP
 
 #include <vector>
+#include <memory>
 
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
@@ -13,9 +14,10 @@ namespace car {
 class Genome {
 public:
 	Genome() = default;
-	Genome(const Weights& weights, float fitness = 0.f);
+	Genome(std::shared_ptr<const Weights> weights, float fitness = 0.f) :
+		weights(std::move(weights)), fitness(fitness) {}
 
-	Weights weights;
+	std::shared_ptr<const Weights> weights;
 	float fitness = 0.f;
 	std::string debugInfo;
 
@@ -23,21 +25,27 @@ private:
 	friend class boost::serialization::access;
 
 	template<class Archive>
-	void serialize(Archive& ar, const unsigned version);
+	void load(Archive& ar, const unsigned /*version*/) {
+		weights = loadWeights(ar);
+	}
+
+	template<class Archive>
+	void save(Archive& ar, const unsigned /*version*/) const {
+		ar << *weights;
+	}
+
+	BOOST_SERIALIZATION_SPLIT_MEMBER();
 };
 
 typedef std::vector<Genome> Genomes;
 
-template<class Archive>
-void Genome::serialize(Archive& ar, const unsigned /*version*/) {
-	ar & weights;
-	//it makes no sense to serialize the fitness. It depends on
-	//many parameters, and is only used to cache the calculation
+inline
+bool operator<(const Genome& left, const Genome& right) {
+	return left.fitness < right.fitness;
 }
 
-
-bool operator<(const Genome& left, const Genome& right);
-
 }
+
+BOOST_CLASS_VERSION(car::Genome, 0)
 
 #endif /* !GENOME_HPP */
