@@ -11,14 +11,15 @@ class Benchmark {
 
 public:
 
-	Benchmark(const BenchmarkParameters& parameters, track::TrackCreators trackCreators);
+	Benchmark(const BenchmarkParameters& parameters,
+			std::vector<std::shared_ptr<const track::Track>> tracks);
 
 	void run();
 
 private:
 
 	BenchmarkParameters parameters;
-	track::TrackCreators trackCreators;
+	std::vector<std::shared_ptr<const track::Track>> tracks;
 	std::vector<NeuralNetwork> neuralNetworks;
 
 };

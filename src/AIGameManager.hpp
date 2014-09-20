@@ -10,7 +10,8 @@ namespace car {
 class AIGameManager {
 public:
 	AIGameManager(const CommonParameters& commonParameters,
-			const IterationParameters& iterationParameters, track::TrackCreator trackCreator);
+			const IterationParameters& iterationParameters, 
+			std::shared_ptr<const track::Track> track);
 
 	void run();
 

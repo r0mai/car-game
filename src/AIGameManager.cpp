@@ -12,8 +12,8 @@ namespace car {
 
 AIGameManager::AIGameManager(const CommonParameters& commonParameters,
 		const IterationParameters& iterationParameters,
-		track::TrackCreator trackCreator) :
-	gameManager(commonParameters, trackCreator),
+		std::shared_ptr<const track::Track> track) :
+	gameManager(commonParameters, std::move(track)),
 	iterationParameters(iterationParameters)
 {}
 

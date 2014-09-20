@@ -19,7 +19,7 @@ namespace track {
 class RealTimeGameManager {
 public:
 	RealTimeGameManager(const RealTimeParameters& realTimeParameters,
-			track::TrackCreator trackCreator);
+			std::shared_ptr<const track::Track> track);
 
 	void run();
 
@@ -39,8 +39,8 @@ private:
 		bool isOut = false;
 		float outTime = 0.0;
 
-		CarData(const CommonParameters& parameters, track::TrackCreator trackCreator):
-			gameManager{parameters, trackCreator} {}
+		CarData(const CommonParameters& parameters, std::shared_ptr<const track::Track> track):
+			gameManager{parameters, std::move(track)} {}
 	};
 
 	void handleUserInput();
@@ -85,7 +85,8 @@ private:
 	RealTimeParameters realTimeParameters;
 	float physicsTimeStep;
 
-	static CarData createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator);
+	static CarData createCarData(const CommonParameters& parameters, 
+			std::shared_ptr<const track::Track> track);
 
 	static const float areaGridDistance;
 	static const float areaGridPointSize;

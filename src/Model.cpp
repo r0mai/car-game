@@ -15,8 +15,8 @@ void Model::setCar(const Car& newCar) {
 	car = newCar;
 }
 
-void Model::setTrack(const track::Track& newTrack) {
-	track = newTrack;
+void Model::setTrack(std::shared_ptr<const track::Track> newTrack) {
+	track = std::move(newTrack);
 }
 
 const Car& Model::getCar() const {
@@ -27,11 +27,7 @@ Car& Model::getCar() {
 	return car;
 }
 
-const track::Track& Model::getTrack() const {
-	return track;
-}
-
-track::Track& Model::getTrack() {
+const std::shared_ptr<const track::Track>& Model::getTrack() const {
 	return track;
 }
 
@@ -85,7 +81,7 @@ std::vector<boost::optional<sf::Vector2f>> Model::getRayPoints(unsigned count) c
 	rayPoints.reserve(count);
 
 	for ( const sf::Vector2f& v : directions ) {
-		rayPoints.push_back(track.collideWithRay(car.getPosition(), v, maxViewDistance));
+		rayPoints.push_back(track->collideWithRay(car.getPosition(), v, maxViewDistance));
 	}
 
 	return rayPoints;
@@ -108,40 +104,40 @@ void Model::advanceTime(float deltaSeconds) {
 
 void Model::collideCar() {
 	isCarCollided =
-		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
-		track.collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
-		track.collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
-		track.collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
+		track->collidesWith(Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner())) ||
+		track->collidesWith(Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner())) ||
+		track->collidesWith(Line2f(car.getFrontRightCorner(), car.getRearRightCorner())) ||
+		track->collidesWith(Line2f(car.getRearLeftCorner(), car.getRearRightCorner()));
 }
 
 bool Model::collidesWithCheckpoint(std::size_t checkpointId) {
-	return track.collidesWithCheckpoint(
+	return track->collidesWithCheckpoint(
 					Line2f(car.getFrontLeftCorner(), car.getFrontRightCorner()),
 					checkpointId) ||
-			track.collidesWithCheckpoint(
+			track->collidesWithCheckpoint(
 					Line2f(car.getFrontLeftCorner(), car.getRearLeftCorner()),
 					checkpointId) ||
-			track.collidesWithCheckpoint(
+			track->collidesWithCheckpoint(
 					Line2f(car.getFrontRightCorner(), car.getRearRightCorner()),
 					checkpointId) ||
-			track.collidesWithCheckpoint(
+			track->collidesWithCheckpoint(
 					Line2f(car.getRearLeftCorner(), car.getRearRightCorner()),
 					checkpointId);
 }
 
 bool Model::findFirstCheckpoint() {
-	for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
+	for (std::size_t i = 0; i < track->getNumberOfCheckpoints(); ++i) {
 		if (collidesWithCheckpoint(i)) {
-			currentCheckpoint = (i + 1) % track.getNumberOfCheckpoints();
+			currentCheckpoint = (i + 1) % track->getNumberOfCheckpoints();
 			++numberOfCrossedCheckpoints;
 			return true;
 		}
 	}
 
 	Line2f finderLine{car.getPosition(),
-			track.collideWithRay(car.getPosition(), car.getOrientation(), 50.f)};
-	for (std::size_t i = 0; i < track.getNumberOfCheckpoints(); ++i) {
-		if (track.collidesWithCheckpoint(finderLine, i)) {
+			track->collideWithRay(car.getPosition(), car.getOrientation(), 50.f)};
+	for (std::size_t i = 0; i < track->getNumberOfCheckpoints(); ++i) {
+		if (track->collidesWithCheckpoint(finderLine, i)) {
 			currentCheckpoint = i;
 			return true;
 		}
@@ -157,7 +153,7 @@ void Model::handleCheckpoints() {
 		}
 	} else {
 		if (collidesWithCheckpoint(currentCheckpoint)) {
-			currentCheckpoint = (currentCheckpoint + 1) % track.getNumberOfCheckpoints();
+			currentCheckpoint = (currentCheckpoint + 1) % track->getNumberOfCheckpoints();
 			++numberOfCrossedCheckpoints;
 		}
 	}
@@ -187,9 +183,9 @@ void Model::handleInput(float deltaSeconds) {
 }
 
 void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
-	track.drawBoundary(window);
+	track->drawBoundary(window);
 	if (drawCheckpoints) {
-		track.drawCheckpoints(window, currentCheckpoint);
+		track->drawCheckpoints(window, currentCheckpoint);
 	}
 }
 
@@ -209,9 +205,9 @@ auto Model::getCheckpointInformation(unsigned count) const -> std::vector<Checkp
 	rotateTransform.rotate(-angle * 180.f/pi);
 
 	for (unsigned i = 0; i < count; ++i) {
-		auto checkpointId = (currentCheckpoint + i) % track.getNumberOfCheckpoints();
-		const auto& checkpointLine = track.getCheckpointLine(checkpointId);
-		auto checkpointAngle = track.getCheckpointAngle(checkpointId);
+		auto checkpointId = (currentCheckpoint + i) % track->getNumberOfCheckpoints();
+		const auto& checkpointLine = track->getCheckpointLine(checkpointId);
+		auto checkpointAngle = track->getCheckpointAngle(checkpointId);
 		auto relativeAngle = checkpointAngle - angle;
 
 		result.emplace_back();

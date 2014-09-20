@@ -2,6 +2,7 @@
 #define MODEL_HPP
 
 #include <vector>
+#include <memory>
 
 #include <boost/optional.hpp>
 
@@ -15,12 +16,11 @@ public:
 	Model();
 
 	void setCar(const Car& newCar);
-	void setTrack(const track::Track& newTrack);
+	void setTrack(std::shared_ptr<const track::Track> newTrack);
 
 	const Car& getCar() const;
 	Car& getCar();
-	const track::Track& getTrack() const;
-	track::Track& getTrack();
+	const std::shared_ptr<const track::Track>& getTrack() const;
 
 	void setRightPressed(bool isPressed);
 	void setLeftPressed(bool isPressed);
@@ -57,7 +57,7 @@ private:
 	bool collidesWithCheckpoint(std::size_t checkpointId);
 
 	Car car;
-	track::Track track;
+	std::shared_ptr<const track::Track> track;
 
 	bool isCarCollided = false;
 	float currentTime = 0.f;

@@ -19,7 +19,7 @@ class FitnessCalculator;
 class PopulationRunner {
 public:
 	PopulationRunner(const LearningParameters& parameters,
-		const track::TrackCreators& trackCreators,
+		const std::vector<std::shared_ptr<const track::Track>>& tracks,
 		FitnessCalculator& fitnessCalculator,
 		boost::asio::io_service& ioService);
 

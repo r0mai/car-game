@@ -21,7 +21,7 @@ class Genome;
 class LearningController {
 public:
 	LearningController(const LearningParameters& parameters,
-			const track::TrackCreators& trackCreators,
+			std::vector<std::shared_ptr<const track::Track>> tracks,
 			boost::asio::io_service& ioService);
 	void run();
 
@@ -31,7 +31,7 @@ private:
 
 	boost::asio::io_service& ioService;
 	LearningParameters parameters;
-	track::TrackCreators trackCreators;
+	std::vector<std::shared_ptr<const track::Track>> tracks;
 
 	void saveNeuralNetwork(const Genome& genome);
 };

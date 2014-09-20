@@ -8,19 +8,19 @@
 
 namespace car {
 
-GameManager::GameManager(const CommonParameters& parameters, track::TrackCreator trackCreator) :
+GameManager::GameManager(const CommonParameters& parameters,
+		std::shared_ptr<const track::Track> track) :
 	parameters(parameters),
 	physicsTimeStep(getPhysicsTimeStep(parameters)),
-	track(trackCreator())
+	track(std::move(track))
 {
-	track.check();
 	init();
 }
 
 void GameManager::init() {
 	model = Model{};
 	model.setTrack(track);
-	model.setCar(model.getTrack().createCar());
+	model.setCar(model.getTrack()->createCar());
 	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 

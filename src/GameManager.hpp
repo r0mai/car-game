@@ -15,7 +15,7 @@ namespace car {
 class GameManager {
 public:
 
-	GameManager(const CommonParameters& parameters, track::TrackCreator trackCreator);
+	GameManager(const CommonParameters& parameters, std::shared_ptr<const track::Track> track);
 
 	void advance();
 
@@ -27,7 +27,7 @@ public:
 	void setIsAIControl(bool value) { isAIControl = value; }
 	Model& getModel() { return model; }
 	const Model& getModel() const { return model; }
-	const track::Track& getTrack() const { return track; }
+	const std::shared_ptr<const track::Track>& getTrack() const { return track; }
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints() {
 		return rayPoints;
 	}
@@ -47,7 +47,7 @@ private:
 	bool isAIControl = true;
 
 	Model model;
-	track::Track track;
+	std::shared_ptr<const track::Track> track;
 };
 
 }

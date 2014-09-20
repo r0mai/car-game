@@ -12,7 +12,7 @@
 namespace car {
 
 PopulationRunner::PopulationRunner(const LearningParameters& parameters,
-		const track::TrackCreators& trackCreators,
+		const std::vector<std::shared_ptr<const track::Track>>& tracks,
 		FitnessCalculator& fitnessCalculator,
 		boost::asio::io_service& ioService):
 			fitnessCalculator(&fitnessCalculator),
@@ -40,11 +40,11 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 
 		auto& controllerData = controllerDatas.back();
 		setNeuralNetworkExternalParameters(parameters.commonParameters, controllerData.network);
-		controllerData.managers.reserve(trackCreators.size());
-		for (const auto& trackCreator: trackCreators) {
+		controllerData.managers.reserve(tracks.size());
+		for (const auto& track: tracks) {
 			controllerData.managers.emplace_back(parameters.commonParameters,
 					parameters.iterationParameters,
-					trackCreator);
+					track);
 		}
 	}
 }

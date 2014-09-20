@@ -9,8 +9,9 @@
 
 namespace car {
 
-Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators trackCreators):
-		parameters(parameters), trackCreators(trackCreators) {
+Benchmark::Benchmark(const BenchmarkParameters& parameters,
+		std::vector<std::shared_ptr<const track::Track>> tracks):
+		parameters(parameters), tracks(std::move(tracks)) {
 
 	if (parameters.carInputParameters.neuralNetworkFile.empty()) {
 		throw std::logic_error{"Neural network file is mandatory for benchmark"};
@@ -29,14 +30,14 @@ Benchmark::Benchmark(const BenchmarkParameters& parameters, track::TrackCreators
 void Benchmark::run() {
 	lua::Lua lua;
 	lua.loadFile(parameters.iterationParameters.fitnessScript);
-	FitnessCalculator fitnessCalculator(lua);
+	FitnessCalculator fitnessCalculator([&]() { return std::ref(lua); });
 
 	std::vector<AIGameManager> managers;
-	managers.reserve(trackCreators.size());
-	for (const auto& trackCreator: trackCreators) {
-		managers.emplace_back(parameters.commonParameters, 
+	managers.reserve(tracks.size());
+	for (const auto& track: tracks) {
+		managers.emplace_back(parameters.commonParameters,
 				parameters.iterationParameters,
-				trackCreator);
+				track);
 	}
 
 	for (unsigned generation = 1;
