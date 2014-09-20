@@ -1,6 +1,7 @@
 #ifndef SRC_FITNESSCALCULATOR_HPP
 #define SRC_FITNESSCALCULATOR_HPP
 
+#include <functional>
 #include <boost/range/iterator_range.hpp>
 #include "lua/Lua.hpp"
 
@@ -8,7 +9,7 @@ namespace car {
 
 class FitnessCalculator {
 public:
-	FitnessCalculator(lua::Lua& lua): lua(lua) {}
+	FitnessCalculator(std::function<lua::Lua&()> luaGetter): luaGetter(luaGetter) {}
 
 	template <typename Iterator>
 	float calculateFitness(Iterator begin, Iterator end, std::string* debugInfo) {
@@ -25,14 +26,14 @@ public:
 			args.emplace(static_cast<double>(i++), arg);
 		}
 		std::vector<lua::Data> results{{}, {}};
-		lua.callFunction("getFitness", {args}, &results);
+		luaGetter().callFunction("getFitness", {args}, &results);
 		if (debugInfo && results[1].type() != lua::Data{lua::Nil{}}.type()) {
 			*debugInfo = boost::get<std::string>(results[1]);
 		}
 		return boost::get<double>(results[0]);
 	}
 private:
-	lua::Lua& lua;
+	std::function<lua::Lua&()> luaGetter;
 };
 
 }

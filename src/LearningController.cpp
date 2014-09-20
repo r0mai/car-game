@@ -12,6 +12,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/thread/tss.hpp>
 
 #include "LearningController.hpp"
 #include "PopulationRunner.hpp"
@@ -53,6 +54,29 @@ void printInfo(unsigned generation, float bestFitness,
 	}
 }
 
+class ThreadSpecificLua {
+public:
+	ThreadSpecificLua(std::string fitnessScript):
+		fitnessScript(std::move(fitnessScript))
+	{}
+	ThreadSpecificLua(const ThreadSpecificLua&) = delete;
+	ThreadSpecificLua& operator=(const ThreadSpecificLua&) = delete;
+	ThreadSpecificLua(ThreadSpecificLua&&) = default;
+	ThreadSpecificLua& operator=(ThreadSpecificLua&&) = default;
+
+	lua::Lua& operator()() {
+		if (!lua.get()) {
+			lua.reset(new lua::Lua);
+			lua->loadFile(fitnessScript);
+		}
+
+		return *lua;
+	}
+private:
+	std::string fitnessScript;
+	boost::thread_specific_ptr<lua::Lua> lua;
+};
+
 }
 
 void LearningController::run() {
@@ -60,9 +84,8 @@ void LearningController::run() {
 	std::vector<PopulationRunner> populations;
 	populations.reserve(parameters.startingPopulations);
 
-	lua::Lua lua;
-	lua.loadFile(parameters.iterationParameters.fitnessScript);
-	FitnessCalculator fitnessCalculator(lua);
+	ThreadSpecificLua lua{parameters.iterationParameters.fitnessScript};
+	FitnessCalculator fitnessCalculator(std::ref(lua));
 
 	for (std::size_t i = 0; i < parameters.startingPopulations; ++i) {
 		populations.emplace_back(parameters, tracks, fitnessCalculator, ioService);

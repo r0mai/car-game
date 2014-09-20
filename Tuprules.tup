@@ -24,6 +24,7 @@ LIBS += -lboost_program_options
 LIBS += -lboost_serialization
 LIBS += -lboost_system
 LIBS += -lboost_filesystem
+LIBS += -lboost_thread
 LIBS += -llua5.1
 LIBS += @(PROFILER_LIBS)
 

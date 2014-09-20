@@ -30,7 +30,7 @@ Benchmark::Benchmark(const BenchmarkParameters& parameters,
 void Benchmark::run() {
 	lua::Lua lua;
 	lua.loadFile(parameters.iterationParameters.fitnessScript);
-	FitnessCalculator fitnessCalculator(lua);
+	FitnessCalculator fitnessCalculator([&]() { return std::ref(lua); });
 
 	std::vector<AIGameManager> managers;
 	managers.reserve(tracks.size());
