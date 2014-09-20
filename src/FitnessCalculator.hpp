@@ -18,7 +18,7 @@ public:
 			lua::Table arg;
 			arg.emplace(std::string{"travelDistance"}, model.getCar().getTravelDistance());
 			arg.emplace(std::string{"checkpoints"},
-					static_cast<double>(model.getTrack().getNumberOfCheckpoints()));
+					static_cast<double>(model.getTrack()->getNumberOfCheckpoints()));
 			arg.emplace(std::string{"crossedCheckpoints"},
 					static_cast<double>(model.getNumberOfCrossedCheckpoints()));
 

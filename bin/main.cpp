@@ -23,25 +23,31 @@ int main(int argc, char **argv) {
 
 	track::TrackCreators trackCreators =
 			track::trackArgumentParser::parseArguments(parameters.tracks);
+	std::vector<std::shared_ptr<const track::Track>> tracks;
+	tracks.reserve(trackCreators.size());
+	for (auto& trackCreator: trackCreators) {
+		tracks.push_back(std::make_shared<track::Track>(trackCreator()));
+		tracks.back()->check();
+	}
 
 	switch (parameters.gameType) {
 	case GameType::learning: {
 		ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.learningParameters.threadCount);
 		ThreadPoolRunner runner{threadPool};
-		LearningController controller{parameters.learningParameters, trackCreators, threadPool.getIoService()};
+		LearningController controller{parameters.learningParameters, tracks, threadPool.getIoService()};
 		controller.run();
 		break;
 	 }
 	case GameType::realtime: {
 		RealTimeGameManager manager{parameters.realTimeParameters,
-			trackCreators[0]};
+			tracks[0]};
 
 		manager.run();
 		break;
 	 }
 	case GameType::benchmark: {
-		Benchmark benchmark{parameters.benchmarkParameters, trackCreators};
+		Benchmark benchmark{parameters.benchmarkParameters, tracks};
 
 		benchmark.run();
 		break;

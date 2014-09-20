@@ -49,7 +49,7 @@ public:
 	void setOrigin(const sf::Vector2f& point, float direction);
 	Car createCar() const;
 
-	bool isInsideTrack(const sf::Vector2f& p);
+	bool isInsideTrack(const sf::Vector2f& p) const;
 private:
 	typedef std::vector<Line2f> Lines;
 	Lines lines;

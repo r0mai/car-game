@@ -23,10 +23,11 @@ const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
 const sf::Color RealTimeGameManager::carOutTimeColor{160, 0, 0};
 const sf::Color RealTimeGameManager::traceColor = sf::Color::Magenta;
 
-auto RealTimeGameManager::createCarData(const CommonParameters& parameters, track::TrackCreator trackCreator) -> CarData {
+auto RealTimeGameManager::createCarData(const CommonParameters& parameters,
+		std::shared_ptr<const track::Track> track) -> CarData {
 	using namespace boost::math::float_constants;
 
-	CarData result{parameters, trackCreator};
+	CarData result{parameters, std::move(track)};
 
 	result.gasTelemetry.setAutomaticBoundsDetection(false);
 	result.gasTelemetry.setBounds(0.f, 1.f);
@@ -40,7 +41,8 @@ auto RealTimeGameManager::createCarData(const CommonParameters& parameters, trac
 	return result;
 }
 
-RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParameters, track::TrackCreator trackCreator) :
+RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParameters,
+		std::shared_ptr<const track::Track> track) :
 	window(sf::VideoMode(
 				realTimeParameters.screenWidth,
 				realTimeParameters.screenHeight), "car-game"),
@@ -55,11 +57,11 @@ RealTimeGameManager::RealTimeGameManager(const RealTimeParameters& realTimeParam
 	hudView = window.getDefaultView();
 
 	if (realTimeParameters.carInputParameters.neuralNetworkFile.empty()) {
-		carDatas.push_back(createCarData(realTimeParameters.commonParameters, trackCreator));
+		carDatas.push_back(createCarData(realTimeParameters.commonParameters, track));
 		carDatas.back().gameManager.setIsAIControl(false);
 	} else {
 		for (const auto& neuralNetworkFile: realTimeParameters.carInputParameters.neuralNetworkFile) {
-			carDatas.push_back(createCarData(realTimeParameters.commonParameters, trackCreator));
+			carDatas.push_back(createCarData(realTimeParameters.commonParameters, track));
 			auto& carData = carDatas.back();
 			auto& gameManager = carData.gameManager;
 			gameManager.setIsAIControl(true);
@@ -120,7 +122,7 @@ void RealTimeGameManager::checkForCollisions(CarData& carData) {
 	auto& model = carData.gameManager.getModel();
 	auto& car = model.getCar();
 	auto& track = model.getTrack();
-	carData.isOut = model.hasCarCollided() || !track.isInsideTrack(car.getPosition());
+	carData.isOut = model.hasCarCollided() || !track->isInsideTrack(car.getPosition());
 	if (carData.isOut) {
 		carData.outTime += physicsTimeStep;
 	}
@@ -155,7 +157,7 @@ float RealTimeGameManager::calculateCenter(float viewSize, float trackOrigin, fl
 void RealTimeGameManager::setViewParameters() {
 	auto& gameManager = carDatas[currentCarId].gameManager;
 	auto screenSize = window.getSize();
-	auto trackDimensions = gameManager.getTrack().getDimensions();
+	auto trackDimensions = gameManager.getTrack()->getDimensions();
 	auto maxViewSize = sf::Vector2f{screenSize.x / realTimeParameters.minPixelsPerMeter, screenSize.y / realTimeParameters.minPixelsPerMeter};
 	auto minViewSize = sf::Vector2f{screenSize.x / realTimeParameters.maxPixelsPerMeter, screenSize.y / realTimeParameters.maxPixelsPerMeter};
 
@@ -369,7 +371,7 @@ void RealTimeGameManager::drawTrackArea() {
 	sf::Vector2f p;
 	for (p.y = min.y; p.y < max.y; p.y += areaGridDistance) {
 		for (p.x = min.x; p.x < max.x; p.x += areaGridDistance) {
-			sf::Color color = track.isInsideTrack(p) ? sf::Color::Green : sf::Color::Red;
+			sf::Color color = track->isInsideTrack(p) ? sf::Color::Green : sf::Color::Red;
 			drawLine(window, p - pointSize1, p + pointSize1, color);
 			drawLine(window, p - pointSize2, p + pointSize2, color);
 		}

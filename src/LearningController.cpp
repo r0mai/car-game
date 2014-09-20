@@ -22,11 +22,11 @@
 namespace car {
 
 LearningController::LearningController(const LearningParameters& parameters,
-		const track::TrackCreators& trackCreators,
+		std::vector<std::shared_ptr<const track::Track>> tracks,
 		boost::asio::io_service& ioService) :
 	ioService(ioService),
 	parameters(parameters),
-	trackCreators(trackCreators)
+	tracks(std::move(tracks))
 {}
 
 namespace {
@@ -65,7 +65,7 @@ void LearningController::run() {
 	FitnessCalculator fitnessCalculator(lua);
 
 	for (std::size_t i = 0; i < parameters.startingPopulations; ++i) {
-		populations.emplace_back(parameters, trackCreators, fitnessCalculator, ioService);
+		populations.emplace_back(parameters, tracks, fitnessCalculator, ioService);
 		loadPopulation(populations.back().getPopulation());
 	}
 
