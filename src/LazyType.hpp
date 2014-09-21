@@ -7,17 +7,16 @@
 #define LAZY_TYPE(Type, name) \
 	using BOOST_PP_CAT(name, _type) = Type;\
 	BOOST_PP_CAT(name, _type) BOOST_PP_CAT(create_, name)();\
-	::std::unique_ptr<BOOST_PP_CAT(name, _type)> \
-		BOOST_PP_CAT(name, _value);\
+	::std::unique_ptr<Type> BOOST_PP_CAT(name, _value);\
 	Type& name() { \
 		if (!BOOST_PP_CAT(name, _value)) { \
-			BOOST_PP_CAT(name, _value).reset(new BOOST_PP_CAT(name, _type)(\
+			BOOST_PP_CAT(name, _value).reset(new Type(\
 					BOOST_PP_CAT(create_, name)())\
 				);\
-	}\
+		}\
 		return *BOOST_PP_CAT(name, _value);\
 	}\
-	BOOST_PP_CAT(name, _type) BOOST_PP_CAT(create_, name)()
+	Type BOOST_PP_CAT(create_, name)()
 
 
 
