@@ -3,6 +3,8 @@ include_rules
 
 LIBS += -lboost_unit_test_framework
 
+export LD_LIBRARY_PATH
+
 : foreach *.cpp |> !cxx |>
 : *.o $(SOURCE_DIR)/*.o $(TRACK_DIR)/*.o $(LUA_DIR)/*.o $(LEGACY_DIR)/*.o |> !linker |> unitTest
 : unitTest |> !unitTest |>

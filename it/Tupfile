@@ -3,6 +3,8 @@ include_rules
 
 LIBS += -lboost_unit_test_framework
 
+export LD_LIBRARY_PATH
+
 : foreach *.cpp |> !cxx |>
 : *.o $(LUA_DIR)/*.o |> !linker |> integrationTest
 : integrationTest |> !integrationTest |>
