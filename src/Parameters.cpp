@@ -129,6 +129,74 @@ Parameters parseParameters(int argc, char **argv) {
 			"Seed used for random number generation (e.g. for population generation). Default is to use random seed.")
 		;
 
+	po::options_description carDescription("Options for the car (used in all game types)");
+	carDescription.add_options()
+		("car.air-resistance",
+			po::value(&commonParameters.carParameters.cDrag)
+				->default_value(commonParameters.carParameters.cDrag),
+				"Drag ratio that is proportional to the square of the speed.")
+		("car.rolling-resistance",
+			po::value(&commonParameters.carParameters.cRollingResistance)
+				->default_value(commonParameters.carParameters.cRollingResistance),
+				"Drag ratio that is linearly proportional to the speed")
+		("car.engine-power",
+			po::value(&commonParameters.carParameters.pEngine)
+				->default_value(commonParameters.carParameters.pEngine),
+				"The power of the engine (under full throttle).")
+		("car.max-engine-force",
+			po::value(&commonParameters.carParameters.fEngineMax)
+				->default_value(commonParameters.carParameters.fEngineMax),
+				"The maximum force the engine can exert.")
+		("car.brake-force",
+			po::value(&commonParameters.carParameters.fBrake)
+				->default_value(commonParameters.carParameters.fBrake),
+				"")
+		("car.mass",
+			po::value(&commonParameters.carParameters.mass)
+				->default_value(commonParameters.carParameters.mass),
+				"The mass of the car.")
+		("car.max-turn-angle",
+			po::value(&commonParameters.carParameters.maxTurnAngle)
+				->default_value(commonParameters.carParameters.maxTurnAngle),
+				"Maximum turning angle of the wheel (under full steering)")
+		("car.turn-rate",
+			po::value(&commonParameters.carParameters.turnRate)
+				->default_value(commonParameters.carParameters.turnRate),
+				"The turn rate of the car (higher means better turning")
+		("car.rear-cm-distance",
+			po::value(&commonParameters.carParameters.rearCMDistance)
+				->default_value(commonParameters.carParameters.rearCMDistance),
+				"Distance of the rear of the car from the center of mass.")
+		("car.frontcm-distance",
+			po::value(&commonParameters.carParameters.frontCMDistance)
+				->default_value(commonParameters.carParameters.frontCMDistance),
+				"Distance of the front of the car from the center of mass.")
+		("car.width",
+			po::value(&commonParameters.carParameters.carWidth)
+				->default_value(commonParameters.carParameters.carWidth),
+				"Width of the car")
+		("car.throttle-increase",
+			po::value(&commonParameters.carParameters.throttleIncreaseSpeed)
+				->default_value(commonParameters.carParameters.throttleIncreaseSpeed),
+				"The rate with which the throttle level increases when forward is pressed in manual mode.")
+		("car.throttle.decrease",
+			po::value(&commonParameters.carParameters.throttleDecreaseSpeed)
+				->default_value(commonParameters.carParameters.throttleDecreaseSpeed),
+				"The rate with which the throttle level decreases when forward is releases in manual mode.")
+		("car.brake-increase",
+			po::value(&commonParameters.carParameters.brakeIncreaseSpeed)
+				->default_value(commonParameters.carParameters.brakeIncreaseSpeed),
+				"The rate with which the brake level increases when backward is pressed in manual mode.")
+		("car.brake-decrease",
+			po::value(&commonParameters.carParameters.brakeDecreaseSpeed)
+				->default_value(commonParameters.carParameters.brakeDecreaseSpeed),
+				"The rate with which the brake level decreases when backward is releases in manual mode.")
+		("car.turn-speed",
+			po::value(&commonParameters.carParameters.turnSpeed)
+				->default_value(commonParameters.carParameters.turnSpeed),
+				"The rate with which the turn level changes when left/right is pressed/released in manual mode.")
+		;
+
 	po::options_description iterationDescription("Options for learning and benchmark game types");
 	iterationDescription.add_options()
 		("generation-limit",
@@ -231,6 +299,7 @@ Parameters parseParameters(int argc, char **argv) {
 		;
 
 	configFileDescription.add(commonDescription);
+	configFileDescription.add(carDescription);
 	configFileDescription.add(iterationDescription);
 	configFileDescription.add(carInputDescription);
 	configFileDescription.add(realtimeDescription);

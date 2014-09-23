@@ -3,10 +3,13 @@
 
 #include <vector>
 #include <string>
+#include "CarParameters.hpp"
 
 namespace car {
 
 struct CommonParameters {
+
+	CarParameters carParameters;
 
 	unsigned rayCount = 14;
 	unsigned checkpointLookAhead = 1;
@@ -27,12 +30,14 @@ struct CommonParameters {
 	CommonParameters() = default;
 
 	CommonParameters(const CommonParameters& other):
+		carParameters(other.carParameters),
 		rayCount(other.rayCount),
 		checkpointLookAhead(other.checkpointLookAhead),
 		physicsTimeStepsPerSecond(other.physicsTimeStepsPerSecond)
 	{ }
 
 	CommonParameters& operator=(const CommonParameters& other) {
+		carParameters = other.carParameters;
 		rayCount = other.rayCount;
 		checkpointLookAhead = other.checkpointLookAhead;
 		physicsTimeStepsPerSecond = other.physicsTimeStepsPerSecond;

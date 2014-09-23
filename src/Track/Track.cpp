@@ -8,8 +8,8 @@
 
 namespace car { namespace track {
 
-Car Track::createCar() const {
-	return Car{startingPoint, startingDirection};
+Car Track::createCar(const CarParameters& parameters) const {
+	return Car{parameters, startingPoint, startingDirection};
 }
 
 bool Track::isInsideTrack(const sf::Vector2f& p) const {

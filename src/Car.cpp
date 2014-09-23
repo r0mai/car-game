@@ -11,39 +11,11 @@
 
 namespace car {
 
-const float Car::cDrag = 0.5;
-const float Car::cRollingResistance = 14.2;
-const float Car::pEngine = 40000.0;
-const float Car::fEngineMax = 10000.0;
-const float Car::fBrake = 30000.0;
-const float Car::gravity = 9.8; //m/s^2
-const float Car::transMissionEfficiency = 0.7;
-const float Car::gearRatio = 2.1;
-const float Car::differentialRatio = 3.42;
-const float Car::wheelRadius = 0.34; //m
-const float Car::mass = 1500; //kg
-const float Car::maxTurnAngle = 0.52; //radians ~= 30 degrees
-const float Car::turnRate = 8.0;
+Car::Car(const CarParameters& parameters): parameters(parameters) {}
 
-	//CM == Center of Mass
-	//CG == Center of Gravity
-const float Car::rearWheelCMDistance = 1.0;
-const float Car::frontWheelCMDistance = 1.5;
-const float Car::rearCMDistance = 1.2;
-const float Car::frontCMDistance = 1.8;
-const float Car::heightOfCG = 1.5;
-const float Car::wheelBase = rearCMDistance + frontCMDistance;
-const float Car::carWidth = 1.4;
-const float Car::throttleIncreaseSpeed = 1.5;
-const float Car::throttleDecreaseSpeed = 1.3;
-const float Car::brakeIncreaseSpeed = 1.9;
-const float Car::brakeDecreaseSpeed = 1.7;
-const float Car::turnSpeed = 6.5;
-
-Car::Car() {}
-
-Car::Car(const sf::Vector2f& position, float direction) :
-		position(position), orientation(std::cos(direction), std::sin(direction)) {
+Car::Car(const CarParameters& parameters, const sf::Vector2f& position, float direction) :
+		parameters(parameters), position(position),
+		orientation(std::cos(direction), std::sin(direction)) {
 	updateCorners();
 }
 
@@ -60,26 +32,29 @@ void Car::move(float deltaSeconds) {
 	velocity = orientation*getLength(velocity); //hack, TODO something
 
 	float speed = getSpeed();
-	float weight = mass * gravity;
+	//float weight = parameters.mass * parameters.gravity;
 
-	float power = pEngine * throttleLevel;
+	float power = parameters.pEngine * throttleLevel;
 
-	float engineForce = std::max(0.f, std::min(power / speed, fEngineMax));
-	float brakeForce = fBrake * brakeLevel;
+	float engineForce = std::max(0.f, std::min(power / speed, parameters.fEngineMax));
+	float brakeForce = parameters.fBrake * brakeLevel;
 
 	sf::Vector2f fTraction = velocityDirection * engineForce;
 	sf::Vector2f fBraking = -velocityDirection * brakeForce;
-	sf::Vector2f fDrag = -cDrag * velocity * speed;
-	sf::Vector2f fRollingResistance = -cRollingResistance * velocity;
+	sf::Vector2f fDrag = -parameters.cDrag * velocity * speed;
+	sf::Vector2f fRollingResistance = -parameters.cRollingResistance * velocity;
 
 	sf::Vector2f fLongtitudinal = fTraction + fBraking + fDrag + fRollingResistance;
 
-	acceleration = fLongtitudinal / mass;
+	acceleration = fLongtitudinal / parameters.mass;
 
-	float weightFront = (rearWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
-	float weightRear = (frontWheelCMDistance / wheelBase)*weight - (heightOfCG / wheelBase)*mass*(getLength(acceleration));
-	(void)weightFront;
-	(void)weightRear;
+	float wheelBase = parameters.wheelBase();
+	//float weightFront = (parameters.rearWheelCMDistance / wheelBase)*weight -
+		//(parameters.heightOfCG / wheelBase)*parameters.mass*(getLength(acceleration));
+	//float weightRear = (parameters.frontWheelCMDistance / wheelBase)*weight -
+		//(parameters.heightOfCG / wheelBase)*parameters.mass*(getLength(acceleration));
+	//(void)weightFront;
+	//(void)weightRear;
 
 	velocity += deltaSeconds * acceleration;
 	position += deltaSeconds * velocity;
@@ -88,10 +63,10 @@ void Car::move(float deltaSeconds) {
 	travelDistance += deltaSeconds * speed;
 
 	if (std::abs(turnLevel) > 0.0001) {
-		float steeringAngle = maxTurnAngle * turnLevel;
+		float steeringAngle = parameters.maxTurnAngle * turnLevel;
 		float turnRadius = wheelBase / std::sin(steeringAngle);
 
-		float angularVelocity = turnRate / turnRadius;
+		float angularVelocity = parameters.turnRate / turnRadius;
 		sf::Transform rotateTransform;
 		rotateTransform.rotate(angularVelocity*deltaSeconds * 180.f/pi);
 		orientation = rotateTransform.transformPoint(orientation);
@@ -110,14 +85,14 @@ float Car::getThrottle() const {
 }
 
 void Car::increaseThrottle(float deltaSeconds) {
-	throttleLevel += throttleIncreaseSpeed*deltaSeconds;
+	throttleLevel += parameters.throttleIncreaseSpeed * deltaSeconds;
 	if (throttleLevel > 1.) {
 		throttleLevel = 1.;
 	}
 }
 
 void Car::decreaseThrottle(float deltaSeconds) {
-	throttleLevel -= throttleDecreaseSpeed*deltaSeconds;
+	throttleLevel -= parameters.throttleDecreaseSpeed * deltaSeconds;
 	if (throttleLevel < 0.) {
 		throttleLevel = 0.;
 	}
@@ -133,16 +108,16 @@ float Car::getBrake() const {
 }
 
 void Car::increaseBrake(float deltaSeconds) {
-	brakeLevel += brakeIncreaseSpeed*deltaSeconds;
-	if (brakeLevel > 1.) {
-		brakeLevel = 1.;
+	brakeLevel += parameters.brakeIncreaseSpeed * deltaSeconds;
+	if (brakeLevel > 1.f) {
+		brakeLevel = 1.f;
 	}
 }
 
 void Car::decreaseBrake(float deltaSeconds) {
-	brakeLevel -= brakeDecreaseSpeed*deltaSeconds;
-	if (brakeLevel < 0.) {
-		brakeLevel = 0.;
+	brakeLevel -= parameters.brakeDecreaseSpeed * deltaSeconds;
+	if (brakeLevel < 0.f) {
+		brakeLevel = 0.f;
 	}
 }
 
@@ -152,29 +127,29 @@ void Car::setTurnLevel(float value) {
 }
 
 void Car::increaseTurnToRight(float deltaSeconds) {
-	turnLevel += turnSpeed*deltaSeconds;
-	if (turnLevel > 1.) {
-		turnLevel = 1.;
+	turnLevel += parameters.turnSpeed * deltaSeconds;
+	if (turnLevel > 1.f) {
+		turnLevel = 1.f;
 	}
 }
 
 void Car::increaseTurnToLeft(float deltaSeconds) {
-	turnLevel -= turnSpeed*deltaSeconds;
-	if (turnLevel < -1.) {
-		turnLevel = -1.;
+	turnLevel -= parameters.turnSpeed * deltaSeconds;
+	if (turnLevel < -1.f) {
+		turnLevel = -1.f;
 	}
 }
 
 void Car::dontTurn(float deltaSeconds) {
-	if (turnLevel > 0.) {
-		turnLevel -= turnSpeed*deltaSeconds;
-		if (turnLevel < 0.) {
-			turnLevel = 0.;
+	if (turnLevel > 0.f) {
+		turnLevel -= parameters.turnSpeed * deltaSeconds;
+		if (turnLevel < 0.f) {
+			turnLevel = 0.f;
 		}
-	} else if (turnLevel < 0.) {
-		turnLevel += turnSpeed*deltaSeconds;
-		if (turnLevel > 0.) {
-			turnLevel = 0.;
+	} else if (turnLevel < 0.f) {
+		turnLevel += parameters.turnSpeed * deltaSeconds;
+		if (turnLevel > 0.f) {
+			turnLevel = 0.f;
 		}
 	}
 }
@@ -238,13 +213,17 @@ void Car::updateCorners() {
 	transform.translate(getPosition());
 	transform.rotate(std::atan2(getOrientation().y, getOrientation().x) * 180.f/pi);
 
-	const float carHalfWidth = carWidth/2.f;
+	const float carHalfWidth = parameters.carWidth / 2.f;
 
 	//CM is the origin when drawing
-	frontLeftCorner = transform.transformPoint(sf::Vector2f(frontCMDistance, -carHalfWidth));
-	frontRightCorner = transform.transformPoint(sf::Vector2f(frontCMDistance, carHalfWidth));
-	rearLeftCorner = transform.transformPoint(sf::Vector2f(-rearCMDistance, -carHalfWidth));
-	rearRightCorner = transform.transformPoint(sf::Vector2f(-rearCMDistance, carHalfWidth));
+	frontLeftCorner = transform.transformPoint(
+			sf::Vector2f(parameters.frontCMDistance, -carHalfWidth));
+	frontRightCorner = transform.transformPoint(
+			sf::Vector2f(parameters.frontCMDistance, carHalfWidth));
+	rearLeftCorner = transform.transformPoint(
+			sf::Vector2f(-parameters.rearCMDistance, -carHalfWidth));
+	rearRightCorner = transform.transformPoint(
+			sf::Vector2f(-parameters.rearCMDistance, carHalfWidth));
 }
 
 }
