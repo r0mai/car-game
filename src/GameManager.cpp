@@ -12,15 +12,16 @@ GameManager::GameManager(const CommonParameters& parameters,
 		std::shared_ptr<const track::Track> track) :
 	parameters(parameters),
 	physicsTimeStep(getPhysicsTimeStep(parameters)),
+	model{parameters.carParameters},
 	track(std::move(track))
 {
 	init();
 }
 
 void GameManager::init() {
-	model = Model{};
+	model = Model{parameters.carParameters};
 	model.setTrack(track);
-	model.setCar(model.getTrack()->createCar());
+	model.setCar(model.getTrack()->createCar(parameters.carParameters));
 	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 

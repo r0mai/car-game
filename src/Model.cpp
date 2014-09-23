@@ -9,8 +9,6 @@
 
 namespace car {
 
-Model::Model() {}
-
 void Model::setCar(const Car& newCar) {
 	car = newCar;
 }

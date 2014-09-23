@@ -2,6 +2,7 @@
 #define CAR_HPP
 
 #include <SFML/Graphics.hpp>
+#include "CarParameters.hpp"
 
 namespace car {
 
@@ -9,8 +10,8 @@ class Car {
 public:
 
 
-	Car();
-	Car(const sf::Vector2f& position, float direction);
+	Car(const CarParameters& parameters);
+	Car(const CarParameters& parameters, const sf::Vector2f& position, float direction);
 
 	void setColor(const sf::Color& color);
 
@@ -52,36 +53,7 @@ private:
 
 	void updateCorners();
 
-	static const float cDrag;
-	static const float cRollingResistance;
-	static const float pEngine;
-	static const float fEngineMax;
-	static const float fBrake;
-	static const float gravity;
-	static const float transMissionEfficiency;
-	static const float gearRatio;
-	static const float differentialRatio;
-	static const float wheelRadius;
-	static const float mass;
-	static const float maxTurnAngle;
-	static const float turnRate;
-
-	//CM == Center of Mass
-	//CG == Center of Gravity
-	static const float rearWheelCMDistance;
-	static const float frontWheelCMDistance;
-	static const float rearCMDistance;
-	static const float frontCMDistance;
-	static const float heightOfCG;
-	static const float wheelBase;
-	static const float carWidth;
-
-	static const float throttleIncreaseSpeed;
-	static const float throttleDecreaseSpeed;
-	static const float brakeIncreaseSpeed;
-	static const float brakeDecreaseSpeed;
-
-	static const float turnSpeed;
+	CarParameters parameters;
 
 	float throttleLevel = 0.0; // [0, 1]
 	float brakeLevel = 0.0; // [0, 1]

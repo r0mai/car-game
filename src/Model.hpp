@@ -13,7 +13,8 @@ namespace car {
 
 class Model {
 public:
-	Model();
+	Model(const CarParameters& carParameters):
+		car{carParameters} {}
 
 	void setCar(const Car& newCar);
 	void setTrack(std::shared_ptr<const track::Track> newTrack);
