@@ -7,11 +7,16 @@ Building
 --------
 The project can be built with tup. http://gittup.org/tup/
 
+The program depends on the following libraries:
+- SFML (http://www.sfml-dev.org/)
+- Boost (http://www.boost.org/)
+- liblua (http://www.lua.org/)
+
 To build, first create a variant: `tup variant build/<name>.config`. Then simply type `tup`.
 
 Variants control the compiler and the flags. Supported compilers: gcc, clang.
 
-If additional dependencies are needed, edit `Tuprules.tup`.
+If additional dependencies are needed, set the environment variables `EXTRA_CPP_FLAGS (for compilation flags) and EXTRA_LD_FLAGS (for linker flags).
 
 Usage
 -----
