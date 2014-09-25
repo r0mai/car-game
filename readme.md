@@ -16,7 +16,7 @@ To build, first create a variant: `tup variant build/<name>.config`. Then simply
 
 Variants control the compiler and the flags. Supported compilers: gcc, clang.
 
-If additional dependencies are needed, set the environment variables `EXTRA_CPP_FLAGS (for compilation flags) and EXTRA_LD_FLAGS (for linker flags).
+If additional dependencies are needed, set the environment variables `EXTRA_CPP_FLAGS` (for compilation flags) and `EXTRA_LD_FLAGS` (for linker flags).
 
 Usage
 -----
