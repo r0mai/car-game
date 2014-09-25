@@ -4,10 +4,14 @@
 CXX = @(COMPILER)
 LD = $(CXX)
 
+export EXTRA_CPP_FLAGS
+export EXTRA_LDFLAGS
+
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra
 CPP_FLAGS += @(OPTIMALIZATION_FLAG)
 CPP_FLAGS += -ftemplate-backtrace-limit=0
+CPP_FLAGS += $EXTRA_CPP_FLAGS
 
 SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track
@@ -27,6 +31,8 @@ LIBS += -lboost_filesystem
 LIBS += -lboost_thread
 LIBS += -llua5.1
 LIBS += @(PROFILER_LIBS)
+
+LD_FLAGS += $EXTRA_LD_FLAGS
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
 !linker = |> ^ LD %o^ $(LD) $(LD_FLAGS) %f $(LIBS) -o %o |>
