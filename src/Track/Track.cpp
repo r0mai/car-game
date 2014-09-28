@@ -5,10 +5,66 @@
 #include "mathUtil.hpp"
 #include "createPolygonTrack.hpp"
 #include "Line2.hpp"
+#include "RandomGenerator.hpp"
+#include <boost/random/normal_distribution.hpp>
+#include <boost/functional/hash.hpp>
 
 namespace car { namespace track {
 
-Car Track::createCar(const CarParameters& parameters) const {
+namespace {
+
+class CarParameterPerturbator {
+public:
+	CarParameterPerturbator(RandomGenerator& randomGenerator, CarParameters& parameters, const CarParameters& perturbation):
+		randomGenerator(randomGenerator),
+		parameters(parameters),
+		perturbation(perturbation)
+	{}
+
+	void operator()(float CarParameters::* parameter) {
+		boost::random::normal_distribution<float> dist{parameters.*parameter, perturbation.*parameter};
+		parameters.*parameter = dist(randomGenerator);
+	}
+
+private:
+	RandomGenerator& randomGenerator;
+	CarParameters& parameters;
+	const CarParameters& perturbation;
+};
+
+}
+
+void Track::perturbateCarParameters(CarParameters& parameters, const CarParameters& perturbation) const {
+	std::size_t seed = 0;
+	for (const auto& line: lines) {
+		boost::hash_combine(seed, line.start.x);
+		boost::hash_combine(seed, line.start.y);
+		boost::hash_combine(seed, line.end.x);
+		boost::hash_combine(seed, line.end.y);
+	}
+	RandomGenerator randomGenerator{seed};
+
+	CarParameterPerturbator perturbator{randomGenerator, parameters, perturbation};
+	perturbator(&CarParameters::cDrag);
+	perturbator(&CarParameters::cRollingResistance);
+	perturbator(&CarParameters::pEngine);
+	perturbator(&CarParameters::fEngineMax);
+	perturbator(&CarParameters::fBrake);
+	perturbator(&CarParameters::mass);
+	perturbator(&CarParameters::maxTurnAngle);
+	perturbator(&CarParameters::turnRate);
+	perturbator(&CarParameters::rearCMDistance);
+	perturbator(&CarParameters::frontCMDistance);
+	perturbator(&CarParameters::carWidth);
+	perturbator(&CarParameters::throttleIncreaseSpeed);
+	perturbator(&CarParameters::throttleDecreaseSpeed);
+	perturbator(&CarParameters::brakeIncreaseSpeed);
+	perturbator(&CarParameters::brakeDecreaseSpeed);
+	perturbator(&CarParameters::turnSpeed);
+}
+
+Car Track::createCar(CarParameters parameters, const CarParameters& perturbation) const {
+	perturbateCarParameters(parameters, perturbation);
 	return Car{parameters, startingPoint, startingDirection};
 }
 

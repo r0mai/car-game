@@ -21,7 +21,7 @@ GameManager::GameManager(const CommonParameters& parameters,
 void GameManager::init() {
 	model = Model{parameters.carParameters};
 	model.setTrack(track);
-	model.setCar(model.getTrack()->createCar(parameters.carParameters));
+	model.setCar(model.getTrack()->createCar(parameters.carParameters, getCarParametersPerturbation()));
 	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 

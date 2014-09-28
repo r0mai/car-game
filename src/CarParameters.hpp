@@ -35,6 +35,30 @@ struct CarParameters {
 	float wheelBase() { return rearCMDistance + frontCMDistance; }
 };
 
+inline
+CarParameters getCarParametersPerturbation() {
+	CarParameters result;
+
+	result.cDrag = 0;
+	result.cRollingResistance = 0;
+	result.pEngine = 0;
+	result.fEngineMax = 0;
+	result.fBrake = 0;
+	result.mass = 0;
+	result.maxTurnAngle = 0;
+	result.turnRate = 0;
+	result.rearCMDistance = 0;
+	result.frontCMDistance = 0;
+	result.carWidth = 0;
+	result.throttleIncreaseSpeed = 0;
+	result.throttleDecreaseSpeed = 0;
+	result.brakeIncreaseSpeed = 0;
+	result.brakeDecreaseSpeed = 0;
+	result.turnSpeed = 0;
+
+	return result;
+}
+
 }
 
 
