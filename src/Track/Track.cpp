@@ -1,4 +1,3 @@
-
 #include "Track.hpp"
 #include "Car.hpp"
 #include "drawUtil.hpp"
@@ -6,6 +5,7 @@
 #include "createPolygonTrack.hpp"
 #include "Line2.hpp"
 #include "RandomGenerator.hpp"
+#include "PerturbationParameters.hpp"
 #include <boost/random/normal_distribution.hpp>
 #include <boost/functional/hash.hpp>
 
@@ -15,7 +15,7 @@ namespace {
 
 class CarParameterPerturbator {
 public:
-	CarParameterPerturbator(RandomGenerator& randomGenerator, CarParameters& parameters, const CarParameters& perturbation):
+	CarParameterPerturbator(RandomGenerator& randomGenerator, CarParameters& parameters, const PerturbationParameters& perturbation):
 		randomGenerator(randomGenerator),
 		parameters(parameters),
 		perturbation(perturbation)
@@ -29,13 +29,13 @@ public:
 private:
 	RandomGenerator& randomGenerator;
 	CarParameters& parameters;
-	const CarParameters& perturbation;
+	const PerturbationParameters& perturbation;
 };
 
 }
 
-void Track::perturbateCarParameters(CarParameters& parameters, const CarParameters& perturbation) const {
-	std::size_t seed = 0;
+void Track::perturbateCarParameters(CarParameters& parameters, const PerturbationParameters& perturbation) const {
+	std::size_t seed = perturbation.seed;
 	for (const auto& line: lines) {
 		boost::hash_combine(seed, line.start.x);
 		boost::hash_combine(seed, line.start.y);
@@ -63,7 +63,7 @@ void Track::perturbateCarParameters(CarParameters& parameters, const CarParamete
 	perturbator(&CarParameters::turnSpeed);
 }
 
-Car Track::createCar(CarParameters parameters, const CarParameters& perturbation) const {
+Car Track::createCar(CarParameters parameters, const PerturbationParameters& perturbation) const {
 	perturbateCarParameters(parameters, perturbation);
 	return Car{parameters, startingPoint, startingDirection};
 }
