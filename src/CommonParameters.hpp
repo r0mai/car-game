@@ -4,12 +4,14 @@
 #include <vector>
 #include <string>
 #include "CarParameters.hpp"
+#include "PerturbationParameters.hpp"
 
 namespace car {
 
 struct CommonParameters {
 
 	CarParameters carParameters;
+	PerturbationParameters perturbationParameters;
 
 	unsigned rayCount = 14;
 	unsigned checkpointLookAhead = 1;

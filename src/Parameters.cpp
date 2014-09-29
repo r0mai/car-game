@@ -14,6 +14,7 @@
 #include "PrefixMap.hpp"
 #include "LazyArgumentMap.hpp"
 #include "StringEnumValue.hpp"
+#include "PerturbationParameters.hpp"
 
 namespace car {
 
@@ -74,9 +75,80 @@ std::ostream& operator<<(std::ostream& os, GameType panMode) {
 	}
 }
 
+namespace po = boost::program_options;
+
+void fillCarParameters(po::options_description& optionsDescription,
+		CarParameters& parameters, const std::string& prefix) {
+	optionsDescription.add_options()
+		((prefix + "air-resistance").c_str(),
+			po::value(&parameters.cDrag)
+				->default_value(parameters.cDrag),
+				"Drag ratio that is proportional to the square of the speed.")
+		((prefix + "rolling-resistance").c_str(),
+			po::value(&parameters.cRollingResistance)
+				->default_value(parameters.cRollingResistance),
+				"Drag ratio that is linearly proportional to the speed")
+		((prefix + "engine-power").c_str(),
+			po::value(&parameters.pEngine)
+				->default_value(parameters.pEngine),
+				"The power of the engine (under full throttle).")
+		((prefix + "max-engine-force").c_str(),
+			po::value(&parameters.fEngineMax)
+				->default_value(parameters.fEngineMax),
+				"The maximum force the engine can exert.")
+		((prefix + "brake-force").c_str(),
+			po::value(&parameters.fBrake)
+				->default_value(parameters.fBrake),
+				"")
+		((prefix + "mass").c_str(),
+			po::value(&parameters.mass)
+				->default_value(parameters.mass),
+				"The mass of the car.")
+		((prefix + "max-turn-angle").c_str(),
+			po::value(&parameters.maxTurnAngle)
+				->default_value(parameters.maxTurnAngle),
+				"Maximum turning angle of the wheel (under full steering)")
+		((prefix + "turn-rate").c_str(),
+			po::value(&parameters.turnRate)
+				->default_value(parameters.turnRate),
+				"The turn rate of the car (higher means better turning")
+		((prefix + "rear-cm-distance").c_str(),
+			po::value(&parameters.rearCMDistance)
+				->default_value(parameters.rearCMDistance),
+				"Distance of the rear of the car from the center of mass.")
+		((prefix + "frontcm-distance").c_str(),
+			po::value(&parameters.frontCMDistance)
+				->default_value(parameters.frontCMDistance),
+				"Distance of the front of the car from the center of mass.")
+		((prefix + "width").c_str(),
+			po::value(&parameters.carWidth)
+				->default_value(parameters.carWidth),
+				"Width of the car")
+		((prefix + "throttle-increase").c_str(),
+			po::value(&parameters.throttleIncreaseSpeed)
+				->default_value(parameters.throttleIncreaseSpeed),
+				"The rate with which the throttle level increases when forward is pressed in manual mode.")
+		((prefix + "throttle.decrease").c_str(),
+			po::value(&parameters.throttleDecreaseSpeed)
+				->default_value(parameters.throttleDecreaseSpeed),
+				"The rate with which the throttle level decreases when forward is releases in manual mode.")
+		((prefix + "brake-increase").c_str(),
+			po::value(&parameters.brakeIncreaseSpeed)
+				->default_value(parameters.brakeIncreaseSpeed),
+				"The rate with which the brake level increases when backward is pressed in manual mode.")
+		((prefix + "brake-decrease").c_str(),
+			po::value(&parameters.brakeDecreaseSpeed)
+				->default_value(parameters.brakeDecreaseSpeed),
+				"The rate with which the brake level decreases when backward is releases in manual mode.")
+		((prefix + "turn-speed").c_str(),
+			po::value(&parameters.turnSpeed)
+				->default_value(parameters.turnSpeed),
+				"The rate with which the turn level changes when left/right is pressed/released in manual mode.")
+		;
+}
+
 Parameters parseParameters(int argc, char **argv) {
 
-	namespace po = boost::program_options;
 
 	Parameters parameters;
 	CommonParameters commonParameters;
@@ -130,72 +202,15 @@ Parameters parseParameters(int argc, char **argv) {
 		;
 
 	po::options_description carDescription("Options for the car (used in all game types)");
-	carDescription.add_options()
-		("car.air-resistance",
-			po::value(&commonParameters.carParameters.cDrag)
-				->default_value(commonParameters.carParameters.cDrag),
-				"Drag ratio that is proportional to the square of the speed.")
-		("car.rolling-resistance",
-			po::value(&commonParameters.carParameters.cRollingResistance)
-				->default_value(commonParameters.carParameters.cRollingResistance),
-				"Drag ratio that is linearly proportional to the speed")
-		("car.engine-power",
-			po::value(&commonParameters.carParameters.pEngine)
-				->default_value(commonParameters.carParameters.pEngine),
-				"The power of the engine (under full throttle).")
-		("car.max-engine-force",
-			po::value(&commonParameters.carParameters.fEngineMax)
-				->default_value(commonParameters.carParameters.fEngineMax),
-				"The maximum force the engine can exert.")
-		("car.brake-force",
-			po::value(&commonParameters.carParameters.fBrake)
-				->default_value(commonParameters.carParameters.fBrake),
-				"")
-		("car.mass",
-			po::value(&commonParameters.carParameters.mass)
-				->default_value(commonParameters.carParameters.mass),
-				"The mass of the car.")
-		("car.max-turn-angle",
-			po::value(&commonParameters.carParameters.maxTurnAngle)
-				->default_value(commonParameters.carParameters.maxTurnAngle),
-				"Maximum turning angle of the wheel (under full steering)")
-		("car.turn-rate",
-			po::value(&commonParameters.carParameters.turnRate)
-				->default_value(commonParameters.carParameters.turnRate),
-				"The turn rate of the car (higher means better turning")
-		("car.rear-cm-distance",
-			po::value(&commonParameters.carParameters.rearCMDistance)
-				->default_value(commonParameters.carParameters.rearCMDistance),
-				"Distance of the rear of the car from the center of mass.")
-		("car.frontcm-distance",
-			po::value(&commonParameters.carParameters.frontCMDistance)
-				->default_value(commonParameters.carParameters.frontCMDistance),
-				"Distance of the front of the car from the center of mass.")
-		("car.width",
-			po::value(&commonParameters.carParameters.carWidth)
-				->default_value(commonParameters.carParameters.carWidth),
-				"Width of the car")
-		("car.throttle-increase",
-			po::value(&commonParameters.carParameters.throttleIncreaseSpeed)
-				->default_value(commonParameters.carParameters.throttleIncreaseSpeed),
-				"The rate with which the throttle level increases when forward is pressed in manual mode.")
-		("car.throttle.decrease",
-			po::value(&commonParameters.carParameters.throttleDecreaseSpeed)
-				->default_value(commonParameters.carParameters.throttleDecreaseSpeed),
-				"The rate with which the throttle level decreases when forward is releases in manual mode.")
-		("car.brake-increase",
-			po::value(&commonParameters.carParameters.brakeIncreaseSpeed)
-				->default_value(commonParameters.carParameters.brakeIncreaseSpeed),
-				"The rate with which the brake level increases when backward is pressed in manual mode.")
-		("car.brake-decrease",
-			po::value(&commonParameters.carParameters.brakeDecreaseSpeed)
-				->default_value(commonParameters.carParameters.brakeDecreaseSpeed),
-				"The rate with which the brake level decreases when backward is releases in manual mode.")
-		("car.turn-speed",
-			po::value(&commonParameters.carParameters.turnSpeed)
-				->default_value(commonParameters.carParameters.turnSpeed),
-				"The rate with which the turn level changes when left/right is pressed/released in manual mode.")
+	fillCarParameters(carDescription, commonParameters.carParameters, "car.");
+
+	po::options_description perturbationDescription("Options for the perturbation of the car (used in all game types, but really useful in learning mode). These control the sigma value of the normal distribution used for the perturbation");
+	perturbationDescription.add_options()
+		("perturbation.seed",
+			po::value(&commonParameters.perturbationParameters.seed),
+			"Seed that controls perturbation of car parameters. If not given, a random value is used (controlled by the --seed option).")
 		;
+	fillCarParameters(perturbationDescription, commonParameters.perturbationParameters, "perturbation.");
 
 	po::options_description iterationDescription("Options for learning and benchmark game types");
 	iterationDescription.add_options()
@@ -300,6 +315,7 @@ Parameters parseParameters(int argc, char **argv) {
 
 	configFileDescription.add(commonDescription);
 	configFileDescription.add(carDescription);
+	configFileDescription.add(perturbationDescription);
 	configFileDescription.add(iterationDescription);
 	configFileDescription.add(carInputDescription);
 	configFileDescription.add(realtimeDescription);
@@ -361,6 +377,10 @@ Parameters parseParameters(int argc, char **argv) {
 		std::srand(vm["seed"].as<int>());
 	} else {
 		std::srand(std::time(0));
+	}
+
+	if (!vm.count("perturbation.seed")) {
+		commonParameters.perturbationParameters.seed = std::rand();
 	}
 
 	parameters.realTimeParameters.commonParameters = commonParameters;
