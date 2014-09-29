@@ -4,44 +4,27 @@
 #include <vector>
 #include <string>
 #include "CarParameters.hpp"
+#include "PerturbationParameters.hpp"
 
 namespace car {
 
 struct CommonParameters {
 
 	CarParameters carParameters;
+	PerturbationParameters perturbationParameters;
 
 	unsigned rayCount = 14;
 	unsigned checkpointLookAhead = 1;
 	unsigned physicsTimeStepsPerSecond = 64;
 
 	// for speed
-	const unsigned extraGlobalInputNeuronCount = 1;
+	constexpr static unsigned extraGlobalInputNeuronCount() { return  1; }
 	// 2 for orientation, 2*(2+1) for left/right edge orientation/distance
-	const unsigned inputNeuronCountPerCheckpoint = 8;
-	const unsigned outputNeuronCount = 3;
+	constexpr static unsigned inputNeuronCountPerCheckpoint() { return  8; }
+	constexpr static unsigned outputNeuronCount() { return 3; }
 
 	unsigned getInputNeuronCount() const {
-		return rayCount + extraGlobalInputNeuronCount + checkpointLookAhead * inputNeuronCountPerCheckpoint;
-	}
-
-	// No default copy because of const parameters
-
-	CommonParameters() = default;
-
-	CommonParameters(const CommonParameters& other):
-		carParameters(other.carParameters),
-		rayCount(other.rayCount),
-		checkpointLookAhead(other.checkpointLookAhead),
-		physicsTimeStepsPerSecond(other.physicsTimeStepsPerSecond)
-	{ }
-
-	CommonParameters& operator=(const CommonParameters& other) {
-		carParameters = other.carParameters;
-		rayCount = other.rayCount;
-		checkpointLookAhead = other.checkpointLookAhead;
-		physicsTimeStepsPerSecond = other.physicsTimeStepsPerSecond;
-		return *this;
+		return rayCount + extraGlobalInputNeuronCount() + checkpointLookAhead * inputNeuronCountPerCheckpoint();
 	}
 
 };

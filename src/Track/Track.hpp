@@ -16,6 +16,7 @@ namespace car {
 
 class Car;
 struct CarParameters;
+struct PerturbationParameters;
 
 namespace track {
 
@@ -48,7 +49,7 @@ public:
 	void drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
 
 	void setOrigin(const sf::Vector2f& point, float direction);
-	Car createCar(const CarParameters& parameters) const;
+	Car createCar(CarParameters parameters, const PerturbationParameters& perturbation) const;
 
 	bool isInsideTrack(const sf::Vector2f& p) const;
 private:
@@ -63,6 +64,8 @@ private:
 
 	sf::Vector2f startingPoint;
 	float startingDirection = 0.f;
+
+	void perturbateCarParameters(CarParameters& parameters, const PerturbationParameters& perturbation) const;
 };
 
 }} /* namespace car::track */

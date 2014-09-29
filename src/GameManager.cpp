@@ -5,6 +5,7 @@
 #include <boost/math/constants/constants.hpp>
 #include "mathUtil.hpp"
 #include "Line2.hpp"
+#include "PerturbationParameters.hpp"
 
 namespace car {
 
@@ -21,7 +22,8 @@ GameManager::GameManager(const CommonParameters& parameters,
 void GameManager::init() {
 	model = Model{parameters.carParameters};
 	model.setTrack(track);
-	model.setCar(model.getTrack()->createCar(parameters.carParameters));
+	model.setCar(model.getTrack()->createCar(parameters.carParameters,
+			parameters.perturbationParameters));
 	rayPoints = model.getRayPoints(parameters.rayCount);
 }
 
