@@ -22,7 +22,7 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 					parameters.hiddenLayerCount,
 					parameters.neuronPerHiddenLayer,
 					parameters.commonParameters.getInputNeuronCount(),
-					parameters.commonParameters.outputNeuronCount,
+					parameters.commonParameters.outputNeuronCount(),
 					parameters.useRecurrence)}
 {
 	controllerDatas.reserve(parameters.populationSize);
@@ -32,7 +32,7 @@ PopulationRunner::PopulationRunner(const LearningParameters& parameters,
 				parameters.hiddenLayerCount,
 				parameters.neuronPerHiddenLayer,
 				parameters.commonParameters.getInputNeuronCount(),
-				parameters.commonParameters.outputNeuronCount,
+				parameters.commonParameters.outputNeuronCount(),
 				parameters.useRecurrence
 			},
 			{}
