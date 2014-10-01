@@ -3,6 +3,8 @@
 #include <boost/exception/all.hpp>
 #include <iostream>
 
+namespace util {
+
 void ThreadPool::runInThread()
 {
 	while (true) {
@@ -60,3 +62,4 @@ void ThreadPool::wait()
 	}
 }
 
+} // namespace util

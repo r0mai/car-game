@@ -1,0 +1,5 @@
+
+include_rules
+
+: $(SOURCE_DIR)/*.o |> !ar |> $(LIB_NAME)
+
