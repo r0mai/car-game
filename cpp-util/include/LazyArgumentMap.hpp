@@ -11,7 +11,7 @@
 	LAZY_TYPE(BOOST_PP_CAT(name, _map_type), name)
 
 #define LAZY_ARGUMENT_PREFIX_MAP(Type, name) \
-	LAZY_TYPE(::car::PrefixMap<Type>, name)
+	LAZY_TYPE(::util::PrefixMap<Type>, name)
 
 
 #endif /* SRC_LAZYARGUMENTMAP_HPP */

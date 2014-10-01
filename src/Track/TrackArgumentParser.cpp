@@ -18,7 +18,7 @@
 #include "SimplePolygonType.hpp"
 #include "PointAdderRandomPolygonGeneratorType.hpp"
 #include "RandomWalkPolygonGeneratorType.hpp"
-#include "LazyArgumentMap.hpp"
+#include "util/LazyArgumentMap.hpp"
 
 namespace algo = boost::algorithm;
 namespace po = boost::program_options;

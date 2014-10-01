@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <memory>
 
-namespace car {
+namespace util {
 
 struct PrefixMapError: std::logic_error {
 	using std::logic_error::logic_error;

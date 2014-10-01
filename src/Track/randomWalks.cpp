@@ -5,7 +5,7 @@
 #include "PrimRandomWalk.hpp"
 #include "DfsRandomWalk.hpp"
 #include "TrackCreatorError.hpp"
-#include "LazyArgumentMap.hpp"
+#include "util/LazyArgumentMap.hpp"
 
 namespace car { namespace track {
 

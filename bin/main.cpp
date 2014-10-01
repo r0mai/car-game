@@ -2,7 +2,7 @@
 #include "RealTimeGameManager.hpp"
 #include "LearningController.hpp"
 #include "Parameters.hpp"
-#include "ThreadPool.hpp"
+#include "util/ThreadPool.hpp"
 #include "Track/Track.hpp"
 #include "Track/TrackCreator.hpp"
 #include "Track/TrackArgumentParser.hpp"
@@ -32,9 +32,9 @@ int main(int argc, char **argv) {
 
 	switch (parameters.gameType) {
 	case GameType::learning: {
-		ThreadPool threadPool;
+		util::ThreadPool threadPool;
 		threadPool.setNumThreads(parameters.learningParameters.threadCount);
-		ThreadPoolRunner runner{threadPool};
+		util::ThreadPoolRunner runner{threadPool};
 		LearningController controller{parameters.learningParameters, tracks, threadPool.getIoService()};
 		controller.run();
 		break;

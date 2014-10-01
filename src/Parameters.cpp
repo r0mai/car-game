@@ -11,8 +11,8 @@
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "Track/TrackArgumentParser.hpp"
-#include "PrefixMap.hpp"
-#include "LazyArgumentMap.hpp"
+#include "util/PrefixMap.hpp"
+#include "util/LazyArgumentMap.hpp"
 #include "StringEnumValue.hpp"
 #include "PerturbationParameters.hpp"
 
@@ -34,7 +34,7 @@ LAZY_ARGUMENT_PREFIX_MAP(GameType, gameTypes) {
 }
 
 template <typename T>
-std::string argumentValues(const PrefixMap<T>& map) {
+std::string argumentValues(const util::PrefixMap<T>& map) {
 	std::vector<std::string> values;
 	for (const auto& value: map) {
 		values.push_back(value.first);

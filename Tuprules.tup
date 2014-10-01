@@ -7,11 +7,15 @@ LD = $(CXX)
 export EXTRA_CPP_FLAGS
 export EXTRA_LDFLAGS
 
+DEPENDENCIES_DIR = $(TUP_CWD)
+CPP_UTIL_DIR = $(DEPENDENCIES_DIR)/cpp-util
+
 CPP_FLAGS += -std=c++11
 CPP_FLAGS += -Wall -Wextra
 CPP_FLAGS += @(OPTIMALIZATION_FLAG)
 CPP_FLAGS += -ftemplate-backtrace-limit=0
 CPP_FLAGS += $EXTRA_CPP_FLAGS
+CPP_FLAGS += -I$(CPP_UTIL_DIR)/include
 
 SOURCE_DIR = $(TUP_CWD)/src
 TRACK_DIR = $(SOURCE_DIR)/Track
@@ -32,6 +36,7 @@ LIBS += -lboost_thread
 LIBS += -llua5.1
 LIBS += @(PROFILER_LIBS)
 
+LD_FLAGS += -L$(CPP_UTIL_DIR)/lib
 LD_FLAGS += $EXTRA_LD_FLAGS
 
 !cxx = |> ^ CXX %f^ $(CXX) $(CPP_FLAGS) $(INCLUDE_DIRS) -c %f -o %o |> %B.o
