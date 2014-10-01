@@ -13,7 +13,7 @@
 #include "Track/TrackArgumentParser.hpp"
 #include "util/PrefixMap.hpp"
 #include "util/LazyArgumentMap.hpp"
-#include "StringEnumValue.hpp"
+#include "util/StringEnumValue.hpp"
 #include "PerturbationParameters.hpp"
 
 namespace car {
