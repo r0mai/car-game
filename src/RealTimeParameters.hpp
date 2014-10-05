@@ -4,12 +4,11 @@
 #include "ScreenDimension.hpp"
 #include "CommonParameters.hpp"
 #include "CarInputParameters.hpp"
+#include "util/LazyArgumentEnum.hpp"
 
 namespace car {
 
-enum class PanMode {
-	center, fit
-};
+LAZY_ARGUMENT_ENUM(PanMode, panModes, center, fit)
 
 struct RealTimeParameters {
 	CommonParameters commonParameters;
