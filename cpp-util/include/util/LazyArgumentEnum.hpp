@@ -37,7 +37,8 @@
 				_LAZY_ARGUMENT_ENUM_OUTPUT_HELPER, \
 				Type, \
 				BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)) \
-		} \
+		}; \
+		return os; \
 	}
 
 
