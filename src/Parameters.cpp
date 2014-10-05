@@ -18,14 +18,6 @@
 
 namespace car {
 
-LAZY_ARGUMENT_PREFIX_MAP(GameType, gameTypes) {
-	return {
-		STRING_ENUM_VALUE(GameType, realtime),
-		STRING_ENUM_VALUE(GameType, learning),
-		STRING_ENUM_VALUE(GameType, benchmark),
-	};
-}
-
 template <typename T>
 std::string argumentValues(const util::PrefixMap<T>& map) {
 	std::vector<std::string> values;
@@ -33,23 +25,6 @@ std::string argumentValues(const util::PrefixMap<T>& map) {
 		values.push_back(value.first);
 	}
 	return boost::algorithm::join(values, ", ");
-}
-
-std::istream& operator>>(std::istream& is, GameType& gameType) {
-	std::string s;
-	is >> s;
-	gameType = gameTypes().at(s);
-
-	return is;
-}
-
-std::ostream& operator<<(std::ostream& os, GameType panMode) {
-	switch (panMode) {
-	case GameType::realtime: return os << "realtime";
-	case GameType::learning: return os << "learning";
-	case GameType::benchmark: return os << "benchmark";
-	default: return os;
-	}
 }
 
 namespace po = boost::program_options;
