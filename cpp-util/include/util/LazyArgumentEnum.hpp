@@ -9,20 +9,23 @@
 #include <boost/preprocessor/variadic/to_seq.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
+#define _LAZY_ARGUMENT_ENUM_ENUM_HELPER(r, Type, elem) \
+	elem,
 #define _LAZY_ARGUMENT_ENUM_PREFIX_MAP_HELPER(r, Type, elem) \
 	STRING_ENUM_VALUE(Type, elem),
 #define _LAZY_ARGUMENT_ENUM_OUTPUT_HELPER(r, Type, elem) \
 	case Type::elem: return os << BOOST_PP_STRINGIZE(elem);
 
-#define LAZY_ARGUMENT_ENUM(Type, name, ...) \
+#define LAZY_ARGUMENT_ENUM(Type, name, values) \
 	enum class Type { \
-		__VA_ARGS__ \
+			BOOST_PP_SEQ_FOR_EACH( \
+				_LAZY_ARGUMENT_ENUM_ENUM_HELPER, \
+				Type, values) \
 	}; \
 	LAZY_ARGUMENT_PREFIX_MAP(Type, name) { \
 		return { BOOST_PP_SEQ_FOR_EACH( \
 				_LAZY_ARGUMENT_ENUM_PREFIX_MAP_HELPER, \
-				Type, \
-				BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)) \
+				Type, values) \
 		}; \
 	} \
 	inline ::std::istream& operator>>(::std::istream& is, Type& value) { \
@@ -35,8 +38,7 @@
 		switch (value) { \
 			BOOST_PP_SEQ_FOR_EACH( \
 				_LAZY_ARGUMENT_ENUM_OUTPUT_HELPER, \
-				Type, \
-				BOOST_PP_VARIADIC_TO_SEQ(__VA_ARGS__)) \
+				Type, values) \
 		}; \
 		return os; \
 	}

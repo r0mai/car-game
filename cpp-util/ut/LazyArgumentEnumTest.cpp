@@ -7,7 +7,7 @@ using namespace util;
 
 BOOST_AUTO_TEST_SUITE(LazyArgumentMapTest)
 
-LAZY_ARGUMENT_ENUM(Number, numbers, zero, one, two)
+LAZY_ARGUMENT_ENUM(Number, numbers, (zero)(one)(two))
 
 BOOST_AUTO_TEST_CASE(LAZY_ARGUMENT_ENUM_shoud_instantiate_enum) {
 	BOOST_CHECK_EQUAL(static_cast<int>(Number::zero), 0);
