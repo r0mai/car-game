@@ -8,6 +8,8 @@
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <boost/preprocessor/variadic/to_seq.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <istream>
+#include <ostream>
 
 #define _LAZY_ARGUMENT_ENUM_ENUM_HELPER(r, Type, elem) \
 	elem,

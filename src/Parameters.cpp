@@ -127,9 +127,15 @@ Parameters parseParameters(int argc, char **argv) {
 				"Newer values override older ones.")
 	;
 
+	std::string lookaheadTypeDescription = "The mode how the neural network gets the information about the direction of the track. "
+		"Allowed values: " + argumentValues(lookaheadTypes());
 	po::options_description configFileDescription("Command-line and config file options");
 	po::options_description commonDescription("Options for all game types");
 	commonDescription.add_options()
+		("lookahead-type",
+			po::value(&commonParameters.lookaheadType)
+				->default_value(commonParameters.lookaheadType),
+			lookaheadTypeDescription.c_str())
 		("ray-count",
 			po::value(&commonParameters.rayCount)
 				->default_value(commonParameters.rayCount),
