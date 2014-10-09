@@ -1,6 +1,5 @@
 #include "Track.hpp"
 #include "Car.hpp"
-#include "drawUtil.hpp"
 #include "mathUtil.hpp"
 #include "createPolygonTrack.hpp"
 #include "Line2.hpp"
@@ -127,28 +126,6 @@ const Line2f& Track::getCheckpointLine(std::size_t n) const {
 
 float Track::getCheckpointAngle(std::size_t n) const {
 	return checkpoints[n].angle;
-}
-
-void Track::drawBoundary(sf::RenderWindow& window) const {
-	for (const Line2f& trackLine : lines) {
-		drawLine(window, trackLine);
-	}
-}
-
-void Track::drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint) const {
-	sf::Color checkpointColor{255, 255, 64};
-	sf::Color highlightedCheckpointColor{128, 128, 255};
-
-	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
-
-		auto color = (static_cast<int>(i) == highlightCheckpoint) ?
-						checkpointColor : highlightedCheckpointColor;
-		drawLine(window, checkpoints[i].line, color);
-		auto centerPoint = (checkpoints[i].line.start + checkpoints[i].line.end) / 2.f;
-		drawLine(window, centerPoint,
-				centerPoint + sf::Vector2f(cos(checkpoints[i].angle), sin(checkpoints[i].angle)),
-				color);
-	}
 }
 
 sf::FloatRect Track::getDimensions() const {

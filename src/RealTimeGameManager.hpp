@@ -46,6 +46,8 @@ private:
 	void handleUserInput();
 
 	void drawGame();
+	void drawTrackBoundary();
+	void drawTrackCheckpoints();
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
@@ -85,11 +87,14 @@ private:
 	RealTimeParameters realTimeParameters;
 	float physicsTimeStep;
 
-	static CarData createCarData(const CommonParameters& parameters, 
+	static CarData createCarData(const CommonParameters& parameters,
 			std::shared_ptr<const track::Track> track);
 
 	static const float areaGridDistance;
 	static const float areaGridPointSize;
+	static const sf::Color trackEdgeColor;
+	static const sf::Color checkpointColor;
+	static const sf::Color checkpointNextColor;
 	static const sf::Color carNormalColor;
 	static const sf::Color carActiveColor;
 	static const sf::Color carOutColor;
