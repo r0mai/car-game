@@ -315,8 +315,16 @@ void RealTimeGameManager::updateTrace() {
 }
 
 void RealTimeGameManager::drawGame() {
+
+	const auto& model = carDatas[currentCarId].gameManager.getModel();
+	const auto& track = model.getTrack();
+
 	if (showTrackBoundary) {
-		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
+		track->drawBoundary(window);
+	}
+
+	if (showCheckPoints) {
+		track->drawCheckpoints(window, model.getCurrentCheckpoint());
 	}
 
 	if (showRays) {

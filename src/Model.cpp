@@ -4,7 +4,6 @@
 #include <boost/math/constants/constants.hpp>
 
 #include "Model.hpp"
-#include "drawUtil.hpp"
 #include "mathUtil.hpp"
 
 namespace car {
@@ -178,13 +177,6 @@ void Model::handleInput(float deltaSeconds) {
 		}
 	}
 
-}
-
-void Model::drawTrack(sf::RenderWindow& window, bool drawCheckpoints) const {
-	track->drawBoundary(window);
-	if (drawCheckpoints) {
-		track->drawCheckpoints(window, currentCheckpoint);
-	}
 }
 
 auto Model::getCheckpointInformation(unsigned count) const -> std::vector<CheckpointInformation> {

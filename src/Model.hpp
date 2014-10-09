@@ -31,14 +31,14 @@ public:
 	float getCurrentTime() const;
 
 	bool hasCarCollided() const;
+	
+	bool getCurrentCheckpoint() const { return currentCheckpoint; }
 
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints(unsigned count) const;
 
 	unsigned getNumberOfCrossedCheckpoints() const;
 
 	void advanceTime(float deltaSeconds);
-
-	void drawTrack(sf::RenderWindow& window, bool drawCheckpoints = true) const;
 
 	struct CheckpointInformation {
 		sf::Vector2f orientation;
