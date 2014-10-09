@@ -190,7 +190,7 @@ Parameters parseParameters(int argc, char **argv) {
 
 	po::options_description carInputDescription("Options for realtime and benchmark game types");
 	carInputDescription.add_options()
-		("neural-network", po::value(&carInputParameters.neuralNetworkFile),
+		("neural-network", po::value(&carInputParameters.neuralNetworkFile)->multitoken(),
 			"Load neural networks from file. For benchmark mode, at least 1 must be given.")
 		;
 
