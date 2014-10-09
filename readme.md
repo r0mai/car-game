@@ -30,6 +30,7 @@ After building:
 - Press Y to show/hide rays.
 - Press P to show/hide checkpoints.
 - Press R to show/hide track boundary.
+- Press N to show/hide track center line.
 - Press G to show/hide track area.
 - Press E to show/hide the trace of the current car.
 - Press PgUp/PgDown to select different cars.
