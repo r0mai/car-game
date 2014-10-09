@@ -20,6 +20,7 @@ const float RealTimeGameManager::areaGridPointSize = 0.1f;
 const sf::Color RealTimeGameManager::trackEdgeColor = sf::Color::White;
 const sf::Color RealTimeGameManager::checkpointColor{128, 128, 255};
 const sf::Color RealTimeGameManager::checkpointNextColor{255, 255, 64};
+const sf::Color RealTimeGameManager::checkpointLookaheadColor{128, 128, 60};
 const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
 const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
@@ -361,8 +362,22 @@ void RealTimeGameManager::drawTrackCheckpoints() {
 
 	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
 
-		auto color = (static_cast<int>(i) == model.getCurrentCheckpoint()) ?
-						checkpointNextColor : checkpointColor;
+		sf::Color color = checkpointColor;
+		if (model.getCurrentCheckpoint() >= 0) {
+			unsigned checkpointLookAhead = gameManager.getCommonParameters().checkpointLookAhead;
+			unsigned currentCheckpoint = model.getCurrentCheckpoint();
+			if (i == currentCheckpoint) {
+				color = checkpointNextColor;
+			} else if (checkpointLookAhead > 1) {
+				unsigned firstToColor = (currentCheckpoint + 1) % checkpoints.size();
+				unsigned lastToColor = (currentCheckpoint + checkpointLookAhead - 1) % checkpoints.size();
+				if ((firstToColor <= lastToColor) ?
+						(i >= firstToColor && i <= lastToColor) :
+						(i >= firstToColor || i <= lastToColor)) {
+					color = checkpointLookaheadColor;
+				}
+			}
+		}
 		drawLine(window, checkpoints[i].line, color);
 		auto centerPoint = (checkpoints[i].line.start + checkpoints[i].line.end) / 2.f;
 		drawLine(window, centerPoint,

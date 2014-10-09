@@ -95,6 +95,7 @@ private:
 	static const sf::Color trackEdgeColor;
 	static const sf::Color checkpointColor;
 	static const sf::Color checkpointNextColor;
+	static const sf::Color checkpointLookaheadColor;
 	static const sf::Color carNormalColor;
 	static const sf::Color carActiveColor;
 	static const sf::Color carOutColor;
