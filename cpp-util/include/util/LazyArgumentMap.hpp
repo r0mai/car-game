@@ -3,8 +3,8 @@
 
 #include <map>
 #include <string>
-#include <boost/preprocessor/cat.hpp>
 #include "LazyType.hpp"
+#include <boost/preprocessor/cat.hpp>
 
 #define LAZY_ARGUMENT_MAP(Type, name) \
 	using BOOST_PP_CAT(name, _map_type) = ::std::map<::std::string, Type>;\

@@ -7,6 +7,7 @@
 #include <deque>
 #include <stdexcept>
 #include <memory>
+#include <assert.h>
 
 namespace util {
 

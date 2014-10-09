@@ -28,6 +28,13 @@ struct TrackError: std::logic_error {
 
 class Track {
 public:
+	struct Checkpoint {
+		Line2f line;
+		float angle;
+	};
+
+	typedef std::vector<Line2f> Lines;
+	typedef std::vector<Checkpoint> Checkpoints;
 
 	void addLine(const Line2f& line);
 	void addCheckpoint(const Line2f& line);
@@ -45,27 +52,23 @@ public:
 
 	sf::FloatRect getDimensions() const;
 
-	void drawBoundary(sf::RenderWindow& window) const;
-	void drawCheckpoints(sf::RenderWindow& window, int highlightCheckpoint = -1) const;
-
 	void setOrigin(const sf::Vector2f& point, float direction);
 	Car createCar(CarParameters parameters, const PerturbationParameters& perturbation) const;
 
 	bool isInsideTrack(const sf::Vector2f& p) const;
+	const Checkpoints& getCheckpoints() const { return checkpoints; }
+	const Lines& getLines() const { return lines; }
+	const Lines& getCenterLines() const;
 private:
-	typedef std::vector<Line2f> Lines;
 	Lines lines;
-
-	struct Checkpoint {
-		Line2f line;
-		float angle;
-	};
-	std::vector<Checkpoint> checkpoints;
+	Checkpoints checkpoints;
+	mutable boost::optional<Lines> centerLines;
 
 	sf::Vector2f startingPoint;
 	float startingDirection = 0.f;
 
 	void perturbateCarParameters(CarParameters& parameters, const PerturbationParameters& perturbation) const;
+	void calculateCenterLines() const;
 };
 
 }} /* namespace car::track */

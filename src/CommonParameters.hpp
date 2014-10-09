@@ -5,14 +5,18 @@
 #include <string>
 #include "CarParameters.hpp"
 #include "PerturbationParameters.hpp"
+#include "util/LazyArgumentEnum.hpp"
 
 namespace car {
+
+LAZY_ARGUMENT_ENUM(LookaheadType, lookaheadTypes, (checkpoint))
 
 struct CommonParameters {
 
 	CarParameters carParameters;
 	PerturbationParameters perturbationParameters;
 
+	LookaheadType lookaheadType;
 	unsigned rayCount = 14;
 	unsigned checkpointLookAhead = 1;
 	unsigned physicsTimeStepsPerSecond = 64;

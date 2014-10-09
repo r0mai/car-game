@@ -9,7 +9,7 @@
 
 namespace car {
 
-LAZY_ARGUMENT_ENUM(GameType, gameTypes, realtime, learning, benchmark)
+LAZY_ARGUMENT_ENUM(GameType, gameTypes, (realtime)(learning)(benchmark))
 
 struct Parameters {
 

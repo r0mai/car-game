@@ -31,6 +31,7 @@ public:
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints() {
 		return rayPoints;
 	}
+	const CommonParameters& getCommonParameters() { return parameters; }
 private:
 	void controlCar();
 

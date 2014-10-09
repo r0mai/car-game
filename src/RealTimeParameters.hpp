@@ -8,7 +8,7 @@
 
 namespace car {
 
-LAZY_ARGUMENT_ENUM(PanMode, panModes, center, fit)
+LAZY_ARGUMENT_ENUM(PanMode, panModes, (center)(fit))
 
 struct RealTimeParameters {
 	CommonParameters commonParameters;

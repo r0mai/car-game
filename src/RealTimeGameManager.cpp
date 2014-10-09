@@ -17,6 +17,11 @@ namespace car {
 
 const float RealTimeGameManager::areaGridDistance = 2.f;
 const float RealTimeGameManager::areaGridPointSize = 0.1f;
+const sf::Color RealTimeGameManager::trackEdgeColor = sf::Color::White;
+const sf::Color RealTimeGameManager::trackCenterLineColor{64, 64, 64};
+const sf::Color RealTimeGameManager::checkpointColor{128, 128, 255};
+const sf::Color RealTimeGameManager::checkpointNextColor{255, 255, 64};
+const sf::Color RealTimeGameManager::checkpointLookaheadColor{128, 128, 60};
 const sf::Color RealTimeGameManager::carNormalColor = sf::Color::White;
 const sf::Color RealTimeGameManager::carActiveColor = sf::Color::Green;
 const sf::Color RealTimeGameManager::carOutColor = sf::Color::Red;
@@ -230,6 +235,9 @@ void RealTimeGameManager::handleUserInput() {
 			case sf::Keyboard::P:
 				showCheckPoints = !showCheckPoints;
 				break;
+			case sf::Keyboard::N:
+				showCenterLine = !showCenterLine;
+				break;
 			case sf::Keyboard::R:
 				showTrackBoundary = !showTrackBoundary;
 				break;
@@ -315,8 +323,17 @@ void RealTimeGameManager::updateTrace() {
 }
 
 void RealTimeGameManager::drawGame() {
+
 	if (showTrackBoundary) {
-		carDatas[currentCarId].gameManager.getModel().drawTrack(window, showCheckPoints);
+		drawTrackBoundary();
+	}
+
+	if (showCenterLine) {
+		drawTrackCenterLine();
+	}
+
+	if (showCheckPoints) {
+		drawTrackCheckpoints();
 	}
 
 	if (showRays) {
@@ -337,14 +354,50 @@ void RealTimeGameManager::drawGame() {
 		drawTrace();
 	}
 
-	//auto circle = sf::CircleShape{panThreshold};
-	//auto center = gameView.getCenter();
-	//circle.setOrigin(panThreshold, panThreshold);
-	//circle.setPosition(center);
-	//circle.setFillColor(sf::Color::Transparent);
-	//circle.setOutlineColor(sf::Color::White);
-	//circle.setOutlineThickness(0.1);
-	//window.draw(circle);
+}
+
+void RealTimeGameManager::drawTrackBoundary() {
+	for (const Line2f& trackLine : carDatas[currentCarId].gameManager.getModel().getTrack()->getLines()) {
+		drawLine(window, trackLine, trackEdgeColor);
+	}
+}
+
+void RealTimeGameManager::drawTrackCheckpoints() {
+	auto& gameManager = carDatas[currentCarId].gameManager;
+	auto& model = gameManager.getModel();
+	auto& track = model.getTrack();
+	auto& checkpoints = track->getCheckpoints();
+
+	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
+
+		sf::Color color = checkpointColor;
+		if (model.getCurrentCheckpoint() >= 0) {
+			unsigned checkpointLookAhead = gameManager.getCommonParameters().checkpointLookAhead;
+			unsigned currentCheckpoint = model.getCurrentCheckpoint();
+			if (i == currentCheckpoint) {
+				color = checkpointNextColor;
+			} else if (checkpointLookAhead > 1) {
+				unsigned firstToColor = (currentCheckpoint + 1) % checkpoints.size();
+				unsigned lastToColor = (currentCheckpoint + checkpointLookAhead - 1) % checkpoints.size();
+				if ((firstToColor <= lastToColor) ?
+						(i >= firstToColor && i <= lastToColor) :
+						(i >= firstToColor || i <= lastToColor)) {
+					color = checkpointLookaheadColor;
+				}
+			}
+		}
+		drawLine(window, checkpoints[i].line, color);
+		auto centerPoint = (checkpoints[i].line.start + checkpoints[i].line.end) / 2.f;
+		drawLine(window, centerPoint,
+				centerPoint + sf::Vector2f(cos(checkpoints[i].angle), sin(checkpoints[i].angle)),
+				color);
+	}
+}
+
+void RealTimeGameManager::drawTrackCenterLine() {
+	for (const Line2f& centerLine : carDatas[currentCarId].gameManager.getModel().getTrack()->getCenterLines()) {
+		drawLine(window, centerLine, trackCenterLineColor);
+	}
 
 }
 
