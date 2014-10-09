@@ -56,17 +56,19 @@ public:
 	Car createCar(CarParameters parameters, const PerturbationParameters& perturbation) const;
 
 	bool isInsideTrack(const sf::Vector2f& p) const;
-	const Checkpoints getCheckpoints() const { return checkpoints; }
-	const Lines getLines() const { return lines; }
+	const Checkpoints& getCheckpoints() const { return checkpoints; }
+	const Lines& getLines() const { return lines; }
+	const Lines& getCenterLines() const;
 private:
 	Lines lines;
-
 	Checkpoints checkpoints;
+	mutable boost::optional<Lines> centerLines;
 
 	sf::Vector2f startingPoint;
 	float startingDirection = 0.f;
 
 	void perturbateCarParameters(CarParameters& parameters, const PerturbationParameters& perturbation) const;
+	void calculateCenterLines() const;
 };
 
 }} /* namespace car::track */

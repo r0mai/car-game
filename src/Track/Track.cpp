@@ -87,8 +87,29 @@ void Track::addLine(const Line2f& line) {
 void Track::addCheckpoint(const Line2f& line) {
 	auto direction = rotateClockwise(line.end - line.start);
 	checkpoints.push_back({line, std::atan2(direction.y, direction.x)});
+	centerLines = boost::optional<Lines>{};
 }
 
+void Track::calculateCenterLines() const {
+	Lines lines(checkpoints.size());
+
+	for (std::size_t i = 0; i < checkpoints.size(); ++i) {
+		const auto& nextCheckpoint = i == 0 ? checkpoints.back() : checkpoints[i - 1];
+		lines[i] = Line2f{
+				getMiddlePoint(nextCheckpoint.line, 0.5f),
+				getMiddlePoint(checkpoints[i].line, 0.5f)};
+	}
+
+	centerLines = std::move(lines);
+}
+
+const Track::Lines& Track::getCenterLines() const {
+	if (!centerLines) {
+		calculateCenterLines();
+	}
+
+	return *centerLines;
+}
 
 bool Track::collidesWith(const Line2f& line) const {
 	for ( const Line2f& trackLine : lines ) {

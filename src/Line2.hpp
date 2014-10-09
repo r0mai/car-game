@@ -64,6 +64,10 @@ bool intersectsRay(const Line2f& line, const sf::Vector2f& origin,
 	return detail::intersectsRay(line, origin, direction, outPtr);
 }
 
+template <typename T>
+sf::Vector2<T> getMiddlePoint(const Line2<T>& line, T ratio) {
+	return {line.start + (line.end - line.start) * ratio};
+}
 
 }
 

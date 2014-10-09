@@ -48,6 +48,7 @@ private:
 	void drawGame();
 	void drawTrackBoundary();
 	void drawTrackCheckpoints();
+	void drawTrackCenterLine();
 	void drawTelemetry();
 	void drawRays();
 	void updateTelemetry();
@@ -70,6 +71,7 @@ private:
 	bool showCar = true;
 	bool showRays = true;
 	bool showCheckPoints = true;
+	bool showCenterLine = true;
 	bool showTrackBoundary = true;
 	bool showTelemetryText = true;
 	bool showTelemetryGraphs = false;
@@ -93,6 +95,7 @@ private:
 	static const float areaGridDistance;
 	static const float areaGridPointSize;
 	static const sf::Color trackEdgeColor;
+	static const sf::Color trackCenterLineColor;
 	static const sf::Color checkpointColor;
 	static const sf::Color checkpointNextColor;
 	static const sf::Color checkpointLookaheadColor;
