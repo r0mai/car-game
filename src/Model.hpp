@@ -31,8 +31,8 @@ public:
 	float getCurrentTime() const;
 
 	bool hasCarCollided() const;
-	
-	bool getCurrentCheckpoint() const { return currentCheckpoint; }
+
+	int getCurrentCheckpoint() const { return currentCheckpoint; }
 
 	std::vector<boost::optional<sf::Vector2f>> getRayPoints(unsigned count) const;
 
