@@ -345,15 +345,6 @@ void RealTimeGameManager::drawGame() {
 		drawTrace();
 	}
 
-	//auto circle = sf::CircleShape{panThreshold};
-	//auto center = gameView.getCenter();
-	//circle.setOrigin(panThreshold, panThreshold);
-	//circle.setPosition(center);
-	//circle.setFillColor(sf::Color::Transparent);
-	//circle.setOutlineColor(sf::Color::White);
-	//circle.setOutlineThickness(0.1);
-	//window.draw(circle);
-
 }
 
 void RealTimeGameManager::drawTrace() {
