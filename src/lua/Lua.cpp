@@ -1,3 +1,4 @@
+#include <vector>
 #include "Lua.hpp"
 #include <lua5.1/lua.hpp>
 
