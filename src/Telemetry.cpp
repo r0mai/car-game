@@ -12,7 +12,7 @@ float Telemetry::horizontalResolution = 0.02f;
 std::size_t Telemetry::maxNumberOfPoints = 10000;
 
 void Telemetry::addDataPoint(const sf::Vector2f& point) {
-	if (!dataPoints.empty() && std::abs(point.x - dataPoints.back().x) < horizontalResolution) {
+	if (!dataPoints.empty() && std::abs(long(point.x - dataPoints.back().x)) < horizontalResolution) {
 		return;
 	}
 	dataPoints.push_back(point);
