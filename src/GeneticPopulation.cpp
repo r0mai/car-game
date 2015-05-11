@@ -2,6 +2,8 @@
 #include <cassert>
 #include <algorithm>
 
+#include <boost/range/numeric.hpp>
+
 #include "GeneticPopulation.hpp"
 
 #include "randomUtil.hpp"
@@ -126,7 +128,7 @@ void GeneticPopulation::calculateStats() {
 	worstFitnessIndex = minmax.first - population.begin();
 	bestFitnessIndex = minmax.second - population.end();
 
-	totalFitness = std::accumulate(population.begin(), population.end(), 0.f,
+	totalFitness = boost::accumulate(population, 0.f,
 			[](float sum, const Genome& genome) { return sum + genome.fitness; });
 }
 
