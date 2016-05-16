@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_template_
 
 	typedef TemplateClass<TemplateParameter> Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"TemplateClass<TemplateParameter>");
 }
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_more_comp
 
 	typedef TemplateTemplate<TemplateClass<TemplateParameter>, TemplateClass> Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"TemplateTemplate<TemplateClass<TemplateParameter>, TemplateClass>");
 }
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_nested_cl
 
 	typedef NestingClass::NestedClass Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"NestedClass");
 }
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_nested_cl
 
 	typedef NestingTemplateClass<NestingClass::NestedClass, int>::NestedClass Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"NestedClass");
 }
@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_nested_te
 	typedef NestingTemplateClass<NestingClass::NestedClass, int>::
 			NestedTemplateClass<NestingClass, NestingClass::NestedClass> Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"NestedTemplateClass<NestingClass, NestedClass>");
 }
@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_nested_cl
 	typedef NestingTemplateClass<NestingTemplateClass<int, NestingClass>, int>::
 			NestedClass Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"NestedClass");
 }
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(removeNamespaceName_should_return_class_name_with_nested_cl
 	typedef NestingTemplateClass<NestingTemplateClass<int, NestingClass>::NestedClass, int>::
 			NestedClass Type;
 
-	BOOST_MESSAGE("Original type name = " << type_name<Type>());
+	BOOST_TEST_MESSAGE("Original type name = " << type_name<Type>());
 	BOOST_CHECK_EQUAL(removeNamespaceName<Type>(),
 			"NestedClass");
 }
